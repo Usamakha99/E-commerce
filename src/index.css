@@ -1,0 +1,81 @@
+/* Import single product specific styles */
+
+/* Share Links */
+.share-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.share-link a {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+  font-size: 14px;
+  color: white !important;
+}
+
+.share-link a:hover {
+  transform: translateY(-2px);
+}
+
+.share-link .facebook {
+  background-color: #3b5998 !important;
+  color: white !important;
+}
+
+.share-link .facebook:hover {
+  background-color: #2d4373 !important;
+  color: white !important;
+}
+
+.share-link .printest {
+  background-color: #bd081c !important;
+  color: white !important;
+}
+
+.share-link .printest:hover {
+  background-color: #9a0718 !important;
+  color: white !important;
+}
+
+.share-link .twitter {
+  background-color: #1da1f2 !important;
+  color: white !important;
+}
+
+.share-link .twitter:hover {
+  background-color: #0d8bd9 !important;
+  color: white !important;
+}
+
+.share-link .instagram {
+  background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%) !important;
+  color: white !important;
+}
+
+.share-link .instagram:hover {
+  background: linear-gradient(45deg, #e0852e 0%,#d55a31 25%,#d11e38 50%,#c11e5b 75%,#b0157d 100%) !important;
+  color: white !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .share-link {
+    justify-content: center;
+    margin-top: 15px;
+  }
+}
+
+/* List view adjustments */
+.list-view .card-grid-style-3.list-style .tools {
+  position: static !important;
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 15px !important;
+}
