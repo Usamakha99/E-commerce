@@ -1,14 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useProducts } from '../hooks/useProducts';
 
-const Sidebar = () => {
+const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [brands, setBrands] = useState([]);
+  const [loadingBrands, setLoadingBrands] = useState(false);
+
+  // Fetch all products to extract unique brands
+  const { products } = useProducts({ autoFetch: true });
+
+  // Extract unique brands from products
+  useEffect(() => {
+    if (products && products.length > 0) {
+      const brandMap = new Map();
+      
+      products.forEach(product => {
+        const brandName = product.brand?.title || 'Unknown';
+        if (brandMap.has(brandName)) {
+          brandMap.set(brandName, brandMap.get(brandName) + 1);
+        } else {
+          brandMap.set(brandName, 1);
+        }
+      });
+      
+      const brandsList = Array.from(brandMap.entries()).map(([name, count]) => ({
+        name,
+        count
+      })).sort((a, b) => a.name.localeCompare(b.name));
+      
+      setBrands(brandsList);
+    }
+  }, [products]);
 
   const toggleCategory = (categoryName) => {
     setExpandedCategories(prev => ({
       ...prev,
       [categoryName]: !prev[categoryName]
     }));
+  };
+
+  const handleBrandChange = (brandName, isChecked) => {
+    if (onBrandFilter) {
+      if (isChecked) {
+        onBrandFilter([...selectedBrands, brandName]);
+      } else {
+        onBrandFilter(selectedBrands.filter(brand => brand !== brandName));
+      }
+    }
   };
 
   const categories = [
@@ -365,48 +404,35 @@ const Sidebar = () => {
           </ul>
 
           <h6 className="color-gray-900 mt-20 mb-10">Brands</h6>
-          <ul className="list-checkbox">
-            <li>
-              <label className="cb-container">
-                <input type="checkbox" defaultChecked />
-                <span className="text-small">Apple</span>
-                <span className="checkmark"></span>
-              </label>
-              <span className="number-item">12</span>
-            </li>
-            <li>
-              <label className="cb-container">
-                <input type="checkbox" />
-                <span className="text-small">Sony</span>
-                <span className="checkmark"></span>
-              </label>
-              <span className="number-item">34</span>
-            </li>
-            <li>
-              <label className="cb-container">
-                <input type="checkbox" />
-                <span className="text-small">Toshiba</span>
-                <span className="checkmark"></span>
-              </label>
-              <span className="number-item">56</span>
-            </li>
-            <li>
-              <label className="cb-container">
-                <input type="checkbox" />
-                <span className="text-small">Assus</span>
-                <span className="checkmark"></span>
-              </label>
-              <span className="number-item">78</span>
-            </li>
-            <li>
-              <label className="cb-container">
-                <input type="checkbox" />
-                <span className="text-small">Samsung</span>
-                <span className="checkmark"></span>
-              </label>
-              <span className="number-item">23</span>
-            </li>
-        </ul>
+          {loadingBrands ? (
+            <div className="text-center py-3">
+              <div className="spinner-border spinner-border-sm text-primary" role="status">
+                <span className="visually-hidden">Loading brands...</span>
+              </div>
+              <p className="small text-muted mt-2">Loading brands...</p>
+            </div>
+          ) : (
+            <ul className="list-checkbox">
+              {brands.length > 0 ? (
+                brands.map((brand, index) => (
+                  <li key={index}>
+                    <label className="cb-container">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedBrands.includes(brand.name)}
+                        onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
+                      />
+                      <span className="text-small">{brand.name}</span>
+                      <span className="checkmark"></span>
+                    </label>
+                    <span className="number-item">{brand.count}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-muted small">No brands found</li>
+              )}
+            </ul>
+          )}
           {/* <a className="btn btn-filter font-sm color-brand-3 font-medium mt-10" href="#ModalFiltersForm" data-bs-toggle="modal">
             More Fillters
           </a> */}

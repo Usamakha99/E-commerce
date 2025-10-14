@@ -80,7 +80,7 @@ const Header = () => {
                       </select>
             </div>
                     <div className="box-keysearch">
-                      <input className="form-control font-xs" type="text" value="" placeholder="Search for items" />
+                      <input className="form-control font-xs" type="text" defaultValue="" placeholder="Search for items" />
                   </div>
                   </form>
                 </div>

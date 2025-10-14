@@ -1,11 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import SocialShare from '../components/SocialShare';
+import { useProduct } from '../hooks/useProduct';
+import { useCart } from '../hooks/useCart';
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
+  const [quantity, setQuantity] = useState(1);
+  const { id } = useParams();
+  
+  // Fetch product from API
+  const { product: apiProduct, loading, error } = useProduct(id, !!id); // Only fetch if id exists
+  const { addToCart, loading: cartLoading } = useCart();
+
+  // Fallback product data (used if API fails)
+  const fallbackProduct = {
+    id: 1,
+    name: 'Samsung Galaxy S22 Ultra 5G 128/256GB SM-S906U1 Unlocked Cell Phones All Colors - Good Condition',
+    brand: 'Samsung',
+    price: 2856.3,
+    originalPrice: 3225.6,
+    discount: 17,
+    sku: 'EcomTech13689',
+    upc: '123456789012',
+    rating: 5,
+    reviews: 2,
+    description: 'High-quality smartphone with amazing features',
+    features: [
+      '8k super steady video',
+      'Nightography plus portait mode',
+      '50mp photo resolution plus bright display',
+      'Adaptive color contrast',
+      'premium design & craftmanship',
+      'Long lasting battery plus fast charging',
+    ],
+  };
+
+  // Use API product if available, otherwise use fallback
+  const product = apiProduct || fallbackProduct;
+
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product.id, quantity);
+      alert('Product added to cart!');
+    } catch (err) {
+      console.error('Failed to add to cart:', err);
+      alert('Failed to add to cart. Please try again.');
+    }
+  };
 
   return (
     <main className="main">
+      {loading && (
+        <div className="container text-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3">Loading product...</p>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="container">
+          <div className="alert alert-warning mt-4" role="alert">
+            <strong>Note:</strong> Using demo data. Connect to your backend API to load real product details.
+            <br />
+            <small>Error: {error}</small>
+          </div>
+        </div>
+      )}
+
+      {!loading && (
+        <>
       {/* Breadcrumb */}
       <div className="section-box">
         <div className="breadcrumbs-div">
@@ -25,20 +91,22 @@ const ProductDetail = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <h3 className="color-brand-3 mb-5 mw-80">Samsung Galaxy S22 Ultra 5G 128/256GB SM-S906U1 Unlocked Cell Phones All Colors - Good Condition</h3>
+              <h3 className="color-brand-3 mb-5 mw-80">{product.name || product.title}</h3>
               <div className="row">
                 <div className="col-xl-6 col-lg-7 col-md-8 col-sm-7 text-center text-sm-start mb-mobile">
                   <span className="color-gray-900 font-xs font-medium">Brand:</span>
-                  <a className="color-gray-500  font-medium" href="/vendor"> Samsung</a>
+                  <a className="color-gray-500  font-medium" href="/vendor"> {product.brand || 'N/A'}</a>
                   
                   <div className="sku-product d-inline-block" style={{marginLeft: '16px'}}>
                     <span className="font-sm color-brand-3 font-medium">SKU:</span>
-                    <span className="font-sm color-gray-500"> EcomTech13689</span>
+                    <span className="font-sm color-gray-500"> {product.sku || 'N/A'}</span>
                   </div>
-                  <div className="upc-product d-inline-block" style={{marginLeft: '20px'}}>
-                    <span className="font-sm color-brand-3 font-medium">UPC:</span>
-                    <span className="font-sm color-gray-500"> 123456789012</span>
-                  </div>
+                  {product.upc && (
+                    <div className="upc-product d-inline-block" style={{marginLeft: '20px'}}>
+                      <span className="font-sm color-brand-3 font-medium">UPC:</span>
+                      <span className="font-sm color-gray-500"> {product.upc}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="col-xl-6 col-lg-5 col-md-4 col-sm-5 text-center text-sm-end">
                   <div className="d-inline-block">
@@ -54,7 +122,7 @@ const ProductDetail = () => {
                     </div>
                     <div className="d-inline-block align-middle">
                       <SocialShare 
-                        productTitle="Samsung Galaxy S22 Ultra 5G 128/256GB SM-S906U1 Unlocked Cell Phones All Colors - Good Condition"
+                        productTitle={product.name || product.title}
                         productUrl={window.location.href}
                       />
                     </div>
@@ -151,8 +219,10 @@ const ProductDetail = () => {
               <div className="row">
                 <div className="col-lg-7 col-md-7 mb-30">
                   <div className="box-product-price">
-                    <h3 className="color-brand-3 price-main d-inline-block mr-10">$2856.3</h3>
-                    <span className="color-gray-500 price-line font-xl line-througt">$3225.6</span>
+                    <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price}</h3>
+                    {product.originalPrice && (
+                      <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice}</span>
+                    )}
                   </div>
                   <div className="box-progress-product mt-15 mb-20">
                     <div className="progress mb-5">
@@ -161,17 +231,18 @@ const ProductDetail = () => {
                     <span className="font-xs color-gray-500">Sold: 135/320</span>
                   </div>
                   <div className=" product-description color-gray-900 mb-30">
-                    <ul className=" list-dot">
-                      <li>8k super steady video</li>
-                      <li>Nightography plus portait mode</li>
-                      <li>50mp photo resolution plus bright display</li>
-                      <li>Adaptive color contrast</li>
-                      <li>premium design & craftmanship</li>
-                      <li>Long lasting battery plus fast charging</li>
-                    </ul>
+                    {product.features && product.features.length > 0 ? (
+                      <ul className=" list-dot">
+                        {product.features.map((feature, index) => (
+                          <li key={index}>{feature}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>{product.description || 'No description available'}</p>
+                    )}
                   </div>
                   <div className="box-product-color">
-                    <p className="font-sm color-gray-900">Brand:  <span className="color-brand-2 nameColor">Samsung</span></p>
+                    <p className="font-sm color-gray-900">Brand:  <span className="color-brand-2 nameColor">{product.brand || 'N/A'}</span></p>
                    
                   </div>
                   <div className="box-product-style-size mt-30">
@@ -654,6 +725,8 @@ const ProductDetail = () => {
           </div>
         </div>
       </section>
+        </>
+      )}
     </main>
   );
 };

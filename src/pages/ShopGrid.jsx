@@ -1,336 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Sidebar from '../components/Sidebar';
+import ApiStatus from '../components/ApiStatus';
+import { useProducts } from '../hooks/useProducts';
 
 const ShopGrid = () => {
   const [viewType, setViewType] = useState('grid');
   const [sortBy, setSortBy] = useState('latest');
-  const [showPerPage, setShowPerPage] = useState(30);
+  const [showPerPage, setShowPerPage] = useState(20); // 20 products per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedBrands, setSelectedBrands] = useState([]);
 
-  // Sample product data with actual images from assets
-  const products = [
-    {
-      id: 1,
-      name: 'Dell Optiplex 9020 Small Form Business Desktop',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp3.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
+  // Fetch ALL products from API once
+  const { products: allProducts, loading, error, fetchProducts } = useProducts({
+    filters: { 
+      sort: sortBy 
     },
-    {
-      id: 2,
-      name: 'HP 24 All-in-One PC, Intel Core i3-1115G4',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp4.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 3,
-      name: 'Gateway 23.8" All-in-one Desktop, Fully Adjustable',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp5.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 4,
-      name: 'HP 22 All-in-One PC, Intel Pentium Silver J5040',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp6.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 5,
-      name: 'HP Slim Desktop, Intel Celeron J4025, 4GB RAM',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp7.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 6,
-      name: 'Class 4K UHD (2160P) LED Roku Smart TV HDR',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp1.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 7,
-      name: 'Galaxy Tab S7 Plus 12.4" 128GB Mystic Black',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp2.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 8,
-      name: 'HP 11.6" Chromebook, AMD A4, 4GB RAM, 32GB Storage',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp3.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 9,
-      name: 'MSI Optix G272 27" Full HD LED Gaming LCD Monitor',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp4.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 10,
-      name: 'RCA 43" Class 4K Ultra HD (2160P) HDR Roku Smart',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp5.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 11,
-      name: 'Bose Sport Earbuds True Wireless Headphones',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp6.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 12,
-      name: 'ASUS VivoBook 15.6" 1080p PC Laptops, Intel Core i3',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp7.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 9,
-      name: 'MSI Optix G272 27" Full HD LED Gaming LCD Monitor',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp4.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 10,
-      name: 'RCA 43" Class 4K Ultra HD (2160P) HDR Roku Smart',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp5.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 11,
-      name: 'Bose Sport Earbuds True Wireless Headphones',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp6.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 12,
-      name: 'ASUS VivoBook 15.6" 1080p PC Laptops, Intel Core i3',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp7.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 9,
-      name: 'MSI Optix G272 27" Full HD LED Gaming LCD Monitor',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp4.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 10,
-      name: 'RCA 43" Class 4K Ultra HD (2160P) HDR Roku Smart',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp5.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 11,
-      name: 'Bose Sport Earbuds True Wireless Headphones',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp6.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
-    },
-    {
-      id: 12,
-      name: 'ASUS VivoBook 15.6" 1080p PC Laptops, Intel Core i3',
-      brand: 'Apple',
-      price: 2856.3,
-      originalPrice: 3225.6,
-      discount: 17,
-      image: '/src/assets/imgs/page/homepage1/imgsp7.png',
-      rating: 5,
-      reviews: 65,
-      features: [
-        '27-inch (diagonal) Retina 5K display',
-        '3.1GHz 6-core 10th-generation Intel Core i5',
-        'AMD Radeon Pro 5300 graphics'
-      ]
+    autoFetch: true,
+  });
+
+  // CLIENT-SIDE FILTERING AND PAGINATION: Filter by brands then paginate
+  const filteredProducts = allProducts ? allProducts.filter(product => {
+    if (selectedBrands.length === 0) return true;
+    const productBrand = product.brand?.title || 'Unknown';
+    return selectedBrands.includes(productBrand);
+  }) : [];
+
+  const totalProducts = filteredProducts.length;
+  const totalPages = Math.ceil(totalProducts / showPerPage);
+  const startIndex = (currentPage - 1) * showPerPage;
+  const endIndex = startIndex + showPerPage;
+  const products = filteredProducts.slice(startIndex, endIndex);
+
+  // Refetch when sort changes
+  useEffect(() => {
+    if (allProducts && allProducts.length > 0 && !error) {
+      fetchProducts({ sort: sortBy });
     }
-  ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy]);
+
+  // Reset to page 1 when changing items per page
+  useEffect(() => {
+    setCurrentPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [showPerPage]);
+
+  // Reset to page 1 when brand filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedBrands]);
+
+  // Handler for changing products per page
+  const handleShowPerPage = (count) => {
+    setShowPerPage(count);
+    setCurrentPage(1);
+  };
+
+  // Handler for page navigation
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handler for brand filter changes
+  const handleBrandFilter = (brands) => {
+    setSelectedBrands(brands);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 5; i++) pages.push(i);
+      } else if (currentPage >= totalPages - 2) {
+        for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
+      } else {
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) pages.push(i);
+      }
+    }
+    
+    return pages;
+  };
 
   return (
     <main className="main">
@@ -348,119 +108,16 @@ const ShopGrid = () => {
         </div>
       </div>
 
-      {/* Featured Products Slider */}
-      <div className="section-box shop-template mt-30">
-        <div className="container">
-          <div className="box-swiper slider-shop-2">
-            <div className="swiper-container swiper-group-3">
-              <div className="swiper-wrapper pt-5">
-                <div className="swiper-slide">
-                  <div className="card-grid-style-2">
-                    <span className="label bg-brand-2">-12%</span>
-                    <div className="image-box">
-                      <a href="/product">
-                        <img src="/src/assets/imgs/page/homepage2/cat-img-6.png" alt="Ecom" />
-                      </a>
-                    </div>
-                    <div className="info-right">
-                      <span className="font-xs color-gray-500">YSSOA Store</span><br />
-                      <a className="color-brand-3 font-sm-bold" href="/product">Chair Mesh Ergonomic Adjustable Swivel Task Chair with Headrest</a>
-                      
-                      <div className="price-info">
-                        <strong className="font-lg-bold color-brand-3 price-main">$2556.3</strong>
-                        <span className="color-gray-500 price-line">$3225.6</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="card-grid-style-2">
-                    <span className="label bg-brand-2">-17%</span>
-                    <div className="image-box">
-                      <a href="/product">
-                        <img src="/src/assets/imgs/page/homepage2/cat-img-9.png" alt="Ecom" />
-                      </a>
-                    </div>
-                    <div className="info-right">
-                      <span className="font-xs color-gray-500">Apple</span><br />
-                      <a className="color-brand-3 font-sm-bold" href="/product">Straight Talk Samsung Galaxy A03s, 32GB, Black</a>
-                      
-                      <div className="price-info">
-                        <strong className="font-lg-bold color-brand-3 price-main">$2556.3</strong>
-                        <span className="color-gray-500 price-line">$3225.6</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="card-grid-style-2">
-                    <span className="label bg-brand-2">-20%</span>
-                    <div className="image-box">
-                      <a href="/product">
-                        <img src="/src/assets/imgs/page/homepage2/cat-img-10.png" alt="Ecom" />
-                      </a>
-                    </div>
-                    <div className="info-right">
-                      <span className="font-xs color-gray-500">Apple</span><br />
-                      <a className="color-brand-3 font-sm-bold" href="/product">iMac MNE92LL/A 27 Inch, 3.4 GHz Intel Core i5, 8GB RAM, 1TB Drive</a>
-                      
-                      <div className="price-info">
-                        <strong className="font-lg-bold color-brand-3 price-main">$2556.3</strong>
-                        <span className="color-gray-500 price-line">$3225.6</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="card-grid-style-2">
-                    <span className="label bg-brand-2">-22%</span>
-                    <div className="image-box">
-                      <a href="/product">
-                        <img src="/src/assets/imgs/page/homepage2/cat-img-16.png" alt="Ecom" />
-                      </a>
-                    </div>
-                    <div className="info-right">
-                      <span className="font-xs color-gray-500">Apple</span><br />
-                      <a className="color-brand-3 font-sm-bold" href="/product">Apple Watch Series 8 [GPS 45mm] Smart Watch w/ Midnight Case</a>
-                      
-                      <div className="price-info">
-                        <strong className="font-lg-bold color-brand-3 price-main">$2556.3</strong>
-                        <span className="color-gray-500 price-line">$3225.6</span>
-                      </div>
-                </div>
-                  </div>
-                </div>
-                </div>
-              </div>
-            <div className="swiper-button-next swiper-button-next-group-3"></div>
-            <div className="swiper-button-prev swiper-button-prev-group-3"></div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="section-box shop-template mt-30">
         <div className="container">
-          <div className="row">
-            <div className="col-lg-3">
-              <div className="sidebar-ads">
-                <div className="bg-electronic">
-                  <span className="big-deal mb-5">Big deal</span>
-                  <h4 className="font-25">Electronic</h4>
-                  <p className="font-16 color-brand-3">Hot devices, Latest trending</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-9">
-              <div className="banner-top-gray-100">
-                <div className="banner-ads-top mb-30">
-                  <a href="#">
-                    <img src="/src/assets/imgs/page/shop/grid-2/banner.png" alt="Ecom" />
-                  </a>
-                </div>
+          {/* API Status Indicator */}
+          <div className="row mb-3">
+            <div className="col-12">
+              <ApiStatus />
               </div>
           </div>
-            </div>
+          
           <div className="row">
             <div className="col-lg-9 order-first order-lg-last">
             {/* Filters and Sort */}
@@ -468,11 +125,16 @@ const ShopGrid = () => {
                 <div className="row">
                   <div className="col-xl-2 col-lg-3 mb-10 text-lg-start text-center">
                     <a className="btn btn-filter font-sm color-brand-3 font-medium" href="#ModalFiltersForm" data-bs-toggle="modal">
-                      All Fillters
+                      All Filters
                     </a>
                   </div>
                   <div className="col-xl-10 col-lg-9 mb-10 text-lg-end text-center">
-                    <span className="font-sm color-gray-900 font-medium border-1-right span">Showing 1–16 of 17 results</span>
+                    <span className="font-sm color-gray-900 font-medium border-1-right span">
+                      Showing {startIndex + 1}-{Math.min(endIndex, totalProducts)} of {totalProducts} results
+                      {selectedBrands.length > 0 && (
+                        <span className="text-muted"> (filtered by {selectedBrands.length} brand{selectedBrands.length > 1 ? 's' : ''})</span>
+                      )}
+                    </span>
                     <div className="d-inline-block">
                       <span className="font-sm color-gray-500 font-medium">Sort by:</span>
                       <div className="dropdown dropdown-sort border-1-right">
@@ -490,12 +152,13 @@ const ShopGrid = () => {
                       <span className="font-sm color-gray-500 font-medium">Show</span>
                       <div className="dropdown dropdown-sort border-1-right">
                         <button className="btn dropdown-toggle font-sm color-gray-900 font-medium" id="dropdownSort2" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static">
-                          <span>30 items</span>
+                          <span>{showPerPage} items</span>
                         </button>
                         <ul className="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownSort2">
-                          <li><a className="dropdown-item active" href="#">30 items</a></li>
-                          <li><a className="dropdown-item" href="#">50 items</a></li>
-                          <li><a className="dropdown-item" href="#">100 items</a></li>
+                          <li><a className={`dropdown-item ${showPerPage === 20 ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleShowPerPage(20);}}>20 items</a></li>
+                          <li><a className={`dropdown-item ${showPerPage === 30 ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleShowPerPage(30);}}>30 items</a></li>
+                          <li><a className={`dropdown-item ${showPerPage === 50 ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleShowPerPage(50);}}>50 items</a></li>
+                          <li><a className={`dropdown-item ${showPerPage === 100 ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleShowPerPage(100);}}>100 items</a></li>
                         </ul>
                   </div>
                   </div>
@@ -509,7 +172,39 @@ const ShopGrid = () => {
 
             {/* Products Grid */}
               <div className={`row mt-20 ${viewType === 'list' ? 'list-view' : 'grid-view'}`}>
-              {products.map((product) => (
+              {loading && (
+                <div className="col-12 text-center py-5">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                    <p className="mt-3">Loading products from API...</p>
+                </div>
+              )}
+              
+                {!loading && (!products || products.length === 0) && (
+                  <div className="col-12 text-center py-5">
+                    <div className="alert alert-info" role="alert">
+                      <h4 className="alert-heading">No Products Available</h4>
+                      <p className="mb-0">
+                        {error ? (
+                          <>
+                            <strong>API Error:</strong> {error}
+                            <br />
+                            <small>Please make sure your backend API is running on http://localhost:5000</small>
+                          </>
+                        ) : (
+                          <>
+                            No products found in the database.
+                    <br />
+                            <small>Check your backend API to ensure products are available.</small>
+                          </>
+                        )}
+                      </p>
+                    </div>
+                </div>
+              )}
+              
+                {!loading && products && products.map((product) => (
                   <div key={product.id} className={viewType === 'list' ? 'col-12' : 'col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12'}>
                     <div className={`card-grid-style-3 ${viewType === 'list' ? 'list-style' : ''}`}>
                       <div className={`card-grid-inner ${viewType === 'list' ? 'd-flex align-items-center' : ''}`}>
@@ -520,27 +215,40 @@ const ShopGrid = () => {
                           <a className="btn btn-quickview btn-tooltip" aria-label="Quick view" href="#ModalQuickview" data-bs-toggle="modal"></a>
                         </div>
                         <div className="image-box">
+                          {product.discount > 0 && (
                           <span className="label bg-brand-2">-{product.discount}%</span>
-                          <a href="/product">
-                            <img src={product.image} alt="Ecom" />
+                          )}
+                          <a href={`/product/${product.id}`}>
+                            <img src={product.image} alt={product.name} onError={(e) => {e.target.src='/src/assets/imgs/page/homepage1/imgsp1.png'}} />
                           </a>
                         </div>
                         <div className="info-right">
-                          <a className="font-xs color-gray-500" href="/vendor">{product.brand}</a><br />
-                          <a className="color-brand-3 font-sm-bold" href="/product">{product.name}</a>
+                          <a className="font-xs color-gray-500" href="/vendor">{product.brand?.title || 'N/A'}</a><br />
+                          <a className="color-brand-3 font-sm-bold" href={`/product/${product.id}`} style={{ 
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            minHeight: '40px'
+                          }}>{product.shortDescp || product.name}</a>
                           
                           <div className="price-info">
-                            <strong className="font-lg-bold color-brand-3 price-main">${product.price}</strong>
-                            <span className="color-gray-500 price-line">${product.originalPrice}</span>
+                            <strong className="font-lg-bold color-brand-3 price-main">${product.price > 0 ? product.price.toFixed(2) : '0.00'}</strong>
+                            {product.originalPrice && product.originalPrice > product.price && (
+                              <span className="color-gray-500 price-line">${product.originalPrice.toFixed(2)}</span>
+                            )}
                           </div>
                           <div className="mt-20 box-btn-cart">
                             <a className="btn btn-cart" href="/cart">Add To Cart</a>
                           </div>
+                          {product.features && product.features.length > 0 && (
                           <ul className="list-features">
                             {product.features.map((feature, index) => (
                               <li key={index}>{feature}</li>
                             ))}
                           </ul>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -549,38 +257,49 @@ const ShopGrid = () => {
             </div>
 
             {/* Pagination */}
+              {totalPages > 1 && (
               <nav>
                 <ul className="pagination">
-                  <li className="page-item">
-                    <a className="page-link page-prev" href="#"></a>
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <a 
+                        className="page-link page-prev" 
+                        href="#" 
+                        onClick={(e) => {e.preventDefault(); if(currentPage > 1) handlePageChange(currentPage - 1);}}
+                        aria-label="Previous"
+                      ></a>
                   </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">1</a>
+                    
+                    {getPageNumbers().map(pageNum => (
+                      <li key={pageNum} className={`page-item ${currentPage === pageNum ? 'active' : ''}`}>
+                        <a 
+                          className="page-link" 
+                          href="#" 
+                          onClick={(e) => {e.preventDefault(); handlePageChange(pageNum);}}
+                          style={currentPage === pageNum ? { backgroundColor: '#df2020', borderColor: '#df2020', color: '#fff' } : {}}
+                        >
+                          {pageNum}
+                        </a>
                   </li>
-                  <li className="page-item">
-                    <a className="page-link active" href="#">2</a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">3</a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">4</a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">5</a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link" href="#">6</a>
-                  </li>
-                  <li className="page-item">
-                    <a className="page-link page-next" href="#"></a>
+                    ))}
+                    
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <a 
+                        className="page-link page-next" 
+                        href="#" 
+                        onClick={(e) => {e.preventDefault(); if(currentPage < totalPages) handlePageChange(currentPage + 1);}}
+                        aria-label="Next"
+                      ></a>
                   </li>
                 </ul>
               </nav>
+              )}
             </div>
             
             {/* Sidebar */}
-            <Sidebar />
+            <Sidebar 
+              onBrandFilter={handleBrandFilter}
+              selectedBrands={selectedBrands}
+            />
           </div>
         </div>
       </div>
@@ -653,13 +372,13 @@ const ShopGrid = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-7 col-sm-12">
-              <h3 className="color-white">Subscrible & Get <span className="color-warning">10%</span> Discount</h3>
+              <h3 className="color-white">Subscribe & Get <span className="color-warning">10%</span> Discount</h3>
               <p className="font-lg color-white">Get E-mail updates about our latest shop and <span className="font-lg-bold">special offers.</span></p>
             </div>
             <div className="col-lg-4 col-md-5 col-sm-12">
               <div className="box-form-newsletter mt-15">
                 <form className="form-newsletter">
-                  <input className="input-newsletter font-xs" value="" placeholder="Your email Address" />
+                  <input className="input-newsletter font-xs" defaultValue="" placeholder="Your email Address" />
                   <button className="btn btn-brand-2">Sign Up</button>
                 </form>
               </div>
