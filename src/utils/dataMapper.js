@@ -11,7 +11,6 @@
 export const mapProduct = (externalProduct) => {
   // Handle null/undefined
   if (!externalProduct) {
-    console.warn('mapProduct received null/undefined product');
     return null;
   }
   
@@ -50,6 +49,7 @@ export const mapProduct = (externalProduct) => {
     
     // Codes & IDs
     upcCode: externalProduct.upcCode,
+    upc: externalProduct.upcCode, // Also add as 'upc' for compatibility
     productSource: externalProduct.productSource,
     userId: externalProduct.userId,
     

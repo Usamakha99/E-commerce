@@ -95,7 +95,7 @@ const ProductDetail = () => {
               <div className="row">
                 <div className="col-xl-6 col-lg-7 col-md-8 col-sm-7 text-center text-sm-start mb-mobile">
                   <span className="color-gray-900 font-xs font-medium">Brand:</span>
-                  <a className="color-gray-500  font-medium" href="/vendor"> {product.brand || 'N/A'}</a>
+                  <a className="color-gray-500  font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
                   
                   <div className="sku-product d-inline-block" style={{marginLeft: '16px'}}>
                     <span className="font-sm color-brand-3 font-medium">SKU:</span>
@@ -137,80 +137,55 @@ const ProductDetail = () => {
               <div className="gallery-image">
                 <div className="galleries">
                   <div className="detail-gallery">
-                    <label className="label">-17%</label>
+                    {product.discount > 0 && (
+                      <label className="label">-{product.discount}%</label>
+                    )}
                     <div className="product-image-slider">
                       <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-1.jpg" alt="product image" />
+                        <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
                       </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-2.jpg" alt="product image" />
-                      </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-3.jpg" alt="product image" />
-                      </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-4.jpg" alt="product image" />
-                      </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-5.jpg" alt="product image" />
-                      </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-6.jpg" alt="product image" />
-                      </figure>
-                      <figure>
-                        <img src="/src/assets/imgs/page/product/img-gallery-7.jpg" alt="product image" />
-                      </figure>
+                      {product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
+                        <figure key={index}>
+                          <img 
+                            src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')} 
+                            alt={`${product.name} - ${index + 1}`} 
+                          />
+                        </figure>
+                      ))}
                     </div>
                   </div>
                   <div className="slider-nav-thumbnails">
                     <div>
                       <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-1.jpg" alt="product image" />
+                        <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
                       </div>
                     </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-2.jpg" alt="product image" />
+                    {product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
+                      <div key={index}>
+                        <div className="item-thumb">
+                          <img 
+                            src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')} 
+                            alt={`thumbnail ${index + 1}`} 
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-3.jpg" alt="product image" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-4.jpg" alt="product image" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-5.jpg" alt="product image" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-6.jpg" alt="product image" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="item-thumb">
-                        <img src="/src/assets/imgs/page/product/img-gallery-7.jpg" alt="product image" />
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
               <div className="box-tags mt-15 mb-30">
-                <div className="d-inline-block mr-25">
-                  <span className="font-sm font-medium color-gray-900">Category:</span>
-                  <a className="link" href="#">Smartphones</a>
-                </div>
-                <div className="d-inline-block">
-                  <span className="font-sm font-medium color-gray-900">Tags:</span>
-                  <a className="link" href="#">Blue</a>,
-                  <a className="link" href="#">Smartphone</a>
-                </div>
+                {product.category && (
+                  <div className="d-inline-block mr-25">
+                    <span className="font-sm font-medium color-gray-900">Category:</span>
+                    <a className="link" href="#">{typeof product.category === 'object' ? product.category.title : product.category}</a>
+                  </div>
+                )}
+                {product.subCategory && (
+                  <div className="d-inline-block">
+                    <span className="font-sm font-medium color-gray-900">Sub Category:</span>
+                    <a className="link" href="#">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -219,31 +194,53 @@ const ProductDetail = () => {
               <div className="row">
                 <div className="col-lg-7 col-md-7 mb-30">
                   <div className="box-product-price">
-                    <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price}</h3>
-                    {product.originalPrice && (
-                      <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice}</span>
+                    <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price?.toFixed(2) || '0.00'}</h3>
+                    {product.originalPrice && product.originalPrice !== product.price && (
+                      <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
-                  <div className="box-progress-product mt-15 mb-20">
-                    <div className="progress mb-5">
-                      <div className="progress-bar" role="progressbar" style={{width: '50%'}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  
+                  {/* Stock Status */}
+                  {product.stock !== undefined && (
+                    <div className="box-progress-product mt-15 mb-20">
+                      <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
+                        {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+                      </span>
                     </div>
-                    <span className="font-xs color-gray-500">Sold: 135/320</span>
-                  </div>
-                  <div className=" product-description color-gray-900 mb-30">
-                    {product.features && product.features.length > 0 ? (
-                      <ul className=" list-dot">
+                  )}
+
+                  {/* Bullet Points from API */}
+                  {product.bulletsPoint && product.bulletsPoint.trim() && (
+                    <div className="product-description color-gray-900 mb-30">
+                      <h6 className="color-brand-3 mb-15">Key Features:</h6>
+                      <ul className="list-dot">
+                        {product.bulletsPoint.split(',').map((bullet, index) => (
+                          <li key={index}>{bullet.trim()}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Fallback to features array if no bulletsPoint */}
+                  {(!product.bulletsPoint || !product.bulletsPoint.trim()) && product.features && product.features.length > 0 && (
+                    <div className="product-description color-gray-900 mb-30">
+                      <ul className="list-dot">
                         {product.features.map((feature, index) => (
                           <li key={index}>{feature}</li>
                         ))}
                       </ul>
-                    ) : (
-                      <p>{product.description || 'No description available'}</p>
-                    )}
-                  </div>
+                    </div>
+                  )}
+
+                  {/* Short Description */}
+                  {product.shortDescp && (
+                    <div className="mb-20">
+                      <p className="font-sm color-gray-900">{product.shortDescp}</p>
+                    </div>
+                  )}
+
                   <div className="box-product-color">
-                    <p className="font-sm color-gray-900">Brand:  <span className="color-brand-2 nameColor">{product.brand || 'N/A'}</span></p>
-                   
+                    <p className="font-sm color-gray-900">Brand:  <span className="color-brand-2 nameColor">{typeof product.brand === 'object' ? product.brand.title : product.brand || 'N/A'}</span></p>
                   </div>
                   <div className="box-product-style-size mt-30">
                     <div className="row">
@@ -436,60 +433,136 @@ const ProductDetail = () => {
               {activeTab === 'description' && (
                 <div className="tab-pane fade active show" id="tab-description" role="tabpanel">
                   <div className="display-text-short">
-                    <p>It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar. The Big Oxmox advised her not to do so, because there were thousands of bad Commas, wild Question Marks and devious Semikoli, but the Little Blind Text didn't listen. She packed her seven versalia, put her initial into the belt and made herself on the way.</p>
-                    <p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way. On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>
-                    <p><img src="/src/assets/imgs/page/product/product-banner.jpg" alt="Ecom" /></p>
-                    <p>It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar. The Big Oxmox advised her not to do so, because there were thousands of bad Commas, wild Question Marks and devious Semikoli, but the Little Blind Text didn't listen. She packed her seven versalia, put her initial into the belt and made herself on the way.</p>
-                    <p><img src="/src/assets/imgs/page/product/product-banner-2.jpg" alt="Ecom" /></p>
-                    <p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way. On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country.</p>
-                  </div>
-                  <div className="mt-20 text-center">
-                    <a className="btn btn-border font-sm-bold pl-80 pr-80 btn-expand-more">More Details</a>
+                    {/* Long Description from API */}
+                    {product.longDescp && (
+                      <div className="mb-30">
+                        <h5 className="mb-20">Product Description</h5>
+                        <p className="font-md color-gray-900">{product.longDescp}</p>
+                      </div>
+                    )}
+
+                    {/* Short Description if no long description */}
+                    {!product.longDescp && product.shortDescp && (
+                      <div className="mb-30">
+                        <h5 className="mb-20">Product Description</h5>
+                        <p className="font-md color-gray-900">{product.shortDescp}</p>
+                      </div>
+                    )}
+
+                    {/* Bullet Points from API */}
+                    {product.bulletsPoint && product.bulletsPoint.trim() && (
+                      <div className="mb-30">
+                        <h5 className="mb-20">Key Features</h5>
+                        <ul className="list-dot">
+                          {product.bulletsPoint.split(',').map((bullet, index) => (
+                            <li key={index} className="font-md color-gray-900">{bullet.trim()}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Meta Description */}
+                    {product.metaDescp && product.metaDescp !== product.shortDescp && (
+                      <div className="mb-30">
+                        <p className="font-sm color-gray-700">{product.metaDescp}</p>
+                      </div>
+                    )}
+
+                    {/* Fallback if no description */}
+                    {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
+                      <p className="font-md color-gray-500">No description available for this product.</p>
+                    )}
                   </div>
                 </div>
               )}
               
               {activeTab === 'specification' && (
                 <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
-                  <h5 className="mb-25">Specification</h5>
+                  <h5 className="mb-25">Product Specification</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>
-                        <tr>
-                          <td>Mode</td>
-                          <td>#SK10923</td>
-                        </tr>
-                        <tr>
-                          <td>Brand</td>
-                          <td>SamSung</td>
-                        </tr>
-                        <tr>
-                          <td>Size</td>
-                          <td>6.7"</td>
-                        </tr>
-                        <tr>
-                          <td>Finish</td>
-                          <td>Pacific Blue</td>
-                        </tr>
-                        <tr>
-                          <td>Origin of Country</td>
-                          <td>United States</td>
-                        </tr>
-                        <tr>
-                          <td>Manufacturer</td>
-                          <td>USA</td>
-                        </tr>
-                        <tr>
-                          <td>Released Year</td>
-                          <td>2022</td>
-                        </tr>
-                        <tr>
-                          <td>Warranty</td>
-                          <td>International</td>
-                        </tr>
+                        {product.sku && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">SKU</td>
+                            <td className="font-sm color-gray-700">{product.sku}</td>
+                          </tr>
+                        )}
+                        {product.brand && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Brand</td>
+                            <td className="font-sm color-gray-700">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
+                          </tr>
+                        )}
+                        {product.mfr && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Manufacturer</td>
+                            <td className="font-sm color-gray-700">{product.mfr}</td>
+                          </tr>
+                        )}
+                        {product.techPartNo && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Part Number</td>
+                            <td className="font-sm color-gray-700">{product.techPartNo}</td>
+                          </tr>
+                        )}
+                        {product.upcCode && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">UPC Code</td>
+                            <td className="font-sm color-gray-700">{product.upcCode}</td>
+                          </tr>
+                        )}
+                        {product.category && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Category</td>
+                            <td className="font-sm color-gray-700">{typeof product.category === 'object' ? product.category.title : product.category}</td>
+                          </tr>
+                        )}
+                        {product.subCategory && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Sub Category</td>
+                            <td className="font-sm color-gray-700">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
+                          </tr>
+                        )}
+                        {product.productSource && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Product Source</td>
+                            <td className="font-sm color-gray-700">{product.productSource}</td>
+                          </tr>
+                        )}
+                        {product.endOfLifeDate && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">End of Life Date</td>
+                            <td className="font-sm color-gray-700">{product.endOfLifeDate}</td>
+                          </tr>
+                        )}
+                        {product.quantity !== undefined && (
+                          <tr>
+                            <td className="font-sm-bold color-gray-900">Available Quantity</td>
+                            <td className="font-sm color-gray-700">{product.quantity}</td>
+                          </tr>
+                        )}
+                        {/* Fallback message */}
+                        {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
+                          <tr>
+                            <td colSpan="2" className="text-center font-sm color-gray-500">
+                              No specifications available for this product.
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Multimedia URL Link */}
+                  {product.multimediaUrl && (
+                    <div className="mt-30">
+                      <h6 className="mb-15">Additional Resources</h6>
+                      <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
+                        View Multimedia Content
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
 

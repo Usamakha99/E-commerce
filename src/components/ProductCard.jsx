@@ -44,7 +44,7 @@ const ProductCard = ({ product }) => {
 
       {/* Product Image */}
       <div className="image-box">
-        <Link to="/product">
+        <Link to={`/product/${product.id}`}>
           <img 
             src={product.image} 
             alt={product.name}
@@ -55,11 +55,11 @@ const ProductCard = ({ product }) => {
       {/* Product Info */}
       <div className="info-right">
         {/* Brand */}
-        <div className="font-xs color-gray-500">{product.brand}</div>
+        <div className="font-xs color-gray-500">{typeof product.brand === 'object' ? product.brand.title : product.brand}</div>
         
         {/* Product Name */}
         <h3 className="font-sm color-gray-1000">
-          <Link to="/product">{product.name}</Link>
+          <Link to={`/product/${product.id}`}>{product.name}</Link>
         </h3>
 
         

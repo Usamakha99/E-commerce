@@ -62,15 +62,27 @@ export const productService = {
         return { data: null };
       }
       
-      // YOUR backend returns direct product object (not wrapped)
       let product = null;
       
-      if (response.data) {
+      // Check if response is an array (backend returns all products)
+      if (Array.isArray(response)) {
+        // Find the specific product by ID
+        product = response.find(p => p.id == id);
+      } 
+      // Check if response.data is an array
+      else if (response.data && Array.isArray(response.data)) {
+        product = response.data.find(p => p.id == id);
+      }
+      // Single product in response.data
+      else if (response.data) {
         product = response.data;
-      } else if (response.id) {
-        // Direct product object
+      } 
+      // Direct product object
+      else if (response.id) {
         product = response;
-      } else if (response.product) {
+      } 
+      // Product in response.product
+      else if (response.product) {
         product = response.product;
       }
       
