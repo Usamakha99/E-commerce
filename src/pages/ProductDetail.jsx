@@ -39,6 +39,19 @@ const ProductDetail = () => {
   // Use API product if available, otherwise use fallback
   const product = apiProduct || fallbackProduct;
 
+  // Debug: Check bulletsPoint data
+  useEffect(() => {
+    if (product) {
+      console.log('📌 Bullet Points Data:', {
+        bulletsPoint: product.bulletsPoint,
+        type: typeof product.bulletsPoint,
+        isArray: Array.isArray(product.bulletsPoint),
+        isString: typeof product.bulletsPoint === 'string',
+        length: Array.isArray(product.bulletsPoint) ? product.bulletsPoint.length : product.bulletsPoint?.length
+      });
+    }
+  }, [product]);
+
   const handleAddToCart = async () => {
     try {
       await addToCart(product.id, quantity);
@@ -94,42 +107,23 @@ const ProductDetail = () => {
               <h3 className="color-brand-3 mb-5 mw-80">{product.name || product.title}</h3>
               <div className="row">
                 <div className="col-xl-6 col-lg-7 col-md-8 col-sm-7 text-center text-sm-start mb-mobile">
-                  <span className="color-gray-900 font-xs font-medium">Brand:</span>
-                  <a className="color-gray-500  font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
+                      <span className="font-sm color-brand-3 font-medium">Brand:</span>
+                      <a className="font-sm color-brand-3 font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
                   
-                  <div className="sku-product d-inline-block" style={{marginLeft: '16px'}}>
+                      <div className="sku-product d-inline-block" style={{ marginLeft: '16px' }}>
                     <span className="font-sm color-brand-3 font-medium">SKU:</span>
-                    <span className="font-sm color-gray-500"> {product.sku || 'N/A'}</span>
+                        <span className="font-sm color-brand-3 font-medium"> {product.sku || 'N/A'}</span>
                   </div>
                   {product.upc && (
-                    <div className="upc-product d-inline-block" style={{marginLeft: '20px'}}>
+                        <div className="upc-product d-inline-block" style={{ marginLeft: '20px' }}>
                       <span className="font-sm color-brand-3 font-medium">UPC:</span>
-                      <span className="font-sm color-gray-500"> {product.upc}</span>
+                          <span className="font-sm color-brand-3 font-medium"> {product.upc}</span>
                     </div>
                   )}
-                </div>
-                <div className="col-xl-6 col-lg-5 col-md-4 col-sm-5 text-center text-sm-end">
-                  <div className="d-inline-block">
-                    <div className="mb-20">
-                      <a className="mr-20" href="/wishlist">
-                        <span className="btn btn-wishlist mr-5 opacity-100 transform-none"></span>
-                        <span className="font-md color-gray-900">Add to Wish list</span>
-                      </a>
-                      <a href="/compare">
-                        <span className="btn btn-compare mr-5 opacity-100 transform-none"></span>
-                        <span className="font-md color-gray-900">Add to Compare</span>
-                      </a>
                     </div>
-                    <div className="d-inline-block align-middle">
-                      <SocialShare 
-                        productTitle={product.name || product.title}
-                        productUrl={window.location.href}
-                      />
-                    </div>
+
                   </div>
-                </div>
-              </div>
-              <div className="border-bottom pt-10 mb-20"></div>
+                  <div className="border-bottom pt-20 mb-30"></div>
             </div>
 
             {/* Product Image Gallery */}
@@ -137,55 +131,138 @@ const ProductDetail = () => {
               <div className="gallery-image">
                 <div className="galleries">
                   <div className="detail-gallery">
-                    {product.discount > 0 && (
-                      <label className="label">-{product.discount}%</label>
-                    )}
-                    <div className="product-image-slider">
-                      <figure>
-                        <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
+                        {product.discount > 0 && (
+                          <label className="label">-{product.discount}%</label>
+                        )}
+                        <div className="product-image-slider" style={{
+                          height: '450px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#f8f9fa',
+                          borderRadius: '12px',
+                          padding: '20px',
+                          border: '1px solid #e9ecef'
+                        }}>
+                          <figure style={{
+                            width: '100%',
+                            height: '100%',
+                            margin: '0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}>
+                            <img 
+                              src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
+                              alt={product.name || 'product image'}
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                width: 'auto',
+                                height: 'auto',
+                                objectFit: 'contain',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                              }}
+                              onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
+                            />
                       </figure>
-                      {product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
-                        <figure key={index}>
-                          <img 
-                            src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')} 
-                            alt={`${product.name} - ${index + 1}`} 
-                          />
-                        </figure>
-                      ))}
+                          {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 6).map((gallery, index) => (
+                            <figure key={index} style={{
+                              width: '100%',
+                              height: '100%',
+                              margin: '0',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                              <img
+                                src={gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                alt={gallery.imageTitle || `${product.name} - ${index + 1}`}
+                                style={{
+                                  maxWidth: '100%',
+                                  maxHeight: '100%',
+                                  width: 'auto',
+                                  height: 'auto',
+                                  objectFit: 'contain',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                }}
+                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
+                              />
+                      </figure>
+                          ))}
+                          {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
+                            <figure key={index} style={{
+                              width: '100%',
+                              height: '100%',
+                              margin: '0',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                              <img
+                                src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                alt={`${product.name} - ${index + 1}`}
+                                style={{
+                                  maxWidth: '100%',
+                                  maxHeight: '100%',
+                                  width: 'auto',
+                                  height: 'auto',
+                                  objectFit: 'contain',
+                                  borderRadius: '8px',
+                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                                }}
+                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
+                              />
+                      </figure>
+                          ))}
                     </div>
                   </div>
                   <div className="slider-nav-thumbnails">
                     <div>
                       <div className="item-thumb">
-                        <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
+                            <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
                       </div>
                     </div>
-                    {product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
-                      <div key={index}>
-                        <div className="item-thumb">
-                          <img 
-                            src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')} 
-                            alt={`thumbnail ${index + 1}`} 
-                          />
-                        </div>
+                        {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 6).map((gallery, index) => (
+                          <div key={index}>
+                      <div className="item-thumb">
+                              <img
+                                src={gallery.thumbPic || gallery.lowPic || gallery.pic500x500 || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                alt={gallery.imageTitle || `thumbnail ${index + 1}`}
+                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
+                              />
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="box-tags mt-15 mb-30">
-                {product.category && (
-                  <div className="d-inline-block mr-25">
-                    <span className="font-sm font-medium color-gray-900">Category:</span>
-                    <a className="link" href="#">{typeof product.category === 'object' ? product.category.title : product.category}</a>
-                  </div>
-                )}
-                {product.subCategory && (
-                  <div className="d-inline-block">
-                    <span className="font-sm font-medium color-gray-900">Sub Category:</span>
-                    <a className="link" href="#">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
-                  </div>
-                )}
+                    </div>
+                        ))}
+                        {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
+                          <div key={index}>
+                      <div className="item-thumb">
+                              <img
+                                src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                alt={`thumbnail ${index + 1}`}
+                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
+                              />
+                      </div>
+                    </div>
+                        ))}
+                      </div>
+                    </div>
+                      </div>
+                  <div className="box-tags mt-200 mb-30">
+                    {product.category && (
+                      <div className="d-inline-block mr-25">
+                        <span className="font-sm">Category: </span>
+                        <a className="link" href="#">{typeof product.category === 'object' ? product.category.title : product.category}</a>
+                      </div>
+                    )}
+                    {product.subCategory && (
+                      <div className="d-inline-block">
+                        <span className="font-sm">Sub Category: </span>
+                        <a className="link" href="#">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
+                      </div>
+                    )}
               </div>
             </div>
 
@@ -194,75 +271,56 @@ const ProductDetail = () => {
               <div className="row">
                 <div className="col-lg-7 col-md-7 mb-30">
                   <div className="box-product-price">
-                    <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price?.toFixed(2) || '0.00'}</h3>
-                    {product.originalPrice && product.originalPrice !== product.price && (
-                      <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice.toFixed(2)}</span>
+                        <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price?.toFixed(2) || '0.00'}</h3>
+                        {product.originalPrice && product.originalPrice !== product.price && (
+                          <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
-                  
-                  {/* Stock Status */}
-                  {product.stock !== undefined && (
-                    <div className="box-progress-product mt-15 mb-20">
-                      <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
-                        {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
-                      </span>
-                    </div>
-                  )}
 
-                  {/* Bullet Points from API */}
-                  {product.bulletsPoint && product.bulletsPoint.trim() && (
-                    <div className="product-description color-gray-900 mb-30">
-                      <h6 className="color-brand-3 mb-15">Key Features:</h6>
-                      <ul className="list-dot">
-                        {product.bulletsPoint.split(',').map((bullet, index) => (
-                          <li key={index}>{bullet.trim()}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                      {/* Stock Status */}
+                      {product.stock !== undefined && (
+                  <div className="box-progress-product mt-15 mb-20">
+                          <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
+                            {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+                          </span>
+                  </div>
+                      )}
 
-                  {/* Fallback to features array if no bulletsPoint */}
-                  {(!product.bulletsPoint || !product.bulletsPoint.trim()) && product.features && product.features.length > 0 && (
-                    <div className="product-description color-gray-900 mb-30">
-                      <ul className="list-dot">
-                        {product.features.map((feature, index) => (
-                          <li key={index}>{feature}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                      {/* Bullet Points from API - Display right below price */}
+                      {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
+                        (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim()) ||
+                        (product.features && product.features.length > 0)) && (
+                          <div className="product-description color-gray-900 mb-30">
+                            <h6 className="color-brand-3 mb-15">Key Features:</h6>
+                            <ul className="list-dot">
+                              {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
+                                // If bulletsPoint is an array
+                                product.bulletsPoint.map((bullet, index) => (
+                                  <li key={index} className="font-sm color-brand-3" style={{fontWeight: '100'}}>{bullet}</li>
+                                ))
+                              ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
+                                // If bulletsPoint is a comma-separated string
+                                product.bulletsPoint.split(',').map((bullet, index) => (
+                                  <li key={index} className="font-sm color-gray-900" style={{fontWeight: '100'}}>{bullet.trim()}</li>
+                                ))
+                              ) : product.features && product.features.length > 0 ? (
+                                // Fallback to features array
+                                product.features.map((feature, index) => (
+                                  <li key={index} className="font-sm color-gray-900" style={{fontWeight: '100'}}>{feature}</li>
+                                ))
+                              ) : null}
+                        </ul>
+                      </div>
+                        )}
 
-                  {/* Short Description */}
-                  {product.shortDescp && (
+                      {/* Short Description */}
+                      {/* {product.shortDescp && (
                     <div className="mb-20">
                       <p className="font-sm color-gray-900">{product.shortDescp}</p>
                     </div>
-                  )}
+                  )} */}
 
-                  <div className="box-product-color">
-                    <p className="font-sm color-gray-900">Brand:  <span className="color-brand-2 nameColor">{typeof product.brand === 'object' ? product.brand.title : product.brand || 'N/A'}</span></p>
-                  </div>
-                  <div className="box-product-style-size mt-30">
-                    <div className="row">
-                      <div className="col-lg-12 mb-20">
-                        <p className="font-sm color-gray-900">Style:<span className="color-brand-2 nameStyle">S22</span></p>
-                        <ul className="list-styles">
-                          <li className="disabled" title="S22 Ultra">S22 Ultra</li>
-                          <li className="active" title="S22">S22</li>
-                          <li title="S22 + Standing Cover">S22 + Standing Cover</li>
-                        </ul>
-                      </div>
-                      <div className="col-lg-12 mb-10">
-                        <p className="font-sm color-gray-900">Size:<span className="color-brand-2 nameSize">512GB</span></p>
-                        <ul className="list-sizes">
-                          <li className="disabled" title="1GB">1GB</li>
-                          <li className="active" title="512 GB">512 GB</li>
-                          <li title="256 GB">256 GB</li>
-                          <li className="disabled" title="64GB">64GB</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+
                   <div className="buy-product mt-25">
                     <div className="font-sm text-quantity mb-10">Quantity</div>
                     <div className="box-quantity">
@@ -279,51 +337,79 @@ const ProductDetail = () => {
                 </div>
                 <div className="col-lg-5 col-md-5">
                   <div className="pl-30 pl-mb-0">
-                    <div className="box-featured-product">
-                      <div className="item-featured">
-                        <div className="featured-icon">
-                          <img src="/src/assets/imgs/page/product/delivery.svg" alt="Ecom" />
+                        {/* Right Side Pricing & Contact Section */}
+                        <div className="pricing-contact-section mb-30">
+                          {/* Sign In to see pricing box */}
+                          <div className="pricing-box" style={{
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '16px',
+                            marginBottom: '20px'
+                          }}>
+                            <div style={{ textAlign: 'center' }}>
+                           <a href="/login" style={{
+                             fontSize: '14px',
+                             color: '#1c1463',
+                             textDecoration: 'underline',
+                             fontWeight: 'bold'
+                           }}>Sign In to see pricing</a>
+                              <div style={{
+                                marginTop: '12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                              }}>
+                                 <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
+                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                     <polyline points="23 4 23 10 17 10"></polyline>
+                                     <polyline points="1 20 1 14 7 14"></polyline>
+                                     <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                   </svg>
+                                 </span>
+                                 <span style={{ fontSize: '14px', color: '#000', fontWeight: 'semibold' }}>
+                                  {product.stock > 0 ? `In Stock: ${product.stock}` : 'Out of Stock'}
+                                </span>
                         </div>
-                        <div className="featured-info">
-                          <span className="font-sm-bold color-gray-1000">Free Delivery</span>
-                          <p className="font-sm color-gray-500 font-medium">From all orders over $10</p>
                         </div>
                       </div>
-                      <div className="item-featured">
-                        <div className="featured-icon">
-                          <img src="/src/assets/imgs/page/product/support.svg" alt="Ecom" />
+
+                          {/* Contact Sales Team box */}
+                          <div className="contact-box" style={{
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '16px',
+                            marginBottom: '20px'
+                          }}>
+                            <p style={{
+                              fontSize: '14px',
+                              color: '#000',
+                              marginBottom: '12px',
+                              lineHeight: '1.3',
+                              fontWeight: '400',
+                              textAlign: 'center'
+                            }}>
+                              Questions regarding this product, volume pricing, or shipping options?
+                            </p>
+                            <button style={{
+                              backgroundColor: '#1c1463',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '8px 16px',
+                              width: 'auto',
+                              fontSize: '14px',
+                              fontWeight: '500',
+                              cursor: 'pointer',
+                              display: 'block',
+                              margin: '0 auto'
+                            }}>
+                              Contact our sales team
+                            </button>
                         </div>
-                        <div className="featured-info">
-                          <span className="font-sm-bold color-gray-1000">Support 24/7</span>
-                          <p className="font-sm color-gray-500 font-medium">Shop with an expert</p>
                         </div>
-                      </div>
-                      <div className="item-featured">
-                        <div className="featured-icon">
-                          <img src="/src/assets/imgs/page/product/return.svg" alt="Ecom" />
-                        </div>
-                        <div className="featured-info">
-                          <span className="font-sm-bold color-gray-1000">Return & Refund</span>
-                          <p className="font-sm color-gray-500 font-medium">Free return over $200</p>
-                        </div>
-                      </div>
-                      <div className="item-featured">
-                        <div className="featured-icon">
-                          <img src="/src/assets/imgs/page/product/payment.svg" alt="Ecom" />
-                        </div>
-                        <div className="featured-info">
-                          <span className="font-sm-bold color-gray-1000">Secure payment</span>
-                          <p className="font-sm color-gray-500 font-medium">100% Protected</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="box-sidebar-product">
-                      <div className="banner-right h-500 text-center mb-30 banner-right-product">
-                        <span className="text-no font-11">No.9</span>
-                        <h5 className="font-md-bold mt-10">Sensitive Touch<br className="d-none d-lg-block" />without fingerprint</h5>
-                        <p className="text-desc font-xs mt-10">Smooth handle and accurate click</p>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
               </div>
@@ -332,7 +418,7 @@ const ProductDetail = () => {
           <div className="border-bottom pt-30 mb-40"></div>
 
           {/* Frequently Bought Together */}
-          <h4 className="color-brand-3 mb-20">Frequently Bought Together</h4>
+              {/* <h4 className="color-brand-3 mb-20">Frequently Bought Together</h4>
           <div className="box-bought-together">
             <div className="box-product-bought box-product-bought-2">
               <div className="product-bought">
@@ -369,7 +455,7 @@ const ProductDetail = () => {
             <input type="checkbox" defaultChecked />
             <span className="font-md color-brand-3">Apple iMac 24" All-In-One Computer, Apple M1, 8GB RAM, 512GB SSD, macOS Big Sur, Green, MGPJ3LL/A - $1,599.00</span>
             <span className="checkmark"></span>
-          </label>
+          </label> */}
         </div>
       </section>
 
@@ -382,50 +468,50 @@ const ProductDetail = () => {
                 <a 
                   className={activeTab === 'description' ? 'active' : ''} 
                   href="#tab-description" 
-                  onClick={(e) => {e.preventDefault(); setActiveTab('description');}}
+                      onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
                   role="tab"
                 >
-                  Description
+                      <span style={{marginRight: '8px'}}>📝</span>Description
                 </a>
               </li>
               <li>
                 <a 
                   className={activeTab === 'specification' ? 'active' : ''} 
                   href="#tab-specification" 
-                  onClick={(e) => {e.preventDefault(); setActiveTab('specification');}}
+                      onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
                   role="tab"
                 >
-                  Specification
+                      <span style={{marginRight: '8px'}}>⚙️</span>Specification
                 </a>
               </li>
               <li>
                 <a 
                   className={activeTab === 'additional' ? 'active' : ''} 
                   href="#tab-additional" 
-                  onClick={(e) => {e.preventDefault(); setActiveTab('additional');}}
+                      onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
                   role="tab"
                 >
-                  Additional information
+                      <span style={{marginRight: '8px'}}>ℹ️</span>Additional information
                 </a>
               </li>
               <li>
                 <a 
                   className={activeTab === 'reviews' ? 'active' : ''} 
                   href="#tab-reviews" 
-                  onClick={(e) => {e.preventDefault(); setActiveTab('reviews');}}
+                      onClick={(e) => { e.preventDefault(); setActiveTab('reviews'); }}
                   role="tab"
                 >
-                  Reviews (2)
+                      <span style={{marginRight: '8px'}}>⭐</span>Reviews (2)
                 </a>
               </li>
               <li>
                 <a 
                   className={activeTab === 'vendor' ? 'active' : ''} 
                   href="#tab-vendor" 
-                  onClick={(e) => {e.preventDefault(); setActiveTab('vendor');}}
+                      onClick={(e) => { e.preventDefault(); setActiveTab('vendor'); }}
                   role="tab"
                 >
-                  Vendor
+                      <span style={{marginRight: '8px'}}>🏪</span>Vendor
                 </a>
               </li>
             </ul>
@@ -433,136 +519,143 @@ const ProductDetail = () => {
               {activeTab === 'description' && (
                 <div className="tab-pane fade active show" id="tab-description" role="tabpanel">
                   <div className="display-text-short">
-                    {/* Long Description from API */}
-                    {product.longDescp && (
-                      <div className="mb-30">
-                        <h5 className="mb-20">Product Description</h5>
-                        <p className="font-md color-gray-900">{product.longDescp}</p>
-                      </div>
-                    )}
+                        {/* Long Description from API */}
+                        {product.longDescp && (
+                          <div className="mb-30">
+                            <h5 className="mb-20">Product Description</h5>
+                            <p className="font-md color-gray-900">{product.longDescp}</p>
+                          </div>
+                        )}
 
-                    {/* Short Description if no long description */}
-                    {!product.longDescp && product.shortDescp && (
-                      <div className="mb-30">
-                        <h5 className="mb-20">Product Description</h5>
-                        <p className="font-md color-gray-900">{product.shortDescp}</p>
-                      </div>
-                    )}
+                        {/* Short Description if no long description */}
+                        {!product.longDescp && product.shortDescp && (
+                          <div className="mb-30">
+                            <h5 className="mb-20">Product Description</h5>
+                            <p className="font-md color-gray-900">{product.shortDescp}</p>
+                          </div>
+                        )}
 
-                    {/* Bullet Points from API */}
-                    {product.bulletsPoint && product.bulletsPoint.trim() && (
-                      <div className="mb-30">
-                        <h5 className="mb-20">Key Features</h5>
-                        <ul className="list-dot">
-                          {product.bulletsPoint.split(',').map((bullet, index) => (
-                            <li key={index} className="font-md color-gray-900">{bullet.trim()}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                        {/* Bullet Points from API */}
+                        {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
+                          (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim())) && (
+                            <div className="mb-30">
+                              <h5 className="mb-20">Key Features</h5>
+                              <ul className="list-dot">
+                                {Array.isArray(product.bulletsPoint) ? (
+                                  product.bulletsPoint.map((bullet, index) => (
+                                    <li key={index} className="font-md color-gray-900">{bullet}</li>
+                                  ))
+                                ) : (
+                                  product.bulletsPoint.split(',').map((bullet, index) => (
+                                    <li key={index} className="font-md color-gray-900">{bullet.trim()}</li>
+                                  ))
+                                )}
+                              </ul>
+                            </div>
+                          )}
 
-                    {/* Meta Description */}
-                    {product.metaDescp && product.metaDescp !== product.shortDescp && (
-                      <div className="mb-30">
-                        <p className="font-sm color-gray-700">{product.metaDescp}</p>
-                      </div>
-                    )}
+                        {/* Meta Description */}
+                        {product.metaDescp && product.metaDescp !== product.shortDescp && (
+                          <div className="mb-30">
+                            <p className="font-sm color-gray-700">{product.metaDescp}</p>
+                  </div>
+                        )}
 
-                    {/* Fallback if no description */}
-                    {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
-                      <p className="font-md color-gray-500">No description available for this product.</p>
-                    )}
+                        {/* Fallback if no description */}
+                        {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
+                          <p className="font-md color-gray-500">No description available for this product.</p>
+                        )}
                   </div>
                 </div>
               )}
               
               {activeTab === 'specification' && (
                 <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
-                  <h5 className="mb-25">Product Specification</h5>
+                      <h5 className="mb-25">Product Specification</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>
-                        {product.sku && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">SKU</td>
-                            <td className="font-sm color-gray-700">{product.sku}</td>
-                          </tr>
-                        )}
-                        {product.brand && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Brand</td>
-                            <td className="font-sm color-gray-700">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
-                          </tr>
-                        )}
-                        {product.mfr && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Manufacturer</td>
-                            <td className="font-sm color-gray-700">{product.mfr}</td>
-                          </tr>
-                        )}
-                        {product.techPartNo && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Part Number</td>
-                            <td className="font-sm color-gray-700">{product.techPartNo}</td>
-                          </tr>
-                        )}
-                        {product.upcCode && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">UPC Code</td>
-                            <td className="font-sm color-gray-700">{product.upcCode}</td>
-                          </tr>
-                        )}
-                        {product.category && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Category</td>
-                            <td className="font-sm color-gray-700">{typeof product.category === 'object' ? product.category.title : product.category}</td>
-                          </tr>
-                        )}
-                        {product.subCategory && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Sub Category</td>
-                            <td className="font-sm color-gray-700">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
-                          </tr>
-                        )}
-                        {product.productSource && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Product Source</td>
-                            <td className="font-sm color-gray-700">{product.productSource}</td>
-                          </tr>
-                        )}
-                        {product.endOfLifeDate && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">End of Life Date</td>
-                            <td className="font-sm color-gray-700">{product.endOfLifeDate}</td>
-                          </tr>
-                        )}
-                        {product.quantity !== undefined && (
-                          <tr>
-                            <td className="font-sm-bold color-gray-900">Available Quantity</td>
-                            <td className="font-sm color-gray-700">{product.quantity}</td>
-                          </tr>
-                        )}
-                        {/* Fallback message */}
-                        {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
-                          <tr>
-                            <td colSpan="2" className="text-center font-sm color-gray-500">
-                              No specifications available for this product.
-                            </td>
-                          </tr>
-                        )}
+                            {product.sku && (
+                              <tr>
+                                <td className="font-sm-bold color-gray-900">SKU</td>
+                                <td className="font-sm color-gray-700">{product.sku}</td>
+                              </tr>
+                            )}
+                            {product.brand && (
+                              <tr>
+                                <td className="font-sm-bold color-gray-900">Brand</td>
+                                <td className="font-sm color-gray-700">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
+                              </tr>
+                            )}
+                            {product.mfr && (
+                              <tr>
+                                <td className="font-sm-bold color-gray-900">Manufacturer</td>
+                                <td className="font-sm color-gray-700">{product.mfr}</td>
+                              </tr>
+                            )}
+                            {product.techPartNo && (
+                              <tr>
+                                <td className="font-sm-bold color-gray-900">Part Number</td>
+                                <td className="font-sm color-gray-700">{product.techPartNo}</td>
+                        </tr>
+                            )}
+                            {product.upcCode && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">UPC Code</td>
+                                <td className="font-sm color-gray-700">{product.upcCode}</td>
+                        </tr>
+                            )}
+                            {product.category && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">Category</td>
+                                <td className="font-sm color-gray-700">{typeof product.category === 'object' ? product.category.title : product.category}</td>
+                        </tr>
+                            )}
+                            {product.subCategory && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">Sub Category</td>
+                                <td className="font-sm color-gray-700">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
+                        </tr>
+                            )}
+                            {product.productSource && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">Product Source</td>
+                                <td className="font-sm color-gray-700">{product.productSource}</td>
+                        </tr>
+                            )}
+                            {product.endOfLifeDate && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">End of Life Date</td>
+                                <td className="font-sm color-gray-700">{product.endOfLifeDate}</td>
+                        </tr>
+                            )}
+                            {product.quantity !== undefined && (
+                        <tr>
+                                <td className="font-sm-bold color-gray-900">Available Quantity</td>
+                                <td className="font-sm color-gray-700">{product.quantity}</td>
+                        </tr>
+                            )}
+                            {/* Fallback message */}
+                            {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
+                        <tr>
+                                <td colSpan="2" className="text-center font-sm color-gray-500">
+                                  No specifications available for this product.
+                                </td>
+                        </tr>
+                            )}
                       </tbody>
                     </table>
                   </div>
 
-                  {/* Multimedia URL Link */}
-                  {product.multimediaUrl && (
-                    <div className="mt-30">
-                      <h6 className="mb-15">Additional Resources</h6>
-                      <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
-                        View Multimedia Content
-                      </a>
-                    </div>
-                  )}
+                      {/* Multimedia URL Link */}
+                      {product.multimediaUrl && (
+                        <div className="mt-30">
+                          <h6 className="mb-15">Additional Resources</h6>
+                          <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
+                            View Multimedia Content
+                          </a>
+                        </div>
+                      )}
                 </div>
               )}
 
@@ -605,7 +698,7 @@ const ProductDetail = () => {
                                     <span className="font-xs color-gray-700">December 4, 2022 at 3:12 pm</span>
                                   </div>
                                   <div className="product-rate d-inline-block">
-                                    <div className="product-rating" style={{width: '100%'}}></div>
+                                        <div className="product-rating" style={{ width: '100%' }}></div>
                                   </div>
                                 </div>
                                 <p className="mb-10 font-sm color-gray-900">
@@ -621,29 +714,29 @@ const ProductDetail = () => {
                         <h4 className="mb-30 title-question">Customer reviews</h4>
                         <div className="d-flex mb-30">
                           <div className="product-rate d-inline-block mr-15">
-                            <div className="product-rating" style={{width: '90%'}}></div>
+                                <div className="product-rating" style={{ width: '90%' }}></div>
                           </div>
                           <h6>4.8 out of 5</h6>
                         </div>
                         <div className="progress">
                           <span>5 star</span>
-                          <div className="progress-bar" role="progressbar" style={{width: '50%'}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                              <div className="progress-bar" role="progressbar" style={{ width: '50%' }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
                         </div>
                         <div className="progress">
                           <span>4 star</span>
-                          <div className="progress-bar" role="progressbar" style={{width: '25%'}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                              <div className="progress-bar" role="progressbar" style={{ width: '25%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
                         </div>
                         <div className="progress">
                           <span>3 star</span>
-                          <div className="progress-bar" role="progressbar" style={{width: '45%'}} aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
+                              <div className="progress-bar" role="progressbar" style={{ width: '45%' }} aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
                         </div>
                         <div className="progress">
                           <span>2 star</span>
-                          <div className="progress-bar" role="progressbar" style={{width: '65%'}} aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
+                              <div className="progress-bar" role="progressbar" style={{ width: '65%' }} aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
                         </div>
                         <div className="progress mb-30">
                           <span>1 star</span>
-                          <div className="progress-bar" role="progressbar" style={{width: '85%'}} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
+                              <div className="progress-bar" role="progressbar" style={{ width: '85%' }} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
                         </div>
                         <a className="font-xs text-muted" href="#">How are ratings calculated?</a>
                       </div>
@@ -660,7 +753,7 @@ const ProductDetail = () => {
                       <h6><a href="/vendor">Futur Tech.</a></h6>
                       <div className="product-rate-cover text-end">
                         <div className="product-rate d-inline-block">
-                          <div className="product-rating" style={{width: '90%'}}></div>
+                              <div className="product-rating" style={{ width: '90%' }}></div>
                         </div>
                         <span className="font-small ml-5 text-muted"> (32 reviews)</span>
                       </div>
@@ -705,16 +798,7 @@ const ProductDetail = () => {
         </div>
       </section>
 
-      {/* Related Products */}
-      <section className="section-box shop-template">
-        <div className="container">
-          <div className="border-bottom pt-30 mb-50"></div>
-          <h4 className="color-brand-3">Related Products</h4>
-          <div className="list-products-5 mt-20">
-            {/* Related products will be rendered here */}
-          </div>
-        </div>
-      </section>
+     
 
       {/* Features Section */}
       <section className="section-box mt-90 mb-50">

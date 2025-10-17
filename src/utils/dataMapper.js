@@ -28,7 +28,7 @@ export const mapProduct = (externalProduct) => {
   const productPrice = parseFloat(externalProduct.price) || 0;
   
   // Mapping for YOUR API structure - PRESERVING ALL EXACT FIELDS
-  return {
+  const mappedProduct = {
     // Basic Info
     id: externalProduct.id,
     sku: externalProduct.sku,
@@ -68,18 +68,25 @@ export const mapProduct = (externalProduct) => {
     category: externalProduct.category,
     subCategory: externalProduct.subCategory,
     images: externalProduct.images,
+    galleries: externalProduct.galleries,
     
     // Frontend convenience fields
     name: externalProduct.shortDescp || externalProduct.metaTitle || externalProduct.title || 'Untitled Product',
     image: imageUrl,
     stock: externalProduct.quantity || 0,
     description: externalProduct.shortDescp || externalProduct.longDescp || '',
-    features: externalProduct.bulletsPoint ? externalProduct.bulletsPoint.split(',') : [],
+    features: Array.isArray(externalProduct.bulletsPoint) 
+      ? externalProduct.bulletsPoint 
+      : (externalProduct.bulletsPoint && typeof externalProduct.bulletsPoint === 'string' 
+        ? externalProduct.bulletsPoint.split(',').map(f => f.trim()) 
+        : []),
     discount: 0,
     originalPrice: productPrice,
     rating: 5,
     reviews: 0,
   };
+  
+  return mappedProduct;
 };
 
 /**
