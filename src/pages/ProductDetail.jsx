@@ -134,85 +134,31 @@ const ProductDetail = () => {
                         {product.discount > 0 && (
                           <label className="label">-{product.discount}%</label>
                         )}
-                        <div className="product-image-slider" style={{
-                          height: '450px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: '#f8f9fa',
-                          borderRadius: '12px',
-                          padding: '20px',
-                          border: '1px solid #e9ecef'
-                        }}>
-                          <figure style={{
-                            width: '100%',
-                            height: '100%',
-                            margin: '0',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}>
+                    <div className="product-image-slider">
+                      <figure>
                             <img 
                               src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
                               alt={product.name || 'product image'}
-                              style={{
-                                maxWidth: '100%',
-                                maxHeight: '100%',
-                                width: 'auto',
-                                height: 'auto',
-                                objectFit: 'contain',
-                                borderRadius: '8px',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                              }}
+                              style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
                               onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                             />
                       </figure>
                           {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 6).map((gallery, index) => (
-                            <figure key={index} style={{
-                              width: '100%',
-                              height: '100%',
-                              margin: '0',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
+                            <figure key={index}>
                               <img
                                 src={gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
                                 alt={gallery.imageTitle || `${product.name} - ${index + 1}`}
-                                style={{
-                                  maxWidth: '100%',
-                                  maxHeight: '100%',
-                                  width: 'auto',
-                                  height: 'auto',
-                                  objectFit: 'contain',
-                                  borderRadius: '8px',
-                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                }}
+                                style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
                                 onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                               />
                       </figure>
                           ))}
                           {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
-                            <figure key={index} style={{
-                              width: '100%',
-                              height: '100%',
-                              margin: '0',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
+                            <figure key={index}>
                               <img
                                 src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
                                 alt={`${product.name} - ${index + 1}`}
-                                style={{
-                                  maxWidth: '100%',
-                                  maxHeight: '100%',
-                                  width: 'auto',
-                                  height: 'auto',
-                                  objectFit: 'contain',
-                                  borderRadius: '8px',
-                                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                }}
+                                style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
                                 onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                               />
                       </figure>
@@ -296,17 +242,17 @@ const ProductDetail = () => {
                               {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
                                 // If bulletsPoint is an array
                                 product.bulletsPoint.map((bullet, index) => (
-                                  <li key={index} className="font-sm color-brand-3" style={{fontWeight: '100'}}>{bullet}</li>
+                                  <li key={index} className="font-xs color-brand-3" style={{fontWeight: '100'}}>{bullet}</li>
                                 ))
                               ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
                                 // If bulletsPoint is a comma-separated string
                                 product.bulletsPoint.split(',').map((bullet, index) => (
-                                  <li key={index} className="font-sm color-gray-900" style={{fontWeight: '100'}}>{bullet.trim()}</li>
+                                  <li key={index} className="font-xs color-gray-900" style={{fontWeight: '100'}}>{bullet.trim()}</li>
                                 ))
                               ) : product.features && product.features.length > 0 ? (
                                 // Fallback to features array
                                 product.features.map((feature, index) => (
-                                  <li key={index} className="font-sm color-gray-900" style={{fontWeight: '100'}}>{feature}</li>
+                                  <li key={index} className="font-xs color-gray-900" style={{fontWeight: '100'}}>{feature}</li>
                                 ))
                               ) : null}
                         </ul>
