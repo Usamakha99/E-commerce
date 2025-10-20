@@ -41,8 +41,9 @@ const Login = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        
                         style={{color: 'black'}}
+                        onFocus={(e) => e.target.style.setProperty('border-color', '#df2020', 'important')}
+                        onBlur={(e) => e.target.style.setProperty('border-color', '', 'important')}
                         required
                       />
           </div>
@@ -55,6 +56,8 @@ const Login = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         style={{color: 'black'}}
+                        onFocus={(e) => e.target.style.setProperty('border-color', '#df2020', 'important')}
+                        onBlur={(e) => e.target.style.setProperty('border-color', '', 'important')}
                         required
                       />
         </div>

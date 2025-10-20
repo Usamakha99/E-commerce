@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ShopGrid from './pages/ShopGrid'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
@@ -25,6 +26,7 @@ function App() {
           <Route path="/product" element={<ProductDetail />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
         
         <Footer />
