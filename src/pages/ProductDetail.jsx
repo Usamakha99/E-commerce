@@ -7,6 +7,7 @@ import { useCart } from '../hooks/useCart';
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null);
   const { id } = useParams();
   
   // Fetch product from API
@@ -128,71 +129,145 @@ const ProductDetail = () => {
 
             {/* Product Image Gallery */}
             <div className="col-lg-5">
-              <div className="gallery-image">
+              <div className="gallery-image" style={{
+                backgroundColor: '#fff',
+                padding: '20px'
+              }}>
                 <div className="galleries">
                   <div className="detail-gallery">
                         {product.discount > 0 && (
-                          <label className="label">-{product.discount}%</label>
+                          <label className="label" style={{
+                            position: 'absolute',
+                            top: '15px',
+                            left: '15px',
+                            backgroundColor: '#df2020',
+                            color: 'white',
+                            padding: '6px 12px',
+                            borderRadius: '20px',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            zIndex: 10
+                          }}>-{product.discount}%</label>
                         )}
-                    <div className="product-image-slider">
-                      <figure>
+                    <div className="product-image-slider" style={{
+                      backgroundColor: '#fff',
+                      padding: '20px',
+                      textAlign: 'center',
+                      minHeight: '300px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative'
+                    }}>
+                      <figure style={{margin: 0, width: '100%'}}>
                             <img 
-                              src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
+                              src={selectedImage || product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
                               alt={product.name || 'product image'}
-                              style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
+                              style={{
+                                maxHeight: '280px', 
+                                width: '100%', 
+                                objectFit: 'contain'
+                              }}
                               onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                             />
                       </figure>
-                          {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 6).map((gallery, index) => (
-                            <figure key={index}>
-                              <img
-                                src={gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
-                                alt={gallery.imageTitle || `${product.name} - ${index + 1}`}
-                                style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
-                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
-                              />
-                      </figure>
-                          ))}
-                          {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
-                            <figure key={index}>
-                              <img
-                                src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
-                                alt={`${product.name} - ${index + 1}`}
-                                style={{maxHeight: '250px', width: 'auto', objectFit: 'contain'}}
-                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
-                              />
-                      </figure>
-                          ))}
                     </div>
                   </div>
-                  <div className="slider-nav-thumbnails">
+                  <div className="slider-nav-thumbnails" style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    marginTop: '20px',
+                    justifyContent: 'center',
+                    padding: '15px'
+                  }}>
                     <div>
-                      <div className="item-thumb">
-                            <img src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} alt={product.name || 'product image'} />
+                      <div className="item-thumb" style={{
+                        border: selectedImage === null ? '2px solid #df2020' : '1px solid #ddd',
+                        borderRadius: '4px',
+                        padding: '2px',
+                        width: '60px',
+                        height: '60px',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.3s ease'
+                      }}
+                      onClick={() => setSelectedImage(null)}
+                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
+                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === null ? '#df2020' : '#ddd'}>
+                            <img 
+                              src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
+                              alt={product.name || 'product image'} 
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                            />
                       </div>
                     </div>
-                        {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 6).map((gallery, index) => (
+                        {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 5).map((gallery, index) => {
+                          const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                          return (
                           <div key={index}>
-                      <div className="item-thumb">
+                      <div className="item-thumb" style={{
+                        border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
+                        borderRadius: '4px',
+                        padding: '2px',
+                        width: '60px',
+                        height: '60px',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.3s ease'
+                      }}
+                      onClick={() => setSelectedImage(imageUrl)}
+                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
+                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === imageUrl ? '#df2020' : '#ddd'}>
                               <img
-                                src={gallery.thumbPic || gallery.lowPic || gallery.pic500x500 || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                src={imageUrl}
                                 alt={gallery.imageTitle || `thumbnail ${index + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
                                 onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                               />
                       </div>
                     </div>
-                        ))}
-                        {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 6).map((img, index) => (
+                          );
+                        })}
+                        {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 5).map((img, index) => {
+                          const imageUrl = img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                          return (
                           <div key={index}>
-                      <div className="item-thumb">
+                      <div className="item-thumb" style={{
+                        border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
+                        borderRadius: '4px',
+                        padding: '2px',
+                        width: '60px',
+                        height: '60px',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.3s ease'
+                      }}
+                      onClick={() => setSelectedImage(imageUrl)}
+                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
+                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === imageUrl ? '#df2020' : '#ddd'}>
                               <img
-                                src={img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg')}
+                                src={imageUrl}
                                 alt={`thumbnail ${index + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
                                 onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
                               />
                       </div>
                     </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                       </div>

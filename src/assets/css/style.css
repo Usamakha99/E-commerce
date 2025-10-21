@@ -149,6 +149,27 @@ section {
 
 body {
   line-height: 1;
+  color: #333333;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Global font color for all text elements */
+* {
+  color: #333333;
+}
+
+/* Override for specific elements that need different colors */
+h1, h2, h3, h4, h5, h6 {
+  color: #000000;
+  font-family: 'DM Sans', sans-serif;
+}
+
+a {
+  color: #333333;
+}
+
+a:hover {
+  color: #df2020;
 }
 
 ol,

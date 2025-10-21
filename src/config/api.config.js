@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   // Categories
   categories: {
     getAll: '/categories',
+    getAllWithSubcategories: '/categories?includeSubcategories=true',
     getById: (id) => `/categories/${id}`,
   },
   

@@ -3,6 +3,76 @@ import { API_ENDPOINTS } from '../config/api.config';
 import { mapProduct, mapProducts } from '../utils/dataMapper';
 
 export const productService = {
+  // Get all categories with subcategories
+  getAllCategories: async () => {
+    try {
+      // Fetch categories
+      console.log('Fetching categories from:', API_ENDPOINTS.categories.getAll);
+      const categoriesResponse = await apiService.get(API_ENDPOINTS.categories.getAll);
+      console.log('Categories API Response:', categoriesResponse);
+      
+      let categories = Array.isArray(categoriesResponse) ? categoriesResponse : (categoriesResponse?.data || []);
+      
+      // Fetch products to extract subcategories
+      try {
+        console.log('Fetching products to extract subcategories...');
+        const productsResponse = await apiService.get('/products/imports?status=completed&page=1&limit=1000');
+        console.log('Products Response for subcategories:', productsResponse);
+        
+        const products = productsResponse?.data || [];
+        
+        if (products.length > 0) {
+          // Extract unique subcategories from products
+          const subcategoriesMap = new Map();
+          
+          products.forEach(product => {
+            if (product.subCategory && product.subCategory.parentId) {
+              const subcat = product.subCategory;
+              const key = `${subcat.id}`;
+              
+              if (!subcategoriesMap.has(key)) {
+                subcategoriesMap.set(key, {
+                  id: subcat.id,
+                  title: subcat.title,
+                  name: subcat.title,
+                  parentId: subcat.parentId,
+                  productCount: 1
+                });
+              } else {
+                const existing = subcategoriesMap.get(key);
+                existing.productCount++;
+              }
+            }
+          });
+          
+          console.log('Extracted subcategories:', Array.from(subcategoriesMap.values()));
+          
+          // Instead of showing categories with subcategories, 
+          // flatten and show subcategories directly as main categories
+          const allSubcategories = Array.from(subcategoriesMap.values());
+          
+          // Convert subcategories to category format
+          categories = allSubcategories.map(subcat => ({
+            id: subcat.id,
+            title: subcat.title,
+            name: subcat.title,
+            productCount: subcat.productCount,
+            parentId: subcat.parentId
+          }));
+          
+          console.log('Flattened categories (from subcategories):', categories);
+        }
+      } catch (productsError) {
+        console.log('Could not fetch products for subcategories:', productsError.message);
+      }
+      
+      return { data: categories };
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      throw error;
+    }
+  },
+
   // Get all products with optional filters
   getAllProducts: async (params = {}) => {
     try {

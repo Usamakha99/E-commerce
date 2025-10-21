@@ -1,8 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [languageData, setLanguageData] = useState({
+    English: { flag: '/src/assets/imgs/template/en.svg', name: 'English' },
+    Français: { flag: '/src/assets/imgs/template/flag-fr.svg', name: 'Français' },
+    Español: { flag: '/src/assets/imgs/template/flag-es.svg', name: 'Español' },
+    Português: { flag: '/src/assets/imgs/template/flag-pt.svg', name: 'Português' },
+    '中国人': { flag: '/src/assets/imgs/template/flag-cn.svg', name: '中国人' }
+  });
+
+  // Handle language change
+  const handleLanguageChange = (language) => {
+    console.log('Changing language from', selectedLanguage, 'to', language);
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+    
+    // You can add more language change logic here
+    // For example: change document language, update translations, etc.
+    console.log('Language changed to:', language);
+    
+    // Example: Change document language attribute
+    document.documentElement.lang = language === 'English' ? 'en' : 
+                                   language === 'Français' ? 'fr' : 
+                                   language === 'Español' ? 'es' : 
+                                   language === 'Português' ? 'pt' : 'zh';
+  };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.dropdown')) {
+        setShowLanguageDropdown(false);
+        setShowCurrencyDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -13,40 +56,59 @@ const Header = () => {
             <ul className="nav-small">
               <li><a className="font-xs" href="#about" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>About Us</a></li>
               <li><a className="font-xs" href="#careers" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>Careers</a></li>
-              <li><a className="font-xs" href="#register" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>Open a shop</a></li>
             </ul>
           </div>
-          <div className="info-topbar text-center d-none d-xl-block">
-            <span className="font-xs" style={{ color: 'white' }}>Free shipping for all orders over</span>
-            <span className="font-sm-bold" style={{ color: '#4ade80' }}> $75.00</span>
-          </div>
-          <div className="menu-topbar-right">
-            <span className="font-xs" style={{ color: 'white' }}>Need help? Call Us:</span>
-            <span className="font-sm-bold" style={{ color: '#4ade80' }}> + 1800 900</span>
+          <div className="menu-topbar-right" style={{marginLeft: 'auto'}}>
+           
             <div className="dropdown dropdown-language">
-              <button className="btn dropdown-toggle" id="dropdownPage" type="button" data-bs-toggle="dropdown" aria-expanded="true" data-bs-display="static">
+              <button 
+                className="btn dropdown-toggle" 
+                type="button" 
+                onClick={() => {
+                  setShowLanguageDropdown(!showLanguageDropdown);
+                  setShowCurrencyDropdown(false);
+                }}
+              >
                 <span className="dropdown-right font-xs" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>
-                  <img src="/src/assets/imgs/template/en.svg" alt="Ecom" /> English
+                  <img src={
+                    selectedLanguage === 'English' ? '/src/assets/imgs/template/en.svg' :
+                    selectedLanguage === 'Français' ? '/src/assets/imgs/template/flag-fr.svg' :
+                    selectedLanguage === 'Español' ? '/src/assets/imgs/template/flag-es.svg' :
+                    selectedLanguage === 'Português' ? '/src/assets/imgs/template/flag-pt.svg' :
+                    selectedLanguage === '中国人' ? '/src/assets/imgs/template/flag-cn.svg' :
+                    '/src/assets/imgs/template/en.svg'
+                  } alt="Ecom" /> {selectedLanguage}
                 </span>
               </button>
-              <ul className="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownPage" data-bs-popper="static">
-                <li><a className="dropdown-item" href="#"><img src="/src/assets/imgs/template/flag-en.svg" alt="Ecom" /> English</a></li>
-                <li><a className="dropdown-item" href="#"><img src="/src/assets/imgs/template/flag-fr.svg" alt="Ecom" /> Français</a></li>
-                <li><a className="dropdown-item" href="#"><img src="/src/assets/imgs/template/flag-es.svg" alt="Ecom" /> Español</a></li>
-                <li><a className="dropdown-item" href="#"><img src="/src/assets/imgs/template/flag-pt.svg" alt="Ecom" /> Português</a></li>
-                <li><a className="dropdown-item" href="#"><img src="/src/assets/imgs/template/flag-cn.svg" alt="Ecom" /> 中国人</a></li>
-              </ul>
+              {showLanguageDropdown && (
+                <ul className="dropdown-menu dropdown-menu-light show" style={{display: 'block'}}>
+                  <li><a className={`dropdown-item ${selectedLanguage === 'English' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('English');}}><img src="/src/assets/imgs/template/flag-en.svg" alt="Ecom" /> English</a></li>
+                  <li><a className={`dropdown-item ${selectedLanguage === 'Français' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Français');}}><img src="/src/assets/imgs/template/flag-fr.svg" alt="Ecom" /> Français</a></li>
+                  <li><a className={`dropdown-item ${selectedLanguage === 'Español' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Español');}}><img src="/src/assets/imgs/template/flag-es.svg" alt="Ecom" /> Español</a></li>
+                  <li><a className={`dropdown-item ${selectedLanguage === 'Português' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Português');}}><img src="/src/assets/imgs/template/flag-pt.svg" alt="Ecom" /> Português</a></li>
+                  <li><a className={`dropdown-item ${selectedLanguage === '中国人' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('中国人');}}><img src="/src/assets/imgs/template/flag-cn.svg" alt="Ecom" /> 中国人</a></li>
+                </ul>
+              )}
             </div>
             <div className="dropdown dropdown-language">
-              <button className="btn dropdown-toggle" id="dropdownPage2" type="button" data-bs-toggle="dropdown" aria-expanded="true" data-bs-display="static">
-                <span className="dropdown-right font-xs" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>USD</span>
+              <button 
+                className="btn dropdown-toggle" 
+                type="button" 
+                onClick={() => {
+                  setShowCurrencyDropdown(!showCurrencyDropdown);
+                  setShowLanguageDropdown(false);
+                }}
+              >
+                <span className="dropdown-right font-xs" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>{selectedCurrency}</span>
               </button>
-              <ul className="dropdown-menu dropdown-menu-light dropdown-menu-end" aria-labelledby="dropdownPage2" data-bs-popper="static">
-                <li><a className="dropdown-item active" href="#">USD</a></li>
-                <li><a className="dropdown-item" href="#">EUR</a></li>
-                <li><a className="dropdown-item" href="#">AUD</a></li>
-                <li><a className="dropdown-item" href="#">SGP</a></li>
-              </ul>
+              {showCurrencyDropdown && (
+                <ul className="dropdown-menu dropdown-menu-light dropdown-menu-end show" style={{display: 'block'}}>
+                  <li><a className={`dropdown-item ${selectedCurrency === 'USD' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('USD'); setShowCurrencyDropdown(false);}}>USD</a></li>
+                  <li><a className={`dropdown-item ${selectedCurrency === 'EUR' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('EUR'); setShowCurrencyDropdown(false);}}>EUR</a></li>
+                  <li><a className={`dropdown-item ${selectedCurrency === 'AUD' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('AUD'); setShowCurrencyDropdown(false);}}>AUD</a></li>
+                  <li><a className={`dropdown-item ${selectedCurrency === 'SGP' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('SGP'); setShowCurrencyDropdown(false);}}>SGP</a></li>
+                </ul>
+              )}
             </div>
           </div>
         </div>

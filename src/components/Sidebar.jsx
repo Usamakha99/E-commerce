@@ -1,14 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useProducts } from '../hooks/useProducts';
+import { productService } from '../services/product.service';
 
-const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
-  const [showMoreCategories, setShowMoreCategories] = useState(false);
+const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [brands, setBrands] = useState([]);
   const [loadingBrands, setLoadingBrands] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  
+  const CATEGORIES_TO_SHOW = 10; // Show first 10 categories
 
   // Fetch all products to extract unique brands
   const { products } = useProducts({ autoFetch: true });
+
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        const response = await productService.getAllCategories();
+        console.log('Categories Response in Sidebar:', response);
+        
+        // Handle different response structures
+        if (response) {
+          if (Array.isArray(response)) {
+            console.log('Categories are array:', response);
+            console.log('First category structure:', response[0]);
+            setCategories(response);
+          } else if (response.data && Array.isArray(response.data)) {
+            console.log('Categories in response.data:', response.data);
+            console.log('First category structure:', response.data[0]);
+            setCategories(response.data);
+          } else if (response.categories && Array.isArray(response.categories)) {
+            console.log('Categories in response.categories:', response.categories);
+            console.log('First category structure:', response.categories[0]);
+            setCategories(response.categories);
+          } else {
+            console.log('Unknown response structure:', response);
+            console.log('Response keys:', Object.keys(response));
+            setCategories([]);
+          }
+        } else {
+          console.log('No response received');
+          setCategories([]);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Fallback to empty array if API fails
+        setCategories([]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Extract unique brands from products
   useEffect(() => {
@@ -50,131 +98,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
     }
   };
 
-  const categories = [
-    { 
-      name: "Computers & Laptop", 
-      count: 9, 
-      hasSubcategories: true,
-      subcategories: [
-        { name: "ASUS", count: 15 },
-        { name: "HP", count: 23 },
-        { name: "Dell", count: 18 },
-        { name: "Lenovo", count: 12 },
-        { name: "Acer", count: 8 }
-      ]
-    },
-    { 
-      name: "Electric accessories", 
-      count: 12,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Power Banks", count: 25 },
-        { name: "Chargers", count: 18 },
-        { name: "Cables", count: 32 },
-        { name: "Adapters", count: 14 }
-      ]
-    },
-    { 
-      name: "Mainboard & CPU", 
-      count: 24,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Intel", count: 35 },
-        { name: "AMD", count: 28 },
-        { name: "ASUS Motherboards", count: 22 },
-        { name: "MSI Motherboards", count: 16 }
-      ]
-    },
-    { 
-      name: "Bluetooth devices", 
-      count: 34,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Headphones", count: 45 },
-        { name: "Speakers", count: 28 },
-        { name: "Earbuds", count: 32 },
-        { name: "Keyboards", count: 18 }
-      ]
-    },
-    { 
-      name: "Mouse & Keyboard", 
-      count: 65,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Gaming Mouse", count: 42 },
-        { name: "Wireless Mouse", count: 38 },
-        { name: "Mechanical Keyboard", count: 29 },
-        { name: "Wireless Keyboard", count: 25 }
-      ]
-    },
-    { 
-      name: "Wired Headphone", 
-      count: 15,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Gaming Headphones", count: 22 },
-        { name: "Studio Headphones", count: 18 },
-        { name: "Noise Cancelling", count: 25 },
-        { name: "Budget Headphones", count: 31 }
-      ]
-    },
-    { 
-      name: "Gaming Gadgets", 
-      count: 76,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Gaming Controllers", count: 42 },
-        { name: "Gaming Mouse", count: 38 },
-        { name: "Gaming Keyboard", count: 29 },
-        { name: "Gaming Headsets", count: 35 },
-        { name: "Gaming Chairs", count: 18 }
-      ]
-    },
-    { 
-      name: "Smart Watches", 
-      count: 89,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Apple Watch", count: 45 },
-        { name: "Samsung Galaxy Watch", count: 38 },
-        { name: "Fitbit", count: 32 },
-        { name: "Garmin", count: 28 },
-        { name: "Xiaomi Mi Band", count: 25 }
-      ]
-    },
-    { 
-      name: "Cell Phones", 
-      count: 23,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "iPhone", count: 35 },
-        { name: "Samsung Galaxy", count: 42 },
-        { name: "Google Pixel", count: 18 },
-        { name: "OnePlus", count: 22 },
-        { name: "Xiaomi", count: 28 }
-      ]
-    },
-    { 
-      name: "Headphones", 
-      count: 98,
-      hasSubcategories: true,
-      subcategories: [
-        { name: "Wireless Headphones", count: 52 },
-        { name: "True Wireless Earbuds", count: 68 },
-        { name: "Over-Ear Headphones", count: 38 },
-        { name: "On-Ear Headphones", count: 25 },
-        { name: "Sports Headphones", count: 31 }
-      ]
-    }
-  ];
-
-  const moreCategories = [
-    { name: "Home theater", count: 98 },
-    { name: "Cameras & drones", count: 124 },
-    { name: "PC gaming", count: 56 },
-    { name: "Smart home", count: 87 },
-    { name: "Networking", count: 36 }
-  ];
+  // Categories are now fetched from API and stored in state
 
   const bestSellerProducts = [
     {
@@ -226,113 +150,122 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
     <div className="col-lg-3 order-last order-lg-first">
       {/* Categories */}
       <div className="sidebar-border mb-0">
-        <div className="sidebar-head">
-          <h6 className="color-gray-900">Product Categories</h6>
+        <div className="sidebar-head" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <h6 className="  " style={{margin: 0, color: '#000'}}>Product Categories</h6>
+          {selectedCategory && (
+            <button 
+              onClick={() => onCategoryFilter && onCategoryFilter(null)}
+              title="Clear category filter"
+              style={{
+                backgroundColor: '#df2020',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '50%',
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0',
+                transition: 'background-color 0.3s ease',
+                flexShrink: 0
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#c41a1a';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#df2020';
+              }}
+            >
+              ✕
+            </button>
+          )}
         </div>
         <div className="sidebar-content">
-          <ul className="list-nav-arrow">
-            {categories.map((category, index) => (
-            <li key={index}>
-              {category.hasSubcategories ? (
-                <div>
-                  <a 
-                    href="/shop"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleCategory(category.name);
-                    }}
-                    style={{ cursor: 'pointer' }}
-                    onMouseEnter={(e) => {
-                      e.target.style.color = '#df2020';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.color = '';
-                    }}
-                  >
-                    {category.name}
-                    <span className="number">{category.count}</span>
-                    <span className="arrow" style={{ 
-                      float: 'right', 
-                      transform: expandedCategories[category.name] ? 'rotate(90deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.3s ease'
-                    }}>
-                      ▶
-                    </span>
-                  </a>
-                  {expandedCategories[category.name] && (
-                    <ul className="subcategories" style={{ marginLeft: '20px', marginTop: '5px' }}>
-                      {category.subcategories.map((subcategory, subIndex) => (
-                        <li key={subIndex}>
-                          <a href="/shop"
-                            onMouseEnter={(e) => {
-                              e.target.style.color = '#df2020';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = '';
-                            }}
-                          >
-                            {subcategory.name}
-                            <span className="number">{subcategory.count}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+          {loadingCategories ? (
+            <div className="text-center py-3">
+              <div className="spinner-border spinner-border-sm text-primary" role="status">
+                <span className="visually-hidden">Loading categories...</span>
+              </div>
+              <p className="small text-muted mt-2">Loading categories...</p>
+            </div>
+          ) : (
+            <ul className="list-nav-arrow">
+              {categories.length > 0 ? (
+                <>
+                  {/* Show first 10 categories or all if showAllCategories is true */}
+                  {(showAllCategories ? categories : categories.slice(0, CATEGORIES_TO_SHOW)).map((category, index) => (
+                    <li key={category.id || index}>
+                      <a 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (onCategoryFilter) {
+                            onCategoryFilter(category.id);
+                          }
+                        }}
+                        style={{
+                          cursor: 'pointer',
+                          fontWeight: selectedCategory === category.id ? 'bold' : 'normal',
+                          color: selectedCategory === category.id ? '#df2020' : '#000'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = '#df2020';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = selectedCategory === category.id ? '#df2020' : '#000';
+                        }}
+                      >
+                        {category.name || category.title}
+                        <span className="number">{category.productCount || category.count || 0}</span>
+                      </a>
+                    </li>
+                  ))}
+                  
+                  {/* Show "See More" button if there are more than CATEGORIES_TO_SHOW */}
+                  {categories.length > CATEGORIES_TO_SHOW && (
+                    <li style={{marginTop: '10px'}}>
+                      <a 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowAllCategories(!showAllCategories);
+                        }}
+                        style={{
+                          color: '#000',
+                          fontWeight: '500',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = '#df2020';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = '#000';
+                        }}
+                      >
+                        {showAllCategories ? '← See Less' : 'See More →'}
+                      </a>
+                    </li>
                   )}
-                </div>
+                </>
               ) : (
-                <a href="/shop"
-                  onMouseEnter={(e) => {
-                    e.target.style.color = '#df2020';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = '';
-                  }}
-                >
-                  {category.name}
-                  <span className="number">{category.count}</span>
-                </a>
+                <li className="text-muted small">No categories found</li>
               )}
-            </li>
-          ))}
-        </ul>
-          <div>
-            <div className={`collapse ${showMoreCategories ? 'show' : ''}`} id="moreMenu">
-              <ul className="list-nav-arrow">
-                {moreCategories.map((category, index) => (
-                  <li key={index}>
-                    <a href="/shop"
-                      onMouseEnter={(e) => {
-                        e.target.style.color = '#df2020';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.color = '';
-                      }}
-                    >
-                      {category.name}
-                      <span className="number">{category.count}</span>
-                    </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-            <a 
-              className="link-see-more mt-5" 
-              onClick={() => setShowMoreCategories(!showMoreCategories)}
-              role="button"
-            >
-              {showMoreCategories ? 'See Less' : 'See More'}
-            </a>
-          </div>
+            </ul>
+          )}
         </div>
       </div>
 
       {/* Filters */}
       <div className="sidebar-border mb-40">
         <div className="sidebar-head">
-          <h6 className="color-gray-900">Products Filter</h6>
+          <h6 className="  ">Products Filter</h6>
         </div>
         <div className="sidebar-content">
-          <h6 className="color-gray-900 mt-10 mb-10">Price</h6>
+          <h6 className="   mt-10 mb-10" style={{color: '#000'}}>Price</h6>
           <div className="box-slider-range mt-20 mb-15">
             <div className="row mb-20">
               <div className="col-sm-12">
@@ -341,7 +274,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             </div>
             <div className="row">
               <div className="col-lg-12">
-                <label className="lb-slider font-sm color-gray-500">Price Range:</label>
+                <label className="lb-slider font-sm" style={{color: '#000'}}>Price Range:</label>
                 <span className="min-value-money font-sm color-gray-1000">$0</span>
                 <label className="lb-slider font-sm font-medium color-gray-1000"></label>-
                 <span className="max-value-money font-sm font-medium color-gray-1000">$1000</span>
@@ -356,7 +289,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" defaultChecked />
-                <span className="text-small">Free - $100</span>
+                <span className="text-small" style={{color: '#000'}}>Free - $100</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">145</span>
@@ -364,7 +297,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" />
-                <span className="text-small">$100 - $200</span>
+                <span className="text-small" style={{color: '#000'}}>$100 - $200</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">56</span>
@@ -372,7 +305,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" />
-                <span className="text-small">$200 - $400</span>
+                <span className="text-small" style={{color: '#000'}}>$200 - $400</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">23</span>
@@ -380,7 +313,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" />
-                <span className="text-small">$400 - $600</span>
+                <span className="text-small" style={{color: '#000'}}>$400 - $600</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">43</span>
@@ -388,7 +321,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" />
-                <span className="text-small">$600 - $800</span>
+                <span className="text-small" style={{color: '#000'}}>$600 - $800</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">65</span>
@@ -396,14 +329,14 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
             <li>
               <label className="cb-container">
                 <input type="checkbox" />
-                <span className="text-small">Over $1000</span>
+                <span className="text-small" style={{color: '#000'}}>Over $1000</span>
                 <span className="checkmark"></span>
               </label>
               <span className="number-item">56</span>
             </li>
           </ul>
 
-          <h6 className="color-gray-900 mt-20 mb-10">Brands</h6>
+          <h6 className="   mt-20 mb-10">Brands</h6>
           {loadingBrands ? (
             <div className="text-center py-3">
               <div className="spinner-border spinner-border-sm text-primary" role="status">
@@ -422,7 +355,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
                         checked={selectedBrands.includes(brand.name)}
                         onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
                       />
-                      <span className="text-small">{brand.name}</span>
+                      <span className="text-small" style={{color: '#000'}}>{brand.name}</span>
                       <span className="checkmark"></span>
                     </label>
                     <span className="number-item">{brand.count}</span>
@@ -442,7 +375,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
       {/* Best Seller */}
       <div className="box-slider-item mb-30">
         <div className="head pb-15 border-brand-2">
-          <h5 className="color-gray-900">Best seller</h5>
+          <h5 className="  " style={{color: '#000'}}>Best seller</h5>
         </div>
         <div className="content-slider">
           <div className="box-swiper slide-shop">
@@ -479,7 +412,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [] }) => {
       {/* Product Tags */}
       <div className="box-slider-item">
         <div className="head pb-15 border-brand-2">
-          <h5 className="color-gray-900">Product Tags</h5>
+          <h5 className="  " style={{color: '#000'}}>Product Tags</h5>
         </div>
         <div className="content-slider mb-50">
           {productTags.map((tag, index) => (
