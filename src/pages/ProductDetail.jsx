@@ -577,6 +577,7 @@ const ProductDetail = () => {
                   href="#tab-description" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
                   role="tab"
+                  style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>📝</span>Description
                 </a>
@@ -587,6 +588,7 @@ const ProductDetail = () => {
                   href="#tab-specification" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
                   role="tab"
+                  style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>⚙️</span>Specification
                 </a>
@@ -597,6 +599,7 @@ const ProductDetail = () => {
                   href="#tab-additional" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
                   role="tab"
+                  style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
                 </a>
@@ -607,6 +610,7 @@ const ProductDetail = () => {
                   href="#tab-reviews" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('reviews'); }}
                   role="tab"
+                  style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>⭐</span>Reviews (2)
                 </a>
@@ -617,6 +621,7 @@ const ProductDetail = () => {
                   href="#tab-vendor" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('vendor'); }}
                   role="tab"
+                  style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>🏪</span>Vendor
                 </a>
@@ -629,16 +634,16 @@ const ProductDetail = () => {
                         {/* Long Description from API */}
                         {product.longDescp && (
                           <div className="mb-30">
-                            <h5 className="mb-20">Product Description</h5>
-                            <p className="font-md color-gray-900">{product.longDescp}</p>
+                            <h5 className="mb-20" style={{ color: '#000' }}>Product Description</h5>
+                            <p className="font-md ">{product.longDescp}</p>
                   </div>
                         )}
 
                         {/* Short Description if no long description */}
                         {!product.longDescp && product.shortDescp && (
                           <div className="mb-30">
-                            <h5 className="mb-20">Product Description</h5>
-                            <p className="font-md color-gray-900">{product.shortDescp}</p>
+                            <h5 className="mb-20" style={{ color: '#000' }}>Product Description</h5>
+                            <p className="font-md ">{product.shortDescp}</p>
                           </div>
                         )}
 
@@ -646,15 +651,15 @@ const ProductDetail = () => {
                         {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
                           (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim())) && (
                             <div className="mb-30">
-                              <h5 className="mb-20">Key Features</h5>
+                              <h5 className="mb-20" style={{ color: '#000' }}>Key Features</h5>
                               <ul className="list-dot">
                                 {Array.isArray(product.bulletsPoint) ? (
                                   product.bulletsPoint.map((bullet, index) => (
-                                    <li key={index} className="font-md color-gray-900">{bullet}</li>
+                                    <li key={index} className="font-md ">{bullet}</li>
                                   ))
                                 ) : (
                                   product.bulletsPoint.split(',').map((bullet, index) => (
-                                    <li key={index} className="font-md color-gray-900">{bullet.trim()}</li>
+                                    <li key={index} className="font-md ">{bullet.trim()}</li>
                                   ))
                                 )}
                               </ul>
@@ -664,13 +669,13 @@ const ProductDetail = () => {
                         {/* Meta Description */}
                         {product.metaDescp && product.metaDescp !== product.shortDescp && (
                           <div className="mb-30">
-                            <p className="font-sm color-gray-700">{product.metaDescp}</p>
+                            <p className="font-sm 0">{product.metaDescp}</p>
                           </div>
                         )}
 
                         {/* Fallback if no description */}
                         {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
-                          <p className="font-md color-gray-500">No description available for this product.</p>
+                          <p className="font-md 0">No description available for this product.</p>
                         )}
                   </div>
                 </div>
@@ -678,74 +683,74 @@ const ProductDetail = () => {
               
               {activeTab === 'specification' && (
                 <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
-                      <h5 className="mb-25">Product Specification</h5>
+                      <h5 className="mb-25" style={{ color: '#000' }}>Product Specification</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>
                             {product.sku && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">SKU</td>
-                                <td className="font-sm color-gray-700">{product.sku}</td>
+                                <td className="font-sm-bold ">SKU</td>
+                                <td className="font-sm ">{product.sku}</td>
                         </tr>
                             )}
                             {product.brand && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Brand</td>
-                                <td className="font-sm color-gray-700">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
+                                <td className="font-sm-bold ">Brand</td>
+                                <td className="font-sm ">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
                         </tr>
                             )}
                             {product.mfr && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Manufacturer</td>
-                                <td className="font-sm color-gray-700">{product.mfr}</td>
+                                <td className="font-sm-bold ">Manufacturer</td>
+                                <td className="font-sm ">{product.mfr}</td>
                         </tr>
                             )}
                             {product.techPartNo && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Part Number</td>
-                                <td className="font-sm color-gray-700">{product.techPartNo}</td>
+                                <td className="font-sm-bold ">Part Number</td>
+                                <td className="font-sm ">{product.techPartNo}</td>
                         </tr>
                             )}
                             {product.upcCode && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">UPC Code</td>
-                                <td className="font-sm color-gray-700">{product.upcCode}</td>
+                                <td className="font-sm-bold ">UPC Code</td>
+                                <td className="font-sm ">{product.upcCode}</td>
                         </tr>
                             )}
                             {product.category && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Category</td>
-                                <td className="font-sm color-gray-700">{typeof product.category === 'object' ? product.category.title : product.category}</td>
+                                <td className="font-sm-bold ">Category</td>
+                                <td className="font-sm ">{typeof product.category === 'object' ? product.category.title : product.category}</td>
                         </tr>
                             )}
                             {product.subCategory && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Sub Category</td>
-                                <td className="font-sm color-gray-700">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
+                                <td className="font-sm-bold ">Sub Category</td>
+                                <td className="font-sm ">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
                         </tr>
                             )}
                             {product.productSource && (
                         <tr>
-                                <td className="font-sm-bold color-gray-900">Product Source</td>
-                                <td className="font-sm color-gray-700">{product.productSource}</td>
+                                <td className="font-sm-bold ">Product Source</td>
+                                <td className="font-sm ">{product.productSource}</td>
                         </tr>
                             )}
                             {product.endOfLifeDate && (
                               <tr>
-                                <td className="font-sm-bold color-gray-900">End of Life Date</td>
-                                <td className="font-sm color-gray-700">{product.endOfLifeDate}</td>
+                                <td className="font-sm-bold ">End of Life Date</td>
+                                <td className="font-sm ">{product.endOfLifeDate}</td>
                               </tr>
                             )}
                             {product.quantity !== undefined && (
                               <tr>
-                                <td className="font-sm-bold color-gray-900">Available Quantity</td>
-                                <td className="font-sm color-gray-700">{product.quantity}</td>
+                                <td className="font-sm-bold ">Available Quantity</td>
+                                <td className="font-sm ">{product.quantity}</td>
                               </tr>
                             )}
                             {/* Fallback message */}
                             {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
                               <tr>
-                                <td colSpan="2" className="text-center font-sm color-gray-500">
+                                <td colSpan="2" className="text-center font-sm ">
                                   No specifications available for this product.
                                 </td>
                               </tr>
@@ -757,7 +762,7 @@ const ProductDetail = () => {
                       {/* Multimedia URL Link */}
                       {product.multimediaUrl && (
                         <div className="mt-30">
-                          <h6 className="mb-15">Additional Resources</h6>
+                          <h6 className="mb-15" style={{ color: '#000' }}>Additional Resources</h6>
                           <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
                             View Multimedia Content
                           </a>
@@ -768,7 +773,7 @@ const ProductDetail = () => {
 
               {activeTab === 'additional' && (
                 <div className="tab-pane fade active show" id="tab-additional" role="tabpanel">
-                  <h5 className="mb-25">Additional information</h5>
+                  <h5 className="mb-25" style={{ color: '#000' }}>Additional information</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>

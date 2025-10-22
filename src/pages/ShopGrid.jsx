@@ -23,6 +23,19 @@ const ShopGrid = () => {
     autoFetch: true,
   });
 
+  // Handle URL parameters for category filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    
+    if (categoryParam) {
+      const categoryId = parseInt(categoryParam);
+      if (!isNaN(categoryId)) {
+        setSelectedCategory(categoryId);
+      }
+    }
+  }, []);
+
   // CLIENT-SIDE FILTERING AND PAGINATION: Filter by category and brands then sort and paginate
   const filteredProducts = allProducts ? allProducts.filter(product => {
     // Filter by category (using subCategoryId since we're showing subcategories)

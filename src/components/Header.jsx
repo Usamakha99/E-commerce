@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { productService } from '../services/product.service';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -7,6 +8,11 @@ const Header = () => {
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [showShopDropdown, setShowShopDropdown] = useState(false);
+  const [showVendorsDropdown, setShowVendorsDropdown] = useState(false);
+  const [showAboutDropdown, setShowAboutDropdown] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
   const [languageData, setLanguageData] = useState({
     English: { flag: '/src/assets/imgs/template/en.svg', name: 'English' },
     Français: { flag: '/src/assets/imgs/template/flag-fr.svg', name: 'Français' },
@@ -32,6 +38,25 @@ const Header = () => {
                                    language === 'Português' ? 'pt' : 'zh';
   };
 
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        const response = await productService.getAllCategories();
+        console.log('Categories fetched for header:', response);
+        setCategories(response?.data || []);
+      } catch (error) {
+        console.error('Error fetching categories for header:', error);
+        setCategories([]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -49,215 +74,211 @@ const Header = () => {
 
   return (
     <>
-      {/* Topbar */}
-      <div className="topbar" style={{ backgroundColor: '#343d66' }}>
-        <div className="container-topbar">
-          <div className="menu-topbar-left d-none d-xl-block">
-            <ul className="nav-small">
-              <li><a className="font-xs" href="#about" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>About Us</a></li>
-              <li><a className="font-xs" href="#careers" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>Careers</a></li>
-            </ul>
-          </div>
-          <div className="menu-topbar-right" style={{marginLeft: 'auto'}}>
-           
-            <div className="dropdown dropdown-language">
-              <button 
-                className="btn dropdown-toggle" 
-                type="button" 
-                onClick={() => {
-                  setShowLanguageDropdown(!showLanguageDropdown);
-                  setShowCurrencyDropdown(false);
-                }}
-              >
-                <span className="dropdown-right font-xs" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>
-                  <img src={
-                    selectedLanguage === 'English' ? '/src/assets/imgs/template/en.svg' :
-                    selectedLanguage === 'Français' ? '/src/assets/imgs/template/flag-fr.svg' :
-                    selectedLanguage === 'Español' ? '/src/assets/imgs/template/flag-es.svg' :
-                    selectedLanguage === 'Português' ? '/src/assets/imgs/template/flag-pt.svg' :
-                    selectedLanguage === '中国人' ? '/src/assets/imgs/template/flag-cn.svg' :
-                    '/src/assets/imgs/template/en.svg'
-                  } alt="Ecom" /> {selectedLanguage}
-                </span>
-              </button>
-              {showLanguageDropdown && (
-                <ul className="dropdown-menu dropdown-menu-light show" style={{display: 'block'}}>
-                  <li><a className={`dropdown-item ${selectedLanguage === 'English' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('English');}}><img src="/src/assets/imgs/template/flag-en.svg" alt="Ecom" /> English</a></li>
-                  <li><a className={`dropdown-item ${selectedLanguage === 'Français' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Français');}}><img src="/src/assets/imgs/template/flag-fr.svg" alt="Ecom" /> Français</a></li>
-                  <li><a className={`dropdown-item ${selectedLanguage === 'Español' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Español');}}><img src="/src/assets/imgs/template/flag-es.svg" alt="Ecom" /> Español</a></li>
-                  <li><a className={`dropdown-item ${selectedLanguage === 'Português' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('Português');}}><img src="/src/assets/imgs/template/flag-pt.svg" alt="Ecom" /> Português</a></li>
-                  <li><a className={`dropdown-item ${selectedLanguage === '中国人' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); handleLanguageChange('中国人');}}><img src="/src/assets/imgs/template/flag-cn.svg" alt="Ecom" /> 中国人</a></li>
-                </ul>
-              )}
-            </div>
-            <div className="dropdown dropdown-language">
-              <button 
-                className="btn dropdown-toggle" 
-                type="button" 
-                onClick={() => {
-                  setShowCurrencyDropdown(!showCurrencyDropdown);
-                  setShowLanguageDropdown(false);
-                }}
-              >
-                <span className="dropdown-right font-xs" style={{ color: 'white' }} onMouseEnter={(e) => e.target.style.color = '#df2020'} onMouseLeave={(e) => e.target.style.color = 'white'}>{selectedCurrency}</span>
-              </button>
-              {showCurrencyDropdown && (
-                <ul className="dropdown-menu dropdown-menu-light dropdown-menu-end show" style={{display: 'block'}}>
-                  <li><a className={`dropdown-item ${selectedCurrency === 'USD' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('USD'); setShowCurrencyDropdown(false);}}>USD</a></li>
-                  <li><a className={`dropdown-item ${selectedCurrency === 'EUR' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('EUR'); setShowCurrencyDropdown(false);}}>EUR</a></li>
-                  <li><a className={`dropdown-item ${selectedCurrency === 'AUD' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('AUD'); setShowCurrencyDropdown(false);}}>AUD</a></li>
-                  <li><a className={`dropdown-item ${selectedCurrency === 'SGP' ? 'active' : ''}`} href="#" onClick={(e) => {e.preventDefault(); setSelectedCurrency('SGP'); setShowCurrencyDropdown(false);}}>SGP</a></li>
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <header className="header sticky-bar">
+      {/* Simple Header */}
+      <header style={{ 
+        backgroundColor: 'white', 
+        padding: '5px 0',
+        borderBottom: '1px solid #e0e0e0'
+      }}>
         <div className="container">
-          <div className="main-header">
-            <div className="header-left">
-              <div className="header-logo" style={{marginRight: '20px' ,width: '300px', height: 'auto', maxWidth: '100%'}}>
-                <Link className="d-flex" to="/">
-                  <img alt="V Cloud" src="/src/assets/V Cloud Logo final-01.svg" style={{}} />
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between'
+          }}>
+            
+            {/* Logo */}
+            <Link to="/" style={{ display: 'flex', alignItems:"center", textDecoration: 'none' }}>
+              <img 
+                alt="V Cloud" 
+                src="/src/assets/V Cloud Logo final-01.svg" 
+                style={{ 
+                  width: '200px', 
+                  height: '70px'
+                }} 
+              />
+            </Link>
+
+            {/* Navigation */}
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+              {/* Shop Dropdown */}
+              <div 
+                style={{ position: 'relative' }}
+                onMouseEnter={() => setShowShopDropdown(true)}
+                onMouseLeave={() => setShowShopDropdown(false)}
+              >
+                <Link to="/shop" style={{
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontFamily: 'DM Sans, sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}>
+                  Shop
+                  <span style={{ fontSize: '12px' }}>▼</span>
                 </Link>
+                {showShopDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '0',
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    padding: '10px 0',
+                    minWidth: '300px',
+                    zIndex: 1000
+                  }}>
+                    {loadingCategories ? (
+                      <div style={{ padding: '8px 15px', color: '#666', fontSize: '14px' }}>Loading categories...</div>
+                    ) : categories.length > 0 ? (
+                      categories.slice(0, 8).map((category, index) => (
+                        <div key={category.id || index} style={{ position: 'relative' }}>
+                          <Link 
+                            to={`/shop?category=${category.id}`}
+                            style={{ 
+                              display: 'block', 
+                              padding: '8px 15px', 
+                              color: '#333', 
+                              textDecoration: 'none', 
+                              fontSize: '14px',
+                              borderBottom: '1px solid #f0f0f0'
+                            }}
+                          >
+                            {category.name || category.title}
+                            <span style={{ 
+                              float: 'right', 
+                              fontSize: '12px', 
+                              color: '#666',
+                              marginLeft: '10px'
+                            }}>
+                              ({category.productCount || category.count || 0})
+                            </span>
+                          </Link>
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ padding: '8px 15px', color: '#666', fontSize: '14px' }}>No categories found</div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div className="header-search" style={{marginLeft: '30px'}}>
-                <div className="box-header-search">
-                  <form className="form-search" method="post" action="#">
-                    <div className="box-category">
-                      <select className="select-active select2-hidden-accessible">
-                        <option>All categories</option>
-                        <option value="Computers Accessories">Computers Accessories</option>
-                        <option value="Cell Phones">Cell Phones</option>
-                        <option value="Gaming Gatgets">Gaming Gatgets</option>
-                        <option value="Smart watches">Smart watches</option>
-                        <option value="Wired Headphone">Wired Headphone</option>
-                        <option value="Mouse &amp; Keyboard">Mouse Keyboard</option>
-                        <option value="Headphone">Headphone</option>
-                        <option value="Bluetooth devices">Bluetooth devices</option>
-                        <option value="Cloud Software">Cloud Software</option>
-                      </select>
-            </div>
-                    <div className="box-keysearch">
-                      <input className="form-control font-xs" type="text" defaultValue="" placeholder="Search for items" />
+
+              {/* Vendors Dropdown */}
+              <div 
+                style={{ position: 'relative' }}
+                onMouseEnter={() => setShowVendorsDropdown(true)}
+                onMouseLeave={() => setShowVendorsDropdown(false)}
+              >
+                <a href="/vendors" style={{
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontFamily: 'DM Sans, sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}>
+                  Vendors
+                  <span style={{ fontSize: '12px' }}>▼</span>
+                </a>
+                {showVendorsDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '0',
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    padding: '10px 0',
+                    minWidth: '180px',
+                    zIndex: 1000
+                  }}>
+                    <a href="/vendors" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendors Listing</a>
+                    <a href="/vendor" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendor Single</a>
+                    <a href="/vendor-dashboard" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendor Dashboard</a>
                   </div>
-                  </form>
-                </div>
-              </div>
-              <div className="header-nav">
-                <nav className="nav-main-menu d-none d-xl-block">
-                  <ul className="main-menu">
-                    {/* <li className="has-children">
-                      <Link className="active" to="/">Home</Link>
-                      <ul className="sub-menu two-col">
-                        <li><Link to="/">Homepage - 1</Link></li>
-                        <li><Link to="/">Homepage - 2</Link></li>
-                        <li><Link to="/">Homepage - 3</Link></li>
-                        <li><Link to="/">Homepage - 4</Link></li>
-                        <li><Link to="/">Homepage - 5</Link></li>
-                        <li><Link to="/">Homepage - 6</Link></li>
-                        <li><Link to="/">Homepage - 7</Link></li>
-                        <li><Link to="/">Homepage - 8</Link></li>
-                        <li><Link to="/">Homepage - 9</Link></li>
-                        <li><Link to="/">Homepage - 10</Link></li>
-                      </ul>
-                    </li> */}
-                    <li className="has-children">
-                      <Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop</Link>
-                      <ul className="sub-menu two-col">
-                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Grid</Link></li>
-                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Grid 2</Link></li>
-                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop list - Left sidebar</Link></li>
-                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop list - Right sidebar</Link></li>
-                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Fullwidth</Link></li>
-                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product</Link></li>
-                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 2</Link></li>
-                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 3</Link></li>
-                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 4</Link></li>
-                        <li><Link to="/cart" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Cart</Link></li>
-                        <li><Link to="/checkout" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Checkout</Link></li>
-                        <li><Link to="/compare" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Compare</Link></li>
-                        <li><Link to="/wishlist" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Wishlist</Link></li>
-                      </ul>
-                    </li>
-                    <li className="has-children">
-                      <a href="/vendors" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendors</a>
-                      <ul className="sub-menu">
-                        <li><a href="/vendors" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendors Listing</a></li>
-                        <li><a href="/vendor" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendor Single</a></li>
-                      </ul>
-                    </li>
-                    <li className="has-children">
-                      <a href="#" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Pages</a>
-                      <ul className="sub-menu">
-                        <li><a href="/about" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>About Us</a></li>
-                        <li><a href="/careers" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Careers</a></li>
-                        <li><a href="/terms" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Term and Condition</a></li>
-                        <li><a href="/register" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Register</a></li>
-                        <li><a href="/login" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Login</a></li>
-                        <li><a href="/404" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Error 404</a></li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="https://blog.vcloudtech.com/" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Blog</a>
-                    </li>
-                  </ul>
-                </nav>
-                <div className="burger-icon burger-icon-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                  <span className="burger-icon-top"></span>
-                  <span className="burger-icon-mid"></span>
-                  <span className="burger-icon-bottom"></span>
-                </div>
+                )}
+                        </div>
+
+              {/* About Dropdown */}
+              <div 
+                style={{ position: 'relative' }}
+                onMouseEnter={() => setShowAboutDropdown(true)}
+                onMouseLeave={() => setShowAboutDropdown(false)}
+              >
+                <a href="/about" style={{
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontFamily: 'DM Sans, sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}>
+                  About
+                  <span style={{ fontSize: '12px' }}>▼</span>
+                </a>
+                {showAboutDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '0',
+                    backgroundColor: 'white',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                    padding: '10px 0',
+                    minWidth: '160px',
+                    zIndex: 1000
+                  }}>
+                    <a href="/about" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>About Us</a>
+                    <a href="/careers" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Careers</a>
+                    <a href="/contact" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Contact</a>
+                    <a href="/team" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Our Team</a>
                   </div>
-              <div className="header-shop" style={{marginLeft: 'auto'}}>
-                <div className="d-inline-block box-dropdown-cart">
-                  <span className="font-lg icon-list icon-cart">
-                    <span>Cart</span>
-                    <span className="number-item font-xs">2</span>
-                  </span>
-                  <div className="dropdown-cart">
-                    <div className="item-cart mb-20">
-                      <div className="cart-image">
-                        <img src="/src/assets/imgs/page/homepage1/imgsp5.png" alt="Ecom" />
-                        </div>
-                      <div className="cart-info">
-                        <a className="font-sm-bold color-brand-3" href="/product">2022 Apple iMac with Retina 5K Display 8GB RAM, 256GB SSD</a>
-                        <p><span className="color-brand-2 font-sm-bold">1 x $2856.4</span></p>
-                      </div>
-                    </div>
-                    <div className="item-cart mb-20">
-                      <div className="cart-image">
-                        <img src="/src/assets/imgs/page/homepage1/imgsp4.png" alt="Ecom" />
-                      </div>
-                      <div className="cart-info">
-                        <a className="font-sm-bold color-brand-3" href="/product">2022 Apple iMac with Retina 5K Display 8GB RAM, 256GB SSD</a>
-                        <p><span className="color-brand-2 font-sm-bold">1 x $2856.4</span></p>
-                      </div>
-                    </div>
-                    <div className="border-bottom pt-0 mb-15"></div>
-                    <div className="cart-total">
-                      <div className="row">
-                        <div className="col-6 text-start">
-                          <span className="font-md-bold color-brand-3">Total</span>
-                        </div>
-                        <div className="col-6">
-                          <span className="font-md-bold color-brand-1">$2586.3</span>
-                        </div>
-                      </div>
-                      <div className="row mt-15">
-                        <div className="col-6 text-start">
-                          <a className="btn btn-cart w-auto" href="/cart">View cart</a>
-                        </div>
-                        <div className="col-6">
-                          <a className="btn btn-buy w-auto" href="/checkout">Checkout</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                )}
                 </div>
+
+              {/* Blog - No Dropdown */}
+              <a href="https://blog.vcloudtech.com/" style={{
+                color: '#333',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontFamily: 'DM Sans, sans-serif'
+              }}>
+                Blog
+              </a>
+            </nav>
+
+            {/* Search and Cart */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  width: '200px'
+                }}
+              />
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '8px 12px',
+                backgroundColor: '#f5f5f5',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}>
+                <span>🛒</span>
+                <span style={{ fontSize: '14px' }}>Cart (2)</span>
               </div>
             </div>
           </div>
