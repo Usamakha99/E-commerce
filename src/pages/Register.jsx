@@ -50,7 +50,7 @@ const Register = () => {
                       onBlur={(e) => e.target.style.setProperty('border-color', '', 'important')}
                       required
                     />
-                  </div>
+          </div>
                   <div className="form-group">
                     <label className="mb-5 font-sm" style={{color: '#333333', fontWeight: 'bold'}}>Email *</label>
                     <input 

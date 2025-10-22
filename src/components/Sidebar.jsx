@@ -149,11 +149,11 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
   return (
     <div className="col-lg-3 order-last order-lg-first">
       {/* Categories */}
-      <div className="sidebar-border mb-0">
-        <div className="sidebar-head" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <h6 className="  " style={{margin: 0, color: '#000'}}>Product Categories</h6>
+      <div style={{marginBottom: '20px'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px'}}>
+          <h6 style={{margin: 0, color: '#000', fontWeight: 'bold', fontSize: '16px'}}>Product Categories</h6>
           {selectedCategory && (
-            <button 
+            <button
               onClick={() => onCategoryFilter && onCategoryFilter(null)}
               title="Clear category filter"
               style={{
@@ -184,7 +184,6 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
             </button>
           )}
         </div>
-        <div className="sidebar-content">
           {loadingCategories ? (
             <div className="text-center py-3">
               <div className="spinner-border spinner-border-sm text-primary" role="status">
@@ -193,12 +192,12 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               <p className="small text-muted mt-2">Loading categories...</p>
             </div>
           ) : (
-            <ul className="list-nav-arrow">
+            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
               {categories.length > 0 ? (
                 <>
                   {/* Show first 10 categories or all if showAllCategories is true */}
                   {(showAllCategories ? categories : categories.slice(0, CATEGORIES_TO_SHOW)).map((category, index) => (
-                    <li key={category.id || index}>
+                    <li key={category.id || index} style={{marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                       <a 
                         href="#"
                         onClick={(e) => {
@@ -209,19 +208,43 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
                         }}
                         style={{
                           cursor: 'pointer',
-                          fontWeight: selectedCategory === category.id ? 'bold' : 'normal',
-                          color: selectedCategory === category.id ? '#df2020' : '#000'
+                          fontWeight: 'normal',
+                          color: selectedCategory === category.id ? '#000' : '#000',
+                          textDecoration: 'underline',
+                          fontSize: '1em',
+                          flex: 1
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.color = '#df2020';
+                          e.target.style.color = '#000';
+                          // Find the count span and add underline
+                          const countSpan = e.target.parentElement.querySelector('.category-count');
+                          if (countSpan) {
+                            countSpan.style.textDecoration = 'underline';
+                          }
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.color = selectedCategory === category.id ? '#df2020' : '#000';
+                          e.target.style.color = selectedCategory === category.id ? '#000' : '#000';
+                          // Find the count span and remove underline
+                          const countSpan = e.target.parentElement.querySelector('.category-count');
+                          if (countSpan) {
+                            countSpan.style.textDecoration = 'none';
+                          }
                         }}
                       >
                         {category.name || category.title}
-                        <span className="number">{category.productCount || category.count || 0}</span>
                       </a>
+                      <span 
+                        className="category-count"
+                        style={{
+                          color: '#000',
+                          fontSize: '1em',
+                          fontWeight: '600',
+                          marginLeft: '10px',
+                          textDecoration: 'none',
+                          cursor: 'pointer'
+                        }}>
+                        {category.productCount || category.count || 0}
+                      </span>
                     </li>
                   ))}
                   
@@ -237,10 +260,12 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
                         style={{
                           color: '#000',
                           fontWeight: '500',
-                          cursor: 'pointer'
+                          cursor: 'pointer',
+                          textDecoration: 'underline',
+                          fontSize: '1em'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.color = '#df2020';
+                          e.target.style.color = '#000';
                         }}
                         onMouseLeave={(e) => {
                           e.target.style.color = '#000';
@@ -256,15 +281,12 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               )}
             </ul>
           )}
-        </div>
       </div>
 
       {/* Filters */}
-      <div className="sidebar-border mb-40">
-        <div className="sidebar-head">
-          <h6 className="  ">Products Filter</h6>
-        </div>
-        <div className="sidebar-content">
+      <div style={{marginBottom: '20px'}}>
+          {/* Price Section - Commented Out */}
+          {/* 
           <h6 className="   mt-10 mb-10" style={{color: '#000'}}>Price</h6>
           <div className="box-slider-range mt-20 mb-15">
             <div className="row mb-20">
@@ -335,8 +357,9 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               <span className="number-item">56</span>
             </li>
           </ul>
+          */}
 
-          <h6 className="   mt-20 mb-10">Brands</h6>
+          <h6 style={{margin: '20px 0 15px 0', color: '#000', fontWeight: 'bold', fontSize: '16px'}}>Brands</h6>
           {loadingBrands ? (
             <div className="text-center py-3">
               <div className="spinner-border spinner-border-sm text-primary" role="status">
@@ -345,20 +368,44 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               <p className="small text-muted mt-2">Loading brands...</p>
             </div>
           ) : (
-            <ul className="list-checkbox">
+            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
               {brands.length > 0 ? (
                 brands.map((brand, index) => (
-                  <li key={index}>
-                    <label className="cb-container">
+                  <li key={index} style={{marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <label className="cb-container" style={{flex: 1}}>
                       <input 
                         type="checkbox" 
                         checked={selectedBrands.includes(brand.name)}
                         onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
                       />
-                      <span className="text-small" style={{color: '#000'}}>{brand.name}</span>
+                      <span 
+                        className="text-small brand-name" 
+                        style={{color: '#000', fontSize: '14px', textDecoration: 'underline'}}
+                        onMouseEnter={(e) => {
+                          // Find the count span and add underline
+                          const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
+                          if (countSpan) {
+                            countSpan.style.textDecoration = 'underline';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          // Find the count span and remove underline
+                          const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
+                          if (countSpan) {
+                            countSpan.style.textDecoration = 'none';
+                          }
+                        }}
+                      >
+                        {brand.name}
+                      </span>
                       <span className="checkmark"></span>
                     </label>
-                    <span className="number-item">{brand.count}</span>
+                    <span 
+                      className="number-item brand-count" 
+                      style={{color: '#000', fontSize: '1em', fontWeight: '600', marginLeft: '10px', textDecoration: 'none'}}
+                    >
+                      {brand.count}
+                    </span>
                   </li>
                 ))
               ) : (
@@ -366,10 +413,6 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               )}
             </ul>
           )}
-          {/* <a className="btn btn-filter font-sm color-brand-3 font-medium mt-10" href="#ModalFiltersForm" data-bs-toggle="modal">
-            More Fillters
-          </a> */}
-        </div>
       </div>
 
       {/* Best Seller */}

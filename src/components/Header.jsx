@@ -166,43 +166,43 @@ const Header = () => {
                       </ul>
                     </li> */}
                     <li className="has-children">
-                      <Link to="/shop">Shop</Link>
+                      <Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop</Link>
                       <ul className="sub-menu two-col">
-                        <li><Link to="/shop">Shop Grid</Link></li>
-                        <li><Link to="/shop">Shop Grid 2</Link></li>
-                        <li><Link to="/shop">Shop list - Left sidebar</Link></li>
-                        <li><Link to="/shop">Shop list - Right sidebar</Link></li>
-                        <li><Link to="/shop">Shop Fullwidth</Link></li>
-                        <li><Link to="/product">Single Product</Link></li>
-                        <li><Link to="/product">Single Product 2</Link></li>
-                        <li><Link to="/product">Single Product 3</Link></li>
-                        <li><Link to="/product">Single Product 4</Link></li>
-                        <li><Link to="/cart">Shop Cart</Link></li>
-                        <li><Link to="/checkout">Shop Checkout</Link></li>
-                        <li><Link to="/compare">Shop Compare</Link></li>
-                        <li><Link to="/wishlist">Shop Wishlist</Link></li>
+                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Grid</Link></li>
+                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Grid 2</Link></li>
+                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop list - Left sidebar</Link></li>
+                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop list - Right sidebar</Link></li>
+                        <li><Link to="/shop" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Fullwidth</Link></li>
+                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product</Link></li>
+                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 2</Link></li>
+                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 3</Link></li>
+                        <li><Link to="/product" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Single Product 4</Link></li>
+                        <li><Link to="/cart" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Cart</Link></li>
+                        <li><Link to="/checkout" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Checkout</Link></li>
+                        <li><Link to="/compare" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Compare</Link></li>
+                        <li><Link to="/wishlist" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Shop Wishlist</Link></li>
                       </ul>
                     </li>
                     <li className="has-children">
-                      <a href="/vendors">Vendors</a>
+                      <a href="/vendors" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendors</a>
                       <ul className="sub-menu">
-                        <li><a href="/vendors">Vendors Listing</a></li>
-                        <li><a href="/vendor">Vendor Single</a></li>
+                        <li><a href="/vendors" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendors Listing</a></li>
+                        <li><a href="/vendor" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Vendor Single</a></li>
                       </ul>
                     </li>
                     <li className="has-children">
-                      <a href="#">Pages</a>
+                      <a href="#" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Pages</a>
                       <ul className="sub-menu">
-                        <li><a href="/about">About Us</a></li>
-                        <li><a href="/careers">Careers</a></li>
-                        <li><a href="/terms">Term and Condition</a></li>
-                        <li><a href="/register">Register</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/404">Error 404</a></li>
+                        <li><a href="/about" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>About Us</a></li>
+                        <li><a href="/careers" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Careers</a></li>
+                        <li><a href="/terms" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Term and Condition</a></li>
+                        <li><a href="/register" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Register</a></li>
+                        <li><a href="/login" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Login</a></li>
+                        <li><a href="/404" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Error 404</a></li>
                       </ul>
                     </li>
                     <li>
-                      <a href="https://blog.vcloudtech.com/">Blog</a>
+                      <a href="https://blog.vcloudtech.com/" style={{color: '#000 !important', fontFamily: 'DM Sans, sans-serif'}}>Blog</a>
                     </li>
                   </ul>
                 </nav>

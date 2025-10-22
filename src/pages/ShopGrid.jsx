@@ -156,19 +156,7 @@ const ShopGrid = () => {
 
   return (
     <main className="main">
-      {/* Breadcrumb */}
-      <div className="section-box">
-        <div className="breadcrumbs-div">
-          <div className="container">
-                 <ul className="breadcrumb">
-                   <li><Link className="font-xs color-gray-1000" to="/">Home</Link></li>
-                   <li><Link className="font-xs color-gray-500" to="/shop">Electronics</Link></li>
-                   <li><Link className="font-xs color-gray-500" to="/shop">Cell phone</Link></li>
-                   <li><Link className="font-xs color-gray-500" to="/shop">Accessories</Link></li>
-                 </ul>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Main Content */}
       <div className="section-box shop-template mt-30">
@@ -303,7 +291,7 @@ const ShopGrid = () => {
                     <div className="product-card" style={{
                       border: '1px solid #e0e0e0',
                       borderRadius: '8px',
-                      padding: '20px',
+                      padding: '15px',
                       backgroundColor: '#fff',
                       height: '100%',
                       display: 'flex',
@@ -311,27 +299,27 @@ const ShopGrid = () => {
                       cursor: 'pointer'
                     }}>
                       <Link to={`/product/${product.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
-                        <div className="text-center mb-3">
+                        <div className="text-center mb-2">
                           <img 
                             src={product.image} 
                             alt={product.name} 
                             style={{
                               width: '100%',
-                              height: '200px',
+                              height: '150px',
                               objectFit: 'contain',
-                              marginBottom: '15px'
+                              marginBottom: '10px'
                             }}
                             onError={(e) => {e.target.src='/src/assets/imgs/page/homepage1/imgsp1.png'}} 
                           />
                         </div>
                         
                         <div className="text-center">
-                          <h6 className="mb-2" style={{
-                            fontSize: '14px',
+                          <h6 className="mb-1" style={{
+                            fontSize: '13px',
                             fontWeight: 'bold',
                             color: '#000',
                             lineHeight: '1.3',
-                            minHeight: '36px',
+                            minHeight: '32px',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
@@ -357,23 +345,23 @@ const ShopGrid = () => {
                             </Link>
                           </h6>
                           
-                          <div className="mb-2">
-                            <span style={{fontSize: '12px', color: '#666'}}>
+                          <div className="mb-1">
+                            <span style={{fontSize: '11px', color: '#666'}}>
                               {product.brand?.title || 'N/A'}
                             </span>
                           </div>
                           
-                          <div className="mb-2 d-flex justify-content-between">
-                            <span style={{fontSize: '12px', color: '#666', fontWeight: '600'}}>
+                          <div className="mb-1 d-flex justify-content-between">
+                            <span style={{fontSize: '11px', color: '#666', fontWeight: '600'}}>
                               SKU: {product.sku || product.id}
                             </span>
-                            <span style={{fontSize: '12px', color: '#666', fontWeight: '600'}}>
+                            <span style={{fontSize: '11px', color: '#666', fontWeight: '600'}}>
                               UPC: {product.upc?.title || 'N/A'}
                             </span>
                           </div>
                           
-                          <div className="mb-3">
-                            <span style={{fontSize: '12px', fontWeight: '500', color: '#000'}}>
+                          <div className="mb-2">
+                            <span style={{fontSize: '11px', fontWeight: '500', color: '#000'}}>
                               <a 
                                 href="/login" 
                                 onClick={(e) => e.stopPropagation()}
@@ -400,12 +388,12 @@ const ShopGrid = () => {
                               <label 
                                 className="form-check-label" 
                                 htmlFor={`compare-${product.id}`}
-                                style={{fontSize: '12px', color: '#666', marginLeft: '5px'}}
+                                style={{fontSize: '11px', color: '#666', marginLeft: '5px'}}
                               >
                                 Compare
                               </label>
                             </div>
-                            <span style={{fontSize: '12px', color: '#666'}}>
+                            <span style={{fontSize: '11px', color: '#666'}}>
                               In Stock: {Math.floor(Math.random() * 5000) + 100}
                             </span>
                           </div>

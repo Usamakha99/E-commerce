@@ -107,184 +107,270 @@ const ProductDetail = () => {
             <div className="col-lg-12">
               <h3 className="color-brand-3 mb-5 mw-80">{product.name || product.title}</h3>
               <div className="row">
-                <div className="col-xl-6 col-lg-7 col-md-8 col-sm-7 text-center text-sm-start mb-mobile">
-                      <span className="font-sm color-brand-3 font-medium">Brand:</span>
-                      <a className="font-sm color-brand-3 font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
-                  
-                      <div className="sku-product d-inline-block" style={{ marginLeft: '16px' }}>
-                    <span className="font-sm color-brand-3 font-medium">SKU:</span>
+                    <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile">
+                      <div className="d-inline-block">
+                        <span className="font-sm color-brand-3 font-medium">Brand:</span>
+                        <a className="font-sm color-brand-3 font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
+                      </div>
+
+                      <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+
+                      <div className="sku-product d-inline-block">
+                        <span className="font-sm color-brand-3 font-medium">SKU:</span>
                         <span className="font-sm color-brand-3 font-medium"> {product.sku || 'N/A'}</span>
-                  </div>
-                  {product.upc && (
-                        <div className="upc-product d-inline-block" style={{ marginLeft: '20px' }}>
-                      <span className="font-sm color-brand-3 font-medium">UPC:</span>
-                          <span className="font-sm color-brand-3 font-medium"> {product.upc}</span>
-                    </div>
-                  )}
+                      </div>
+
+                      {product.upc && (
+                        <>
+                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <div className="upc-product d-inline-block">
+                            <span className="font-sm color-brand-3 font-medium">UPC:</span>
+                            <span className="font-sm color-brand-3 font-medium"> {product.upc}</span>
+                          </div>
+                        </>
+                      )}
+
+                      {product.category && (
+                        <>
+                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <div className="d-inline-block">
+                            <span className="font-sm color-brand-3 font-medium">Category:</span>
+                            <a className="font-sm color-brand-3 font-medium" href="#"> {typeof product.category === 'object' ? product.category.title : product.category}</a>
+                          </div>
+                        </>
+                      )}
+
+                      {product.subCategory && (
+                        <>
+                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <div className="d-inline-block">
+                            <span className="font-sm color-brand-3 font-medium">Sub Category:</span>
+                            <a className="font-sm color-brand-3 font-medium" href="#"> {typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
+                          </div>
+                        </>
+                      )}
                     </div>
 
                   </div>
                   <div className="border-bottom pt-20 mb-30"></div>
             </div>
 
-            {/* Product Image Gallery */}
+                {/* Product Image Gallery - Clean Design */}
             <div className="col-lg-5">
-              <div className="gallery-image" style={{
-                backgroundColor: '#fff',
-                padding: '20px'
-              }}>
-                <div className="galleries">
-                  <div className="detail-gallery">
-                        {product.discount > 0 && (
-                          <label className="label" style={{
-                            position: 'absolute',
-                            top: '15px',
-                            left: '15px',
-                            backgroundColor: '#df2020',
-                            color: 'white',
-                            padding: '6px 12px',
-                            borderRadius: '20px',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            zIndex: 10
-                          }}>-{product.discount}%</label>
-                        )}
-                    <div className="product-image-slider" style={{
-                      backgroundColor: '#fff',
-                      padding: '20px',
+                  <div style={{
+                    backgroundColor: '#fff',
+                    padding: '20px',
+                    borderRadius: '8px'
+                  }}>
+                    {/* Main Product Image */}
+                    <div style={{
                       textAlign: 'center',
-                      minHeight: '300px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      marginBottom: '20px',
                       position: 'relative'
                     }}>
-                      <figure style={{margin: 0, width: '100%'}}>
-                            <img 
-                              src={selectedImage || product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
-                              alt={product.name || 'product image'}
-                              style={{
-                                maxHeight: '280px', 
-                                width: '100%', 
-                                objectFit: 'contain'
-                              }}
-                              onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
-                            />
-                      </figure>
+                      {product.discount > 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '10px',
+                          left: '10px',
+                          backgroundColor: '#ff4444',
+                          color: 'white',
+                          padding: '5px 10px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          zIndex: 10
+                        }}>
+                          -{product.discount}%
                     </div>
+                      )}
+
+                      {/* Previous Arrow Button */}
+                      {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
+                        <button
+                          onClick={() => {
+                            const allImages = [
+                              product.image,
+                              ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '')) : [])
+                            ].filter(Boolean);
+                            const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
+                            const prevIndex = currentIndex > 0 ? currentIndex - 1 : allImages.length - 1;
+                            setSelectedImage(prevIndex === 0 ? null : allImages[prevIndex]);
+                          }}
+                          style={{
+                            position: 'absolute',
+                            left: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            cursor: 'pointer',
+                            fontSize: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 20,
+                            transition: 'background-color 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
+                        >
+                          ‹
+                        </button>
+                      )}
+
+                      <img
+                        src={selectedImage || product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
+                        alt={product.name || 'product image'}
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '300px',
+                          objectFit: 'contain',
+                          borderRadius: '4px'
+                        }}
+                        onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
+                      />
+
+                      {/* Next Arrow Button */}
+                      {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
+                        <button
+                          onClick={() => {
+                            const allImages = [
+                              product.image,
+                              ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '')) : [])
+                            ].filter(Boolean);
+                            const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
+                            const nextIndex = currentIndex < allImages.length - 1 ? currentIndex + 1 : 0;
+                            setSelectedImage(nextIndex === 0 ? null : allImages[nextIndex]);
+                          }}
+                          style={{
+                            position: 'absolute',
+                            right: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            cursor: 'pointer',
+                            fontSize: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 20,
+                            transition: 'background-color 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
+                        >
+                          ›
+                        </button>
+                      )}
                   </div>
-                  <div className="slider-nav-thumbnails" style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '12px',
-                    marginTop: '20px',
-                    justifyContent: 'center',
-                    padding: '15px'
-                  }}>
-                    <div>
-                      <div className="item-thumb" style={{
-                        border: selectedImage === null ? '2px solid #df2020' : '1px solid #ddd',
-                        borderRadius: '4px',
-                        padding: '2px',
-                        width: '60px',
-                        height: '60px',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        transition: 'border-color 0.3s ease'
-                      }}
-                      onClick={() => setSelectedImage(null)}
-                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
-                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === null ? '#df2020' : '#ddd'}>
-                            <img 
-                              src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'} 
-                              alt={product.name || 'product image'} 
+
+                    {/* Thumbnail Images */}
+                    <div style={{
+                      display: 'flex',
+                      gap: '10px',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap'
+                    }}>
+                      {/* Main Image Thumbnail */}
+                      <div
+                        onClick={() => setSelectedImage(null)}
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          border: selectedImage === null ? '2px solid #007bff' : '1px solid #ddd',
+                          borderRadius: '6px',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <img
+                          src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
+                          alt="Main image"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+
+                      {/* Gallery Images */}
+                      {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 4).map((gallery, index) => {
+                        const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => setSelectedImage(imageUrl)}
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              border: selectedImage === imageUrl ? '2px solid #007bff' : '1px solid #ddd',
+                              borderRadius: '6px',
+                              overflow: 'hidden',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            <img
+                              src={imageUrl}
+                              alt={`Gallery ${index + 1}`}
                               style={{
                                 width: '100%',
                                 height: '100%',
                                 objectFit: 'cover'
                               }}
+                              onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
+                            />
+                    </div>
+                        );
+                      })}
+
+                      {/* Fallback Images */}
+                      {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 4).map((img, index) => {
+                        const imageUrl = img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => setSelectedImage(imageUrl)}
+                            style={{
+                              width: '60px',
+                              height: '60px',
+                              border: selectedImage === imageUrl ? '2px solid #007bff' : '1px solid #ddd',
+                              borderRadius: '6px',
+                              overflow: 'hidden',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            <img
+                              src={imageUrl}
+                              alt={`Image ${index + 1}`}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                              onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
                             />
                       </div>
-                    </div>
-                        {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 5).map((gallery, index) => {
-                          const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
-                          return (
-                          <div key={index}>
-                      <div className="item-thumb" style={{
-                        border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
-                        borderRadius: '4px',
-                        padding: '2px',
-                        width: '60px',
-                        height: '60px',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        transition: 'border-color 0.3s ease'
-                      }}
-                      onClick={() => setSelectedImage(imageUrl)}
-                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
-                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === imageUrl ? '#df2020' : '#ddd'}>
-                              <img
-                                src={imageUrl}
-                                alt={gallery.imageTitle || `thumbnail ${index + 1}`}
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'cover'
-                                }}
-                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
-                              />
-                      </div>
-                    </div>
-                          );
-                        })}
-                        {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 5).map((img, index) => {
-                          const imageUrl = img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
-                          return (
-                          <div key={index}>
-                      <div className="item-thumb" style={{
-                        border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
-                        borderRadius: '4px',
-                        padding: '2px',
-                        width: '60px',
-                        height: '60px',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        transition: 'border-color 0.3s ease'
-                      }}
-                      onClick={() => setSelectedImage(imageUrl)}
-                      onMouseEnter={(e) => e.target.style.borderColor = '#df2020'}
-                      onMouseLeave={(e) => e.target.style.borderColor = selectedImage === imageUrl ? '#df2020' : '#ddd'}>
-                              <img
-                                src={imageUrl}
-                                alt={`thumbnail ${index + 1}`}
-                                style={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'cover'
-                                }}
-                                onError={(e) => {e.target.src='/src/assets/imgs/page/product/img-gallery-1.jpg'}}
-                              />
-                      </div>
-                    </div>
-                          );
-                        })}
-                      </div>
+                        );
+                      })}
                     </div>
                       </div>
-                  <div className="box-tags mt-200 mb-30">
-                    {product.category && (
-                      <div className="d-inline-block mr-25">
-                        <span className="font-sm">Category: </span>
-                        <a className="link" href="#">{typeof product.category === 'object' ? product.category.title : product.category}</a>
-                      </div>
-                    )}
-                    {product.subCategory && (
-                      <div className="d-inline-block">
-                        <span className="font-sm">Sub Category: </span>
-                        <a className="link" href="#">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
-                      </div>
-                    )}
-              </div>
+
             </div>
 
             {/* Product Info */}
@@ -304,7 +390,7 @@ const ProductDetail = () => {
                           <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
                             {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
                           </span>
-                  </div>
+                    </div>
                       )}
 
                       {/* Bullet Points from API - Display right below price */}
@@ -317,17 +403,17 @@ const ProductDetail = () => {
                               {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
                                 // If bulletsPoint is an array
                                 product.bulletsPoint.map((bullet, index) => (
-                                  <li key={index} className="font-xs color-brand-3" style={{fontWeight: '100'}}>{bullet}</li>
+                                  <li key={index} className="font-xs color-brand-3" style={{ fontWeight: '100' }}>{bullet}</li>
                                 ))
                               ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
                                 // If bulletsPoint is a comma-separated string
                                 product.bulletsPoint.split(',').map((bullet, index) => (
-                                  <li key={index} className="font-xs color-gray-900" style={{fontWeight: '100'}}>{bullet.trim()}</li>
+                                  <li key={index} className="font-xs color-gray-900" style={{ fontWeight: '100' }}>{bullet.trim()}</li>
                                 ))
                               ) : product.features && product.features.length > 0 ? (
                                 // Fallback to features array
                                 product.features.map((feature, index) => (
-                                  <li key={index} className="font-xs color-gray-900" style={{fontWeight: '100'}}>{feature}</li>
+                                  <li key={index} className="font-xs color-gray-900" style={{ fontWeight: '100' }}>{feature}</li>
                                 ))
                               ) : null}
                         </ul>
@@ -338,7 +424,7 @@ const ProductDetail = () => {
                       {/* {product.shortDescp && (
                     <div className="mb-20">
                       <p className="font-sm color-gray-900">{product.shortDescp}</p>
-                    </div>
+                      </div>
                   )} */}
 
 
@@ -369,26 +455,26 @@ const ProductDetail = () => {
                             marginBottom: '20px'
                           }}>
                             <div style={{ textAlign: 'center' }}>
-                           <a href="/login" style={{
-                             fontSize: '14px',
-                             color: '#1c1463',
-                             textDecoration: 'underline',
-                             fontWeight: 'bold'
-                           }}>Sign In to see pricing</a>
+                              <a href="/login" style={{
+                                fontSize: '14px',
+                                color: '#1c1463',
+                                textDecoration: 'underline',
+                                fontWeight: 'bold'
+                              }}>Sign In to see pricing</a>
                               <div style={{
                                 marginTop: '12px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center'
                               }}>
-                                 <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
-                                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                     <polyline points="23 4 23 10 17 10"></polyline>
-                                     <polyline points="1 20 1 14 7 14"></polyline>
-                                     <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                                   </svg>
-                                 </span>
-                                 <span style={{ fontSize: '14px', color: '#000', fontWeight: 'semibold' }}>
+                                <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <polyline points="1 20 1 14 7 14"></polyline>
+                                    <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                  </svg>
+                                </span>
+                                <span style={{ fontSize: '14px', color: '#000', fontWeight: 'semibold' }}>
                                   {product.stock > 0 ? `In Stock: ${product.stock}` : 'Out of Stock'}
                                 </span>
                         </div>
@@ -431,8 +517,8 @@ const ProductDetail = () => {
                         </div>
                         </div>
 
-                  </div>
-                </div>
+                      </div>
+                        </div>
               </div>
             </div>
           </div>
@@ -492,7 +578,7 @@ const ProductDetail = () => {
                       onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
                   role="tab"
                 >
-                      <span style={{marginRight: '8px'}}>📝</span>Description
+                      <span style={{ marginRight: '8px' }}>📝</span>Description
                 </a>
               </li>
               <li>
@@ -502,7 +588,7 @@ const ProductDetail = () => {
                       onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
                   role="tab"
                 >
-                      <span style={{marginRight: '8px'}}>⚙️</span>Specification
+                      <span style={{ marginRight: '8px' }}>⚙️</span>Specification
                 </a>
               </li>
               <li>
@@ -512,7 +598,7 @@ const ProductDetail = () => {
                       onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
                   role="tab"
                 >
-                      <span style={{marginRight: '8px'}}>ℹ️</span>Additional information
+                      <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
                 </a>
               </li>
               <li>
@@ -522,7 +608,7 @@ const ProductDetail = () => {
                       onClick={(e) => { e.preventDefault(); setActiveTab('reviews'); }}
                   role="tab"
                 >
-                      <span style={{marginRight: '8px'}}>⭐</span>Reviews (2)
+                      <span style={{ marginRight: '8px' }}>⭐</span>Reviews (2)
                 </a>
               </li>
               <li>
@@ -532,7 +618,7 @@ const ProductDetail = () => {
                       onClick={(e) => { e.preventDefault(); setActiveTab('vendor'); }}
                   role="tab"
                 >
-                      <span style={{marginRight: '8px'}}>🏪</span>Vendor
+                      <span style={{ marginRight: '8px' }}>🏪</span>Vendor
                 </a>
               </li>
             </ul>
@@ -545,7 +631,7 @@ const ProductDetail = () => {
                           <div className="mb-30">
                             <h5 className="mb-20">Product Description</h5>
                             <p className="font-md color-gray-900">{product.longDescp}</p>
-                          </div>
+                  </div>
                         )}
 
                         {/* Short Description if no long description */}
@@ -579,7 +665,7 @@ const ProductDetail = () => {
                         {product.metaDescp && product.metaDescp !== product.shortDescp && (
                           <div className="mb-30">
                             <p className="font-sm color-gray-700">{product.metaDescp}</p>
-                  </div>
+                          </div>
                         )}
 
                         {/* Fallback if no description */}
@@ -597,25 +683,25 @@ const ProductDetail = () => {
                     <table className="table table-striped">
                       <tbody>
                             {product.sku && (
-                              <tr>
+                        <tr>
                                 <td className="font-sm-bold color-gray-900">SKU</td>
                                 <td className="font-sm color-gray-700">{product.sku}</td>
-                              </tr>
+                        </tr>
                             )}
                             {product.brand && (
-                              <tr>
+                        <tr>
                                 <td className="font-sm-bold color-gray-900">Brand</td>
                                 <td className="font-sm color-gray-700">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
-                              </tr>
+                        </tr>
                             )}
                             {product.mfr && (
-                              <tr>
+                        <tr>
                                 <td className="font-sm-bold color-gray-900">Manufacturer</td>
                                 <td className="font-sm color-gray-700">{product.mfr}</td>
-                              </tr>
+                        </tr>
                             )}
                             {product.techPartNo && (
-                              <tr>
+                        <tr>
                                 <td className="font-sm-bold color-gray-900">Part Number</td>
                                 <td className="font-sm color-gray-700">{product.techPartNo}</td>
                         </tr>
@@ -645,24 +731,24 @@ const ProductDetail = () => {
                         </tr>
                             )}
                             {product.endOfLifeDate && (
-                        <tr>
+                              <tr>
                                 <td className="font-sm-bold color-gray-900">End of Life Date</td>
                                 <td className="font-sm color-gray-700">{product.endOfLifeDate}</td>
-                        </tr>
+                              </tr>
                             )}
                             {product.quantity !== undefined && (
-                        <tr>
+                              <tr>
                                 <td className="font-sm-bold color-gray-900">Available Quantity</td>
                                 <td className="font-sm color-gray-700">{product.quantity}</td>
-                        </tr>
+                              </tr>
                             )}
                             {/* Fallback message */}
                             {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
-                        <tr>
+                              <tr>
                                 <td colSpan="2" className="text-center font-sm color-gray-500">
                                   No specifications available for this product.
                                 </td>
-                        </tr>
+                              </tr>
                             )}
                       </tbody>
                     </table>
@@ -819,7 +905,7 @@ const ProductDetail = () => {
         </div>
       </section>
 
-     
+
 
       {/* Features Section */}
       <section className="section-box mt-90 mb-50">
