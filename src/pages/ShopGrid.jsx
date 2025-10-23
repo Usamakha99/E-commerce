@@ -173,7 +173,7 @@ const ShopGrid = () => {
   };
 
   return (
-    <main className="main" style={{ paddingTop: '80px' }}>
+    <main className="main" style={{ paddingTop: '60px' }}>
 
 
       {/* Main Content */}

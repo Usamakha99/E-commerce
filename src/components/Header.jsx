@@ -104,10 +104,10 @@ const Header = () => {
                   alt="V Cloud" 
                   src="/src/assets/V Cloud Logo final-01.svg" 
                   style={{ 
-                    width: '240px', 
+                    width: '200px', 
                     position: 'relative',
                     right: '10px',
-                    height: '70px'
+                    height: '50px'
                   }} 
                 />
               </Link>

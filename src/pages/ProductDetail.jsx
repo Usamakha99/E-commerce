@@ -70,7 +70,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <main className="main" style={{ paddingTop: '80px' }}>
+    <main className="main">
       {loading && (
         <div className="container text-center py-5">
           <div className="spinner-border text-primary" role="status">
@@ -235,7 +235,7 @@ const ProductDetail = () => {
                         alt={product.name || 'product image'}
                         style={{
                           maxWidth: '100%',
-                          maxHeight: '300px',
+                          maxHeight: '500px',
                           objectFit: 'contain',
                           borderRadius: '4px'
                         }}
@@ -403,7 +403,7 @@ const ProductDetail = () => {
                       {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
                         (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim()) ||
                         (product.features && product.features.length > 0)) && (
-                          <div className="product-description color-gray-900 mb-30" style={{ marginTop: '30px' }}>
+                          <div className="product-description color-gray-900 mb-30" style={{ marginTop: '30px', marginLeft: '80px' }}>
                             <h6 className="color-brand-3 mb-15">Key Features:</h6>
                             <ul style={{ listStyle: 'none', padding: 0 }}>
                               {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
