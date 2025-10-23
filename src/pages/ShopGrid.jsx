@@ -230,7 +230,7 @@ const ShopGrid = () => {
                       </div>
                 </div>
                     <div className="d-inline-block">
-                      <span className="font-sm color-gray-500 font-medium">Show</span>
+                      <span className="font-sm font-medium">Show</span>
                       <div className="dropdown dropdown-sort border-1-right" style={{position: 'relative'}}>
                         <button 
                           className="btn dropdown-toggle font-sm   font-medium" 
@@ -303,7 +303,7 @@ const ShopGrid = () => {
                     <div className={viewType === 'list' ? 'col-12' : 'col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12'}>
                     <div className="product-card" style={{
                       border: '1px solid #e0e0e0',
-                      borderRadius: '8px',
+                      borderRadius: '0',
                       padding: '15px',
                       backgroundColor: '#fff',
                       height: '100%',

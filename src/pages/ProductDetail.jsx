@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SocialShare from '../components/SocialShare';
+import ProductInquiryModal from '../components/ProductInquiryModal';
 import { useProduct } from '../hooks/useProduct';
 import { useCart } from '../hooks/useCart';
 
@@ -8,6 +9,7 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
   const { id } = useParams();
   
   // Fetch product from API
@@ -25,7 +27,6 @@ const ProductDetail = () => {
     sku: 'EcomTech13689',
     upc: '123456789012',
     rating: 5,
-    reviews: 2,
     description: 'High-quality smartphone with amazing features',
     features: [
       '8k super steady video',
@@ -377,43 +378,58 @@ const ProductDetail = () => {
             <div className="col-lg-7">
               <div className="row">
                 <div className="col-lg-7 col-md-7 mb-30">
-                  <div className="box-product-price">
+                  {/* <div className="box-product-price">
                         <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price?.toFixed(2) || '0.00'}</h3>
                         {product.originalPrice && product.originalPrice !== product.price && (
                           <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice.toFixed(2)}</span>
                     )}
-                  </div>
+                  </div> */}
 
                       {/* Stock Status */}
-                      {product.stock !== undefined && (
+                      {/* {product.stock !== undefined && (
                   <div className="box-progress-product mt-15 mb-20">
                           <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
                             {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
                           </span>
                     </div>
-                      )}
+                      )} */}
 
                       {/* Bullet Points from API - Display right below price */}
                       {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
                         (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim()) ||
                         (product.features && product.features.length > 0)) && (
-                          <div className="product-description color-gray-900 mb-30">
+                          <div className="product-description color-gray-900 mb-30" style={{ marginTop: '30px' }}>
                             <h6 className="color-brand-3 mb-15">Key Features:</h6>
-                            <ul className="list-dot">
+                            <ul style={{ listStyle: 'none', padding: 0 }}>
                               {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
                                 // If bulletsPoint is an array
                                 product.bulletsPoint.map((bullet, index) => (
-                                  <li key={index} className="font-xs color-brand-3" style={{ fontWeight: '100' }}>{bullet}</li>
+                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
+                                    </svg>
+                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet}</span>
+                                  </li>
                                 ))
                               ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
                                 // If bulletsPoint is a comma-separated string
                                 product.bulletsPoint.split(',').map((bullet, index) => (
-                                  <li key={index} className="font-xs color-gray-900" style={{ fontWeight: '100' }}>{bullet.trim()}</li>
+                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
+                                    </svg>
+                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet.trim()}</span>
+                                  </li>
                                 ))
                               ) : product.features && product.features.length > 0 ? (
                                 // Fallback to features array
                                 product.features.map((feature, index) => (
-                                  <li key={index} className="font-xs color-gray-900" style={{ fontWeight: '100' }}>{feature}</li>
+                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
+                                    </svg>
+                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{feature}</span>
+                                  </li>
                                 ))
                               ) : null}
                         </ul>
@@ -428,7 +444,7 @@ const ProductDetail = () => {
                   )} */}
 
 
-                  <div className="buy-product mt-25">
+                  {/* <div className="buy-product mt-25">
                     <div className="font-sm text-quantity mb-10">Quantity</div>
                     <div className="box-quantity">
                       <div className="input-quantity">
@@ -440,7 +456,7 @@ const ProductDetail = () => {
                         <a className="btn btn-buy" href="/checkout">Buy now</a>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-lg-5 col-md-5">
                   <div className="pl-30 pl-mb-0">
@@ -499,19 +515,22 @@ const ProductDetail = () => {
                             }}>
                               Questions regarding this product, volume pricing, or shipping options?
                             </p>
-                            <button style={{
-                              backgroundColor: '#1c1463',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              padding: '8px 16px',
-                              width: 'auto',
-                              fontSize: '14px',
-                              fontWeight: '500',
-                              cursor: 'pointer',
-                              display: 'block',
-                              margin: '0 auto'
-                            }}>
+                            <button 
+                              onClick={() => setShowInquiryModal(true)}
+                              style={{
+                                backgroundColor: '#1c1463',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                padding: '8px 16px',
+                                width: 'auto',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                display: 'block',
+                                margin: '0 auto'
+                              }}
+                            >
                               Contact our sales team
                             </button>
                         </div>
@@ -522,7 +541,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-          <div className="border-bottom pt-30 mb-40"></div>
+          {/* <div className="border-bottom pt-30 mb-40"></div> */}
 
           {/* Frequently Bought Together */}
               {/* <h4 className="color-brand-3 mb-20">Frequently Bought Together</h4>
@@ -602,28 +621,6 @@ const ProductDetail = () => {
                   style={{ color: '#000', fontSize: '18px' }}
                 >
                       <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
-                </a>
-              </li>
-              <li>
-                <a 
-                  className={activeTab === 'reviews' ? 'active' : ''} 
-                  href="#tab-reviews" 
-                      onClick={(e) => { e.preventDefault(); setActiveTab('reviews'); }}
-                  role="tab"
-                  style={{ color: '#000', fontSize: '18px' }}
-                >
-                      <span style={{ marginRight: '8px' }}>⭐</span>Reviews (2)
-                </a>
-              </li>
-              <li>
-                <a 
-                  className={activeTab === 'vendor' ? 'active' : ''} 
-                  href="#tab-vendor" 
-                      onClick={(e) => { e.preventDefault(); setActiveTab('vendor'); }}
-                  role="tab"
-                  style={{ color: '#000', fontSize: '18px' }}
-                >
-                      <span style={{ marginRight: '8px' }}>🏪</span>Vendor
                 </a>
               </li>
             </ul>
@@ -791,120 +788,6 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {activeTab === 'reviews' && (
-                <div className="tab-pane fade active show" id="tab-reviews" role="tabpanel">
-                  <div className="comments-area">
-                    <div className="row">
-                      <div className="col-lg-8">
-                        <h4 className="mb-30 title-question">Customer questions & answers</h4>
-                        <div className="comment-list">
-                          <div className="single-comment justify-content-between d-flex mb-30 hover-up">
-                            <div className="user justify-content-between d-flex">
-                              <div className="thumb text-center">
-                                <img src="/src/assets/imgs/page/product/author-2.png" alt="Ecom" />
-                                <a className="font-heading text-brand" href="#">Sienna</a>
-                              </div>
-                              <div className="desc">
-                                <div className="d-flex justify-content-between mb-10">
-                                  <div className="d-flex align-items-center">
-                                    <span className="font-xs color-gray-700">December 4, 2022 at 3:12 pm</span>
-                                  </div>
-                                  <div className="product-rate d-inline-block">
-                                        <div className="product-rating" style={{ width: '100%' }}></div>
-                                  </div>
-                                </div>
-                                <p className="mb-10 font-sm color-gray-900">
-                                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, suscipit exercitationem accusantium obcaecati quos voluptate nesciunt facilis itaque modi commodi dignissimos sequi repudiandae minus ab deleniti totam officia id incidunt?
-                                  <a className="reply" href="#"> Reply</a>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-4">
-                        <h4 className="mb-30 title-question">Customer reviews</h4>
-                        <div className="d-flex mb-30">
-                          <div className="product-rate d-inline-block mr-15">
-                                <div className="product-rating" style={{ width: '90%' }}></div>
-                          </div>
-                          <h6>4.8 out of 5</h6>
-                        </div>
-                        <div className="progress">
-                          <span>5 star</span>
-                              <div className="progress-bar" role="progressbar" style={{ width: '50%' }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                        </div>
-                        <div className="progress">
-                          <span>4 star</span>
-                              <div className="progress-bar" role="progressbar" style={{ width: '25%' }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                        </div>
-                        <div className="progress">
-                          <span>3 star</span>
-                              <div className="progress-bar" role="progressbar" style={{ width: '45%' }} aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">45%</div>
-                        </div>
-                        <div className="progress">
-                          <span>2 star</span>
-                              <div className="progress-bar" role="progressbar" style={{ width: '65%' }} aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">65%</div>
-                        </div>
-                        <div className="progress mb-30">
-                          <span>1 star</span>
-                              <div className="progress-bar" role="progressbar" style={{ width: '85%' }} aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
-                        </div>
-                        <a className="font-xs text-muted" href="#">How are ratings calculated?</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === 'vendor' && (
-                <div className="tab-pane fade active show" id="tab-vendor" role="tabpanel">
-                  <div className="vendor-logo d-flex mb-30">
-                    <img src="/src/assets/imgs/page/product/futur.png" alt="" />
-                    <div className="vendor-name ml-15">
-                      <h6><a href="/vendor">Futur Tech.</a></h6>
-                      <div className="product-rate-cover text-end">
-                        <div className="product-rate d-inline-block">
-                              <div className="product-rating" style={{ width: '90%' }}></div>
-                        </div>
-                        <span className="font-small ml-5 text-muted"> (32 reviews)</span>
-                      </div>
-                    </div>
-                  </div>
-                  <ul className="contact-infor mb-50">
-                    <li>
-                      <img src="/src/assets/imgs/page/product/icon-location.svg" alt="" />
-                      <strong>Address:</strong>
-                      <span> 5171 W Campbell Ave undefined Kent, Utah 53127 United States</span>
-                    </li>
-                    <li>
-                      <img src="/src/assets/imgs/page/product/icon-contact.svg" alt="" />
-                      <strong>Contact Seller:</strong>
-                      <span> (+91) - 540-025-553</span>
-                    </li>
-                  </ul>
-                  <div className="d-flex mb-25">
-                    <div className="mr-30">
-                      <p className="color-brand-1 font-xs">Rating</p>
-                      <h4 className="mb-0">92%</h4>
-                    </div>
-                    <div className="mr-30">
-                      <p className="color-brand-1 font-xs">Ship on time</p>
-                      <h4 className="mb-0">100%</h4>
-                    </div>
-                    <div>
-                      <p className="color-brand-1 font-xs">Chat response</p>
-                      <h4 className="mb-0">89%</h4>
-                    </div>
-                  </div>
-                  <p className="font-sm color-gray-500 mb-15">
-                    Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta in addition to soups and salads. Noodles & Company was founded in 1995 by Aaron Kennedy and is headquartered in Broomfield, Colorado. The company went public in 2013 and recorded a $457 million revenue in 2017.In late 2018, there were 460 Noodles & Company locations across 29 states and Washington, D.C.
-                  </p>
-                  <p className="font-sm color-gray-500">
-                    Proin congue dapibus rhoncus. Curabitur ipsum orci, malesuada in porttitor a, porttitor quis diam. Nunc at arcu ut turpis facilisis volutpat. Proin tristique, mauris non gravida dignissim, purus mauris malesuada tellus, in tincidunt orci enim eget ligula. Quisque bibendum, ipsum id malesuada placerat, purus felis vehicula risus, vel fringilla justo erat ullamcorper ligula. Fusce congue ullamcorper ligula, at commodo turpis molestie vel.
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -996,6 +879,13 @@ const ProductDetail = () => {
       </section>
         </>
       )}
+
+      {/* Product Inquiry Modal */}
+      <ProductInquiryModal 
+        isOpen={showInquiryModal}
+        onClose={() => setShowInquiryModal(false)}
+        productName={product.name}
+      />
     </main>
   );
 };

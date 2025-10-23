@@ -13,6 +13,7 @@ const Header = () => {
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const [dropdownTimeouts, setDropdownTimeouts] = useState({});
   const [languageData, setLanguageData] = useState({
     English: { flag: '/src/assets/imgs/template/en.svg', name: 'English' },
     Français: { flag: '/src/assets/imgs/template/flag-fr.svg', name: 'Français' },
@@ -84,56 +85,77 @@ const Header = () => {
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            width: '100%',
+            gap: '20px'
           }}>
             
-            {/* Logo */}
-            <Link to="/" style={{ display: 'flex', alignItems:"center", textDecoration: 'none' }}>
-              <img 
-                alt="V Cloud" 
-                src="/src/assets/V Cloud Logo final-01.svg" 
-                style={{ 
-                  width: '200px', 
-                  height: '70px'
-                }} 
-              />
-            </Link>
+            {/* Left side - Logo and Navigation */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '120px', flex: '1' }}>
+              {/* Logo */}
+              <Link to="/" style={{ display: 'flex', alignItems:"center", textDecoration: 'none' }}>
+                <img 
+                  alt="V Cloud" 
+                  src="/src/assets/V Cloud Logo final-01.svg" 
+                  style={{ 
+                    width: '240px', 
+                    position: 'relative',
+                    right: '10px',
+                    height: '70px'
+                  }} 
+                />
+              </Link>
 
-            {/* Navigation */}
-            <nav style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+              {/* Navigation */}
+              <nav style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
               {/* Shop Dropdown */}
               <div 
                 style={{ position: 'relative' }}
-                onMouseEnter={() => setShowShopDropdown(true)}
-                onMouseLeave={() => setShowShopDropdown(false)}
+                onMouseEnter={() => {
+                  clearTimeout(dropdownTimeouts.shop);
+                  setShowShopDropdown(true);
+                }}
+                onMouseLeave={() => {
+                  const timeout = setTimeout(() => {
+                    setShowShopDropdown(false);
+                  }, 200);
+                  setDropdownTimeouts(prev => ({ ...prev, shop: timeout }));
+                }}
               >
                 <Link to="/shop" style={{
-                  color: '#333',
+                  color: '#111A45',
                   textDecoration: 'none',
                   fontSize: '16px',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Grotesk, sans-serif',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px'
+                  gap: '5px',
+                  fontWeight: '600'
                 }}>
                   Shop
-                  <span style={{ fontSize: '12px' }}>▼</span>
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L5 5L9 1" stroke="#111A45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </Link>
                 {showShopDropdown && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: '0',
-                    backgroundColor: 'white',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                    padding: '10px 0',
-                    minWidth: '300px',
-                    zIndex: 1000
-                  }}>
+                  <div 
+                    onMouseEnter={() => clearTimeout(dropdownTimeouts.shop)}
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: '0',
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 32px rgba(17, 26, 69, 0.12)',
+                      padding: '12px 0',
+                      minWidth: '320px',
+                      zIndex: 1000,
+                      marginTop: '4px'
+                    }}
+                  >
                     {loadingCategories ? (
-                      <div style={{ padding: '8px 15px', color: '#666', fontSize: '14px' }}>Loading categories...</div>
+                      <div style={{ padding: '12px 20px', color: '#666', fontSize: '14px' }}>Loading categories...</div>
                     ) : categories.length > 0 ? (
                       categories.slice(0, 8).map((category, index) => (
                         <div key={category.id || index} style={{ position: 'relative' }}>
@@ -141,19 +163,31 @@ const Header = () => {
                             to={`/shop?category=${category.id}`}
                             style={{ 
                               display: 'block', 
-                              padding: '8px 15px', 
-                              color: '#333', 
+                              padding: '12px 20px', 
+                              color: '#111A45', 
                               textDecoration: 'none', 
                               fontSize: '14px',
-                              borderBottom: '1px solid #f0f0f0'
+                              fontFamily: 'Space Grotesk, sans-serif',
+                              fontWeight: '500',
+                              transition: 'all 0.2s ease',
+                              borderBottom: index < categories.slice(0, 8).length - 1 ? '1px solid #f0f0f0' : 'none'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = '#f8f9fa';
+                              e.target.style.color = '#111A45';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'transparent';
+                              e.target.style.color = '#111A45';
                             }}
                           >
                             {category.name || category.title}
                             <span style={{ 
                               float: 'right', 
                               fontSize: '12px', 
-                              color: '#666',
-                              marginLeft: '10px'
+                              color: '#888',
+                              marginLeft: '10px',
+                              fontWeight: '400'
                             }}>
                               ({category.productCount || category.count || 0})
                             </span>
@@ -161,7 +195,7 @@ const Header = () => {
                         </div>
                       ))
                     ) : (
-                      <div style={{ padding: '8px 15px', color: '#666', fontSize: '14px' }}>No categories found</div>
+                      <div style={{ padding: '12px 20px', color: '#666', fontSize: '14px' }}>No categories found</div>
                     )}
                   </div>
                 )}
@@ -170,116 +204,320 @@ const Header = () => {
               {/* Vendors Dropdown */}
               <div 
                 style={{ position: 'relative' }}
-                onMouseEnter={() => setShowVendorsDropdown(true)}
-                onMouseLeave={() => setShowVendorsDropdown(false)}
+                onMouseEnter={() => {
+                  clearTimeout(dropdownTimeouts.vendors);
+                  setShowVendorsDropdown(true);
+                }}
+                onMouseLeave={() => {
+                  const timeout = setTimeout(() => {
+                    setShowVendorsDropdown(false);
+                  }, 200);
+                  setDropdownTimeouts(prev => ({ ...prev, vendors: timeout }));
+                }}
               >
-                <a href="/vendors" style={{
-                  color: '#333',
-                  textDecoration: 'none',
-                  fontSize: '16px',
-                  fontFamily: 'DM Sans, sans-serif',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}>
-                  Vendors
-                  <span style={{ fontSize: '12px' }}>▼</span>
-                </a>
+                 <a href="/vendors" style={{
+                   color: '#111A45',
+                   textDecoration: 'none',
+                   fontSize: '16px',
+                   fontFamily: 'Space Grotesk, sans-serif',
+                   display: 'flex',
+                   alignItems: 'center',
+                   gap: '5px',
+                   fontWeight: '600'
+                 }}>
+                   Vendors
+                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M1 1L5 5L9 1" stroke="#111A45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                   </svg>
+                 </a>
                 {showVendorsDropdown && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: '0',
-                    backgroundColor: 'white',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                    padding: '10px 0',
-                    minWidth: '180px',
-                    zIndex: 1000
-                  }}>
-                    <a href="/vendors" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendors Listing</a>
-                    <a href="/vendor" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendor Single</a>
-                    <a href="/vendor-dashboard" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Vendor Dashboard</a>
+                  <div 
+                    onMouseEnter={() => clearTimeout(dropdownTimeouts.vendors)}
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: '0',
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 32px rgba(17, 26, 69, 0.12)',
+                      padding: '12px 0',
+                      minWidth: '220px',
+                      zIndex: 1000,
+                      marginTop: '4px'
+                    }}
+                  >
+                    <a href="/vendors" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Vendors Listing</a>
+                    <a href="/vendor" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Vendor Single</a>
+                    <a href="/vendor-dashboard" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Vendor Dashboard</a>
                   </div>
                 )}
-                        </div>
+              </div>
 
               {/* About Dropdown */}
               <div 
                 style={{ position: 'relative' }}
-                onMouseEnter={() => setShowAboutDropdown(true)}
-                onMouseLeave={() => setShowAboutDropdown(false)}
+                onMouseEnter={() => {
+                  clearTimeout(dropdownTimeouts.about);
+                  setShowAboutDropdown(true);
+                }}
+                onMouseLeave={() => {
+                  const timeout = setTimeout(() => {
+                    setShowAboutDropdown(false);
+                  }, 200);
+                  setDropdownTimeouts(prev => ({ ...prev, about: timeout }));
+                }}
               >
                 <a href="/about" style={{
-                  color: '#333',
+                  color: '#111A45',
                   textDecoration: 'none',
                   fontSize: '16px',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Grotesk, sans-serif',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '5px'
+                  gap: '5px',
+                  fontWeight: '600'
                 }}>
                   About
-                  <span style={{ fontSize: '12px' }}>▼</span>
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L5 5L9 1" stroke="#111A45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </a>
                 {showAboutDropdown && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: '0',
-                    backgroundColor: 'white',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-                    padding: '10px 0',
-                    minWidth: '160px',
-                    zIndex: 1000
-                  }}>
-                    <a href="/about" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>About Us</a>
-                    <a href="/careers" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Careers</a>
-                    <a href="/contact" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Contact</a>
-                    <a href="/team" style={{ display: 'block', padding: '8px 15px', color: '#333', textDecoration: 'none', fontSize: '14px' }}>Our Team</a>
+                  <div 
+                    onMouseEnter={() => clearTimeout(dropdownTimeouts.about)}
+                    style={{
+                      position: 'absolute',
+                      top: 'calc(100% + 8px)',
+                      left: '0',
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 32px rgba(17, 26, 69, 0.12)',
+                      padding: '12px 0',
+                      minWidth: '200px',
+                      zIndex: 1000,
+                      marginTop: '4px'
+                    }}
+                  >
+                    <a href="/about" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >About Us</a>
+                    <a href="/careers" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Careers</a>
+                    <a href="/contact" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Contact</a>
+                    <a href="/team" style={{ 
+                      display: 'block', 
+                      padding: '12px 20px', 
+                      color: '#111A45', 
+                      textDecoration: 'none', 
+                      fontSize: '14px',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#f8f9fa';
+                      e.target.style.color = '#111A45';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#111A45';
+                    }}
+                    >Our Team</a>
                   </div>
                 )}
                 </div>
 
               {/* Blog - No Dropdown */}
               <a href="https://blog.vcloudtech.com/" style={{
-                color: '#333',
+                color: '#111A45',
                 textDecoration: 'none',
                 fontSize: '16px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'Space Grotesk, sans-serif',
+                fontWeight: '600'
               }}>
                 Blog
               </a>
             </nav>
+            </div>
 
-            {/* Search and Cart */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            {/* Search - Right side */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              position: 'relative',
+              left: '100px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '12px',
+              padding: '0',
+              border: '2px solid transparent',
+              transition: 'all 0.3s ease',
+              width: '240px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#fff';
+              e.currentTarget.style.borderColor = '#111A45';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#f8f9fa';
+              e.currentTarget.style.borderColor = 'transparent';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+            >
+              <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 20 20" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ 
+                  position: 'absolute', 
+                  left: '16px', 
+                  pointerEvents: 'none',
+                  color: '#888'
+                }}
+              >
+                <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M19 19L14.65 14.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
               <input 
                 type="text" 
-                placeholder="Search..." 
+                placeholder="Search products..." 
                 style={{
-                  padding: '8px 12px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
+                  padding: '12px 16px 12px 48px',
+                  border: 'none',
+                  borderRadius: '12px',
                   fontSize: '14px',
-                  width: '200px'
+                  width: '100%',
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  backgroundColor: 'transparent',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  color: '#111A45'
+                }}
+                onFocus={(e) => {
+                  e.target.parentElement.style.backgroundColor = '#fff';
+                  e.target.parentElement.style.borderColor = '#111A45';
+                  e.target.parentElement.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.parentElement.style.backgroundColor = '#f8f9fa';
+                  e.target.parentElement.style.borderColor = 'transparent';
+                  e.target.parentElement.style.boxShadow = 'none';
                 }}
               />
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-                padding: '8px 12px',
-                backgroundColor: '#f5f5f5',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}>
-                <span>🛒</span>
-                <span style={{ fontSize: '14px' }}>Cart (2)</span>
-              </div>
             </div>
           </div>
         </div>
