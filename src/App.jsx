@@ -7,6 +7,7 @@ import Register from './pages/Register'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
+import NavigationPreloader from './components/NavigationPreloader'
 import JavaScriptIntegration from './components/JavaScriptIntegration'
 import './App.css'
 
@@ -16,6 +17,7 @@ function App() {
       <div className="min-h-screen w-screen">
         <JavaScriptIntegration />
         <Preloader />
+        <NavigationPreloader />
         <Header />
         
         <Routes>
