@@ -495,7 +495,7 @@ const ProductDetail = () => {
                                     <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                                   </svg>
                                 </span>
-                                <span style={{ fontSize: '14px', color: '#000', fontWeight: 'semibold' }}>
+                                <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
                                   {product.stock > 0 ? `In Stock: ${product.stock}` : 'Out of Stock'}
                                 </span>
                         </div>
@@ -515,7 +515,7 @@ const ProductDetail = () => {
                               color: '#000',
                               marginBottom: '12px',
                               lineHeight: '1.3',
-                              fontWeight: '400',
+                              fontWeight: '600',
                               textAlign: 'center'
                             }}>
                               Questions regarding this product, volume pricing, or shipping options?

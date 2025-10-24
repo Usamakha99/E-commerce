@@ -7,7 +7,6 @@ import Register from './pages/Register'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
-import LeftSidebar from './components/LeftSidebar'
 import JavaScriptIntegration from './components/JavaScriptIntegration'
 import './App.css'
 
@@ -18,7 +17,6 @@ function App() {
         <JavaScriptIntegration />
         <Preloader />
         <Header />
-        <LeftSidebar />
         
         <Routes>
           <Route path="/" element={<ShopGrid />} />

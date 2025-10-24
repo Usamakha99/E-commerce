@@ -100,45 +100,6 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
 
   // Categories are now fetched from API and stored in state
 
-  const bestSellerProducts = [
-    {
-      id: 1,
-      name: "HP Slim Desktop, Intel Celeron J4025, 4GB RAM",
-      image: "/src/assets/imgs/page/homepage2/camera.png",
-      price: 150,
-      originalPrice: 187,
-      discount: "-17%",
-      rating: 5,
-      reviews: 65
-    },
-    {
-      id: 2,
-      name: "Class 4K UHD (2160P) LED Roku Smart TV HDR",
-      image: "/src/assets/imgs/page/homepage2/clock.png",
-      price: 2900,
-      originalPrice: 3200,
-      rating: 5,
-      reviews: 65
-    },
-    {
-      id: 3,
-      name: "HP 11.6\" Chromebook, AMD A4, 4GB RAM, 32GB Storage",
-      image: "/src/assets/imgs/page/homepage2/airpod.png",
-      price: 160,
-      originalPrice: 168,
-      rating: 5,
-      reviews: 65
-    },
-    {
-      id: 4,
-      name: "LG 65\" Class 4K UHD Smart TV OLED A1 Series",
-      image: "/src/assets/imgs/page/homepage2/cat-img-7.png",
-      price: 325,
-      originalPrice: 392,
-      rating: 5,
-      reviews: 65
-    }
-  ];
 
   const productTags = [
     "Games", "Electronics", "Video", "Cellphone", "Indoor", "VGA Card",
@@ -415,42 +376,6 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
           )}
       </div>
 
-      {/* Best Seller */}
-      <div className="box-slider-item mb-30">
-        <div className="head pb-15 border-brand-2">
-          <h5 className="  " style={{color: '#000'}}>Best seller</h5>
-        </div>
-        <div className="content-slider">
-          <div className="box-swiper slide-shop">
-            <div className="swiper-container swiper-best-seller">
-              <div className="swiper-wrapper pt-5">
-                <div className="swiper-slide">
-          {bestSellerProducts.map((product) => (
-                    <div key={product.id} className="card-grid-style-2 card-grid-none-border border-bottom mb-10">
-                      <div className="image-box">
-                        {product.discount && <span className="label bg-brand-2">{product.discount}</span>}
-                        <a href="/product">
-                          <img src={product.image} alt="Ecom" />
-                        </a>
-              </div>
-                      <div className="info-right">
-                        <a className="color-brand-3 font-xs-bold" href="/product">{product.name}</a>
-                        
-                        <div className="price-info">
-                          <strong className="font-md-bold color-brand-3 price-main">${product.price}</strong>
-                          <span className="color-gray-500 font-sm price-line">${product.originalPrice}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-                </div>
-              </div>
-            </div>
-            <div className="swiper-button-next swiper-button-next-style-2 swiper-button-next-bestseller"></div>
-            <div className="swiper-button-prev swiper-button-prev-style-2 swiper-button-prev-bestseller"></div>
-          </div>
-        </div>
-      </div>
 
       {/* Product Tags */}
       <div className="box-slider-item">
@@ -467,12 +392,12 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
       </div>
 
       {/* Banner */}
-      <div className="banner-right h-500 text-center mb-30">
+      {/* <div className="banner-right h-500 text-center mb-30">
         <span className="text-no font-11">No.9</span>
         <h5 className="font-23 mt-20">Sensitive Touch<br className="d-none d-lg-block" />without fingerprint</h5>
         <p className="text-desc font-16 mt-15">Smooth handle and accurate click</p>
         <a href="/product">View Details</a>
-      </div>
+      </div> */}
     </div>
   );
 };
