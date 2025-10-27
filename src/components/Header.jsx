@@ -465,7 +465,7 @@ const Header = () => {
               position: 'relative',
               left: '100px',
               backgroundColor: '#f8f9fa',
-              borderRadius: '12px',
+              borderRadius: '25px',
               padding: '0',
               border: '2px solid transparent',
               transition: 'all 0.3s ease',
@@ -504,7 +504,7 @@ const Header = () => {
                 style={{
                   padding: '12px 16px 12px 48px',
                   border: 'none',
-                  borderRadius: '12px',
+                  borderRadius: '25px',
                   fontSize: '14px',
                   width: '100%',
                   fontFamily: 'Space Grotesk, sans-serif',

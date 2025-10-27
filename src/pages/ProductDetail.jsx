@@ -615,10 +615,10 @@ const ProductDetail = () => {
                     color: '#000', 
                     fontSize: '14px',
                     borderBottom: activeTab === 'description' ? '3px solid #df2020' : 'none',
-                    border: activeTab === 'description' ? '2px solid #ff9999' : '2px solid transparent',
-                    borderRadius: '4px',
                     padding: '8px 12px',
-                    paddingBottom: '8px'
+                    paddingBottom: '8px',
+                    opacity: activeTab === 'description' ? '1' : '0.6',
+                    transition: 'all 0.3s ease'
                   }}
                 >
                       <span style={{ marginRight: '8px' }}>📝</span>Description
@@ -634,10 +634,10 @@ const ProductDetail = () => {
                     color: '#000', 
                     fontSize: '14px',
                     borderBottom: activeTab === 'specification' ? '3px solid #df2020' : 'none',
-                    border: activeTab === 'specification' ? '2px solid #ff9999' : '2px solid transparent',
-                    borderRadius: '4px',
                     padding: '8px 12px',
-                    paddingBottom: '8px'
+                    paddingBottom: '8px',
+                    opacity: activeTab === 'specification' ? '1' : '0.6',
+                    transition: 'all 0.3s ease'
                   }}
                 >
                       <span style={{ marginRight: '8px' }}>⚙️</span>Specification
@@ -653,10 +653,10 @@ const ProductDetail = () => {
                     color: '#000', 
                     fontSize: '14px',
                     borderBottom: activeTab === 'additional' ? '3px solid #df2020' : 'none',
-                    border: activeTab === 'additional' ? '2px solid #ff9999' : '2px solid transparent',
-                    borderRadius: '4px',
                     padding: '8px 12px',
-                    paddingBottom: '8px'
+                    paddingBottom: '8px',
+                    opacity: activeTab === 'additional' ? '1' : '0.6',
+                    transition: 'all 0.3s ease'
                   }}
                 >
                       <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
@@ -670,15 +670,15 @@ const ProductDetail = () => {
                         {/* Long Description from API */}
                         {product.longDescp && (
                           <div className="mb-30">
-                            <h5 className="mb-20" style={{ color: '#000' }}>Product Description</h5>
-                            <p className="font-md ">{product.longDescp}</p>
+                            <h5 className="mb-20" style={{ color: '#000', fontSize: '18px' }}>Product Description</h5>
+                            {/* <p className="font-md ">{product.longDescp}</p> */}
                   </div>
                         )}
 
                         {/* Short Description if no long description */}
                         {!product.longDescp && product.shortDescp && (
                           <div className="mb-30">
-                            <h5 className="mb-20" style={{ color: '#000' }}>Product Description</h5>
+                            <h5 className="mb-20" style={{ color: '#000', fontSize: '18px' }}>Product Description</h5>
                             <p className="font-md ">{product.shortDescp}</p>
                           </div>
                         )}

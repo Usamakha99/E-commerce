@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard';
 import Sidebar from '../components/Sidebar';
 import ApiStatus from '../components/ApiStatus';
 import { useProducts } from '../hooks/useProducts';
+import { productService } from '../services/product.service';
 
 const ShopGrid = () => {
   const [viewType, setViewType] = useState('grid');
@@ -14,6 +15,8 @@ const ShopGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showItemsDropdown, setShowItemsDropdown] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryName, setSelectedCategoryName] = useState('');
 
   // Fetch ALL products from API once
   const { products: allProducts, loading, error, fetchProducts } = useProducts({
@@ -28,6 +31,20 @@ const ShopGrid = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await productService.getAllCategories();
+        const cats = Array.isArray(response) ? response : (response?.data || []);
+        setCategories(cats);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   // Handle URL parameters for category filtering
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -40,6 +57,18 @@ const ShopGrid = () => {
       }
     }
   }, []);
+
+  // Update selected category name when category changes
+  useEffect(() => {
+    if (selectedCategory && categories.length > 0) {
+      const category = categories.find(cat => cat.id === selectedCategory);
+      if (category) {
+        setSelectedCategoryName(category.name || category.title || '');
+      }
+    } else {
+      setSelectedCategoryName('');
+    }
+  }, [selectedCategory, categories]);
 
   // CLIENT-SIDE FILTERING AND PAGINATION: Filter by category and brands then sort and paginate
   const filteredProducts = allProducts ? allProducts.filter(product => {
@@ -191,16 +220,20 @@ const ShopGrid = () => {
               {/* Filters and Sort */}
               <div className="box-filters mt-0 pb-5 border-bottom">
                 <div className="row">
-                  <div className="col-xl-10 col-lg-9 mb-10 text-lg-end text-center">
-                    <span className="font-sm  font-medium border-1-right span">
-                      Showing  :  {startIndex + 1}-{Math.min(endIndex, totalProducts)} of {totalProducts} results
-                      {selectedCategory && (
-                        <span className="text-muted"> (filtered by category)</span>
-                      )}
-                      {selectedBrands.length > 0 && (
-                        <span className="text-muted"> (filtered by {selectedBrands.length} brand{selectedBrands.length > 1 ? 's' : ''})</span>
-                      )}
-                    </span>
+                                     <div className="col-xl-10 col-lg-9 mb-10 text-lg-end text-center">
+                     <span className="font-sm  font-medium border-1-right span">
+                       {selectedCategoryName && (
+                         <span style={{ marginRight: '10px', fontWeight: 'bold' }}>
+                           Category: <span style={{ color: '#df2020' }}>{selectedCategoryName}</span>
+                         </span>
+                       )}
+                       {selectedBrands.length > 0 && (
+                         <span style={{ marginRight: '10px', fontWeight: 'bold' }}>
+                           Brand{selectedBrands.length > 1 ? 's' : ''}: <span style={{ color: '#df2020' }}>{selectedBrands.join(', ')}</span>
+                         </span>
+                       )}
+                       Showing: {startIndex + 1}-{Math.min(endIndex, totalProducts)} of {totalProducts} results
+                     </span>
                     <div className="d-inline-block">
                       <span className="font-sm font-medium">Sort by :</span>
                       <div className="dropdown dropdown-sort border-1-right" style={{ position: 'relative' }}>
