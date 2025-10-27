@@ -295,7 +295,7 @@ const ProductDetail = () => {
                         style={{
                           width: '60px',
                           height: '60px',
-                          border: selectedImage === null ? '2px solid #007bff' : '1px solid #ddd',
+                          border: selectedImage === null ? '2px solid #df2020' : '1px solid #ddd',
                           borderRadius: '6px',
                           overflow: 'hidden',
                           cursor: 'pointer',
@@ -323,7 +323,7 @@ const ProductDetail = () => {
                             style={{
                               width: '60px',
                               height: '60px',
-                              border: selectedImage === imageUrl ? '2px solid #007bff' : '1px solid #ddd',
+                              border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
                               borderRadius: '6px',
                               overflow: 'hidden',
                               cursor: 'pointer',
@@ -354,7 +354,7 @@ const ProductDetail = () => {
                             style={{
                               width: '60px',
                               height: '60px',
-                              border: selectedImage === imageUrl ? '2px solid #007bff' : '1px solid #ddd',
+                              border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
                               borderRadius: '6px',
                               overflow: 'hidden',
                               cursor: 'pointer',
@@ -611,7 +611,15 @@ const ProductDetail = () => {
                   href="#tab-description" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
                   role="tab"
-                  style={{ color: '#000', fontSize: '18px' }}
+                  style={{ 
+                    color: '#000', 
+                    fontSize: '14px',
+                    borderBottom: activeTab === 'description' ? '3px solid #df2020' : 'none',
+                    border: activeTab === 'description' ? '2px solid #ff9999' : '2px solid transparent',
+                    borderRadius: '4px',
+                    padding: '8px 12px',
+                    paddingBottom: '8px'
+                  }}
                 >
                       <span style={{ marginRight: '8px' }}>📝</span>Description
                 </a>
@@ -622,7 +630,15 @@ const ProductDetail = () => {
                   href="#tab-specification" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
                   role="tab"
-                  style={{ color: '#000', fontSize: '18px' }}
+                  style={{ 
+                    color: '#000', 
+                    fontSize: '14px',
+                    borderBottom: activeTab === 'specification' ? '3px solid #df2020' : 'none',
+                    border: activeTab === 'specification' ? '2px solid #ff9999' : '2px solid transparent',
+                    borderRadius: '4px',
+                    padding: '8px 12px',
+                    paddingBottom: '8px'
+                  }}
                 >
                       <span style={{ marginRight: '8px' }}>⚙️</span>Specification
                 </a>
@@ -633,7 +649,15 @@ const ProductDetail = () => {
                   href="#tab-additional" 
                       onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
                   role="tab"
-                  style={{ color: '#000', fontSize: '18px' }}
+                  style={{ 
+                    color: '#000', 
+                    fontSize: '14px',
+                    borderBottom: activeTab === 'additional' ? '3px solid #df2020' : 'none',
+                    border: activeTab === 'additional' ? '2px solid #ff9999' : '2px solid transparent',
+                    borderRadius: '4px',
+                    padding: '8px 12px',
+                    paddingBottom: '8px'
+                  }}
                 >
                       <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
                 </a>
