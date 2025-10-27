@@ -471,9 +471,10 @@ const ProductDetail = () => {
                           <div className="pricing-box" style={{
                             backgroundColor: 'white',
                             border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '16px',
-                            marginBottom: '20px'
+                            borderRadius: '0px',
+                            padding: '20px',
+                            marginBottom: '20px',
+                            textAlign: 'center'
                           }}>
                             <div style={{ textAlign: 'center' }}>
                               <a href="/login" style={{
@@ -506,9 +507,10 @@ const ProductDetail = () => {
                           <div className="contact-box" style={{
                             backgroundColor: 'white',
                             border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            padding: '16px',
-                            marginBottom: '20px'
+                            borderRadius: '0px',
+                            padding: '20px',
+                            marginBottom: '20px',
+                            textAlign: 'center'
                           }}>
                             <p style={{
                               fontSize: '14px',
@@ -526,14 +528,22 @@ const ProductDetail = () => {
                                 backgroundColor: '#1c1463',
                                 color: 'white',
                                 border: 'none',
-                                borderRadius: '4px',
+                                borderRadius: '25px',
                                 padding: '8px 16px',
                                 width: 'auto',
-                                fontSize: '14px',
+                                fontSize: '12px',
                                 fontWeight: '500',
                                 cursor: 'pointer',
                                 display: 'block',
                                 margin: '0 auto'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = '#0f0d3a';
+                                e.target.style.textDecoration = 'underline';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = '#1c1463';
+                                e.target.style.textDecoration = 'none';
                               }}
                             >
                               Contact our sales team
