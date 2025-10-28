@@ -669,16 +669,16 @@ const ProductDetail = () => {
                   <div className="display-text-short">
                         {/* Long Description from API */}
                         {product.longDescp && (
-                          <div className="mb-30">
-                            <h5 className="mb-20" style={{ color: '#000', fontSize: '18px' }}>Product Description</h5>
+                          <div className="mb-15">
+                            <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
                             {/* <p className="font-md ">{product.longDescp}</p> */}
                   </div>
                         )}
 
                         {/* Short Description if no long description */}
                         {!product.longDescp && product.shortDescp && (
-                          <div className="mb-30">
-                            <h5 className="mb-20" style={{ color: '#000', fontSize: '18px' }}>Product Description</h5>
+                          <div className="mb-15">
+                            <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
                             <p className="font-md ">{product.shortDescp}</p>
                           </div>
                         )}
@@ -699,7 +699,7 @@ const ProductDetail = () => {
               
               {activeTab === 'specification' && (
                 <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
-                      <h5 className="mb-25" style={{ color: '#000' }}>Product Specification</h5>
+                      <h5 className="mb-25" style={{ color: '#000',fontSize: '14px' }}>Product Specification</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>
@@ -789,7 +789,7 @@ const ProductDetail = () => {
 
               {activeTab === 'additional' && (
                 <div className="tab-pane fade active show" id="tab-additional" role="tabpanel">
-                  <h5 className="mb-25" style={{ color: '#000' }}>Additional information</h5>
+                  <h5 className="mb-15" style={{ color: '#000',fontSize: '14px' }}>Additional information</h5>
                   <div className="table-responsive">
                     <table className="table table-striped">
                       <tbody>
