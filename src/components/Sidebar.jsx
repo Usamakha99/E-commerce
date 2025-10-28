@@ -145,6 +145,16 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
             </button>
           )}
         </div>
+        
+        {/* Active Category Filter Display */}
+        {selectedCategory && (
+          <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+            <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter:</span>
+            <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
+              {categories.find(cat => cat.id === selectedCategory)?.name || categories.find(cat => cat.id === selectedCategory)?.title || 'Category'}
+            </span>
+          </div>
+        )}
           {loadingCategories ? (
             <div className="text-center py-3">
               <div className="spinner-border spinner-border-sm text-primary" role="status">
@@ -321,6 +331,16 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
           */}
 
           <h6 style={{margin: '20px 0 15px 0', color: '#000', fontWeight: 'bold', fontSize: '16px'}}>Brands</h6>
+          
+          {/* Active Brand Filter Display */}
+          {selectedBrands.length > 0 && (
+            <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+              <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter{selectedBrands.length > 1 ? 's' : ''}:</span>
+              <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
+                {selectedBrands.join(', ')}
+              </span>
+            </div>
+          )}
           {loadingBrands ? (
             <div className="text-center py-3">
               <div className="spinner-border spinner-border-sm text-primary" role="status">
@@ -384,7 +404,37 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
         </div>
         <div className="content-slider mb-50">
           {productTags.map((tag, index) => (
-            <a key={index} className="btn btn-border mr-5" href="/shop">
+            <a
+              key={index}
+              className="btn btn-border mr-5"
+              href="/shop"
+              style={{
+                borderRadius: '20px',
+                padding: '6px 14px',
+                lineHeight: '1',
+                display: 'inline-block',
+                color: '#000',
+                border: '1px solid #000',
+                backgroundColor: 'transparent',
+                marginBottom: '6px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f0f0f0';
+                e.currentTarget.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#000';
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                // Add click effect
+                e.currentTarget.style.backgroundColor = '#e0e0e0';
+                setTimeout(() => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }, 150);
+              }}
+            >
               {tag}
             </a>
           ))}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import SocialShare from '../components/SocialShare';
 import ProductInquiryModal from '../components/ProductInquiryModal';
 import { useProduct } from '../hooks/useProduct';
@@ -70,7 +71,75 @@ const ProductDetail = () => {
   };
 
   return (
-    <main className="main">
+    <>
+      {/* SEO Meta Tags for Google Search - Only show when API data is loaded */}
+      {!loading && apiProduct && (
+        <Helmet>
+          <title>{apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech</title>
+          <meta name="description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
+          <meta name="keywords" content={`${apiProduct.name || apiProduct.title || ''}, ${typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || ''}, ${typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || ''}, ${typeof apiProduct.subCategory === 'object' ? apiProduct.subCategory.title : apiProduct.subCategory || ''}, electronics, technology, V Cloud Tech`} />
+          
+          {/* Open Graph Meta Tags for Social Media */}
+          <meta property="og:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
+          <meta property="og:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
+          <meta property="og:image" content={apiProduct.image || '/src/assets/V Cloud Logo final-01.svg'} />
+          <meta property="og:url" content={`${window.location.origin}/product/${apiProduct.id}`} />
+          <meta property="og:type" content="product" />
+          <meta property="og:site_name" content="V Cloud Tech" />
+          
+          {/* Product Specific Meta Tags */}
+          <meta property="product:price:amount" content={apiProduct.price || '0'} />
+          <meta property="product:price:currency" content="USD" />
+          <meta property="product:availability" content={apiProduct.stock > 0 ? 'in stock' : 'out of stock'} />
+          <meta property="product:brand" content={typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || ''} />
+          <meta property="product:category" content={typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || ''} />
+          
+          {/* Twitter Card Meta Tags */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
+          <meta name="twitter:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online.`} />
+          <meta name="twitter:image" content={apiProduct.image || '/src/assets/V Cloud Logo final-01.svg'} />
+          
+          {/* Additional SEO Meta Tags */}
+          <meta name="robots" content="index, follow" />
+          <meta name="author" content="V Cloud Tech" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          
+          {/* Canonical URL */}
+          <link rel="canonical" href={`${window.location.origin}/product/${apiProduct.id}`} />
+          
+          {/* JSON-LD Structured Data for Google */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org/",
+              "@type": "Product",
+              "name": apiProduct.name || apiProduct.title || 'Product',
+              "description": apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || '',
+              "image": apiProduct.image || '/src/assets/V Cloud Logo final-01.svg',
+              "brand": {
+                "@type": "Brand",
+                "name": typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || 'V Cloud Tech'
+              },
+              "category": typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || '',
+              "offers": {
+                "@type": "Offer",
+                "price": apiProduct.price || '0',
+                "priceCurrency": "USD",
+                "availability": apiProduct.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                "seller": {
+                  "@type": "Organization",
+                  "name": "V Cloud Tech"
+                }
+              },
+              "sku": apiProduct.sku || apiProduct.id || '',
+              "mpn": apiProduct.sku || apiProduct.id || '',
+              "gtin": apiProduct.upc || apiProduct.upcCode || ''
+            })}
+          </script>
+        </Helmet>
+      )}
+
+      <main className="main">
       {loading && (
         <div className="container text-center py-5">
           <div className="spinner-border text-primary" role="status">
@@ -140,8 +209,24 @@ const ProductDetail = () => {
                         <>
                           <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
                           <div className="d-inline-block">
-                            <span className="font-sm color-brand-3 font-medium">Category:</span>
-                            <a className="font-sm color-brand-3 font-medium" href="#"> {typeof product.category === 'object' ? product.category.title : product.category}</a>
+                            <span className="font-sm color-brand-3 font-medium">Category: </span>
+                            <a 
+                              className="font-sm color-brand-3 font-medium" 
+                              href={`/shop?category=${typeof product.category === 'object' ? product.category.id : product.category}`}
+                              style={{ 
+                                textDecoration: 'none', 
+                                cursor: 'pointer',
+                                transition: 'color 0.3s ease'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.setProperty('color', '#df2020', 'important');
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.removeProperty('color');
+                              }}
+                            > 
+                              {typeof product.category === 'object' ? product.category.title : product.category}
+                            </a>
                           </div>
                         </>
                       )}
@@ -150,8 +235,24 @@ const ProductDetail = () => {
                         <>
                           <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
                           <div className="d-inline-block">
-                            <span className="font-sm color-brand-3 font-medium">Sub Category:</span>
-                            <a className="font-sm color-brand-3 font-medium" href="#"> {typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</a>
+                            <span className="font-sm color-brand-3 font-medium">Sub Category: </span>
+                            <a 
+                              className="font-sm color-brand-3 font-medium" 
+                              href={`/shop?category=${typeof product.subCategory === 'object' ? product.subCategory.id : product.subCategory}`}
+                              style={{ 
+                                textDecoration: 'none', 
+                                cursor: 'pointer',
+                                transition: 'color 0.3s ease'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.setProperty('color', '#df2020', 'important');
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.removeProperty('color');
+                              }}
+                            > 
+                              {typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}
+                            </a>
                           </div>
                         </>
                       )}
@@ -525,7 +626,7 @@ const ProductDetail = () => {
                             <button 
                               onClick={() => setShowInquiryModal(true)}
                               style={{
-                                backgroundColor: '#1c1463',
+                                backgroundColor: '#df2020',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '25px',
@@ -538,11 +639,11 @@ const ProductDetail = () => {
                                 margin: '0 auto'
                               }}
                               onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#0f0d3a';
+                                e.target.style.backgroundColor = '#c41a1a';
                                 e.target.style.textDecoration = 'underline';
                               }}
                               onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#1c1463';
+                                e.target.style.backgroundColor = '#df2020';
                                 e.target.style.textDecoration = 'none';
                               }}
                             >
@@ -679,19 +780,19 @@ const ProductDetail = () => {
                         {!product.longDescp && product.shortDescp && (
                           <div className="mb-15">
                             <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
-                            <p className="font-md ">{product.shortDescp}</p>
+                            <p className="font-md " style={{ color: '#000' }}>{product.shortDescp}</p>
                           </div>
                         )}
                         {/* Meta Description */}
                         {product.metaDescp && product.metaDescp !== product.shortDescp && (
                           <div className="mb-30">
-                            <p className="font-sm 0">{product.metaDescp}</p>
+                            <p className="font-sm 0" style={{ color: '#000' }}>{product.metaDescp}</p>
                           </div>
                         )}
 
                         {/* Fallback if no description */}
                         {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
-                          <p className="font-md 0">No description available for this product.</p>
+                          <p className="font-md 0" style={{ color: '#000' }}>No description available for this product.</p>
                         )}
                   </div>
                 </div>
@@ -821,6 +922,7 @@ const ProductDetail = () => {
         productName={product.name}
       />
     </main>
+    </>
   );
 };
 

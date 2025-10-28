@@ -77,10 +77,14 @@ const ShopGrid = () => {
       if (product.subCategoryId !== selectedCategory) return false;
     }
 
-    // Filter by brands
-    if (selectedBrands.length === 0) return true;
-    const productBrand = product.brand?.title || 'Unknown';
-    return selectedBrands.includes(productBrand);
+    // Filter by brands - only apply if brands are selected
+    if (selectedBrands.length > 0) {
+      const productBrand = product.brand?.title || 'Unknown';
+      if (!selectedBrands.includes(productBrand)) return false;
+    }
+
+    // If we reach here, the product matches all applied filters
+    return true;
   }).sort((a, b) => {
     switch (sortBy) {
       case 'latest':
@@ -222,16 +226,6 @@ const ShopGrid = () => {
                 <div className="row">
                                      <div className="col-xl-10 col-lg-9 mb-10 text-lg-end text-center">
                      <span className="font-sm  font-medium border-1-right span">
-                       {selectedCategoryName && (
-                         <span style={{ marginRight: '10px', fontWeight: 'bold' }}>
-                           Category: <span style={{ color: '#df2020' }}>{selectedCategoryName}</span>
-                         </span>
-                       )}
-                       {selectedBrands.length > 0 && (
-                         <span style={{ marginRight: '10px', fontWeight: 'bold' }}>
-                           Brand{selectedBrands.length > 1 ? 's' : ''}: <span style={{ color: '#df2020' }}>{selectedBrands.join(', ')}</span>
-                         </span>
-                       )}
                        Showing: {startIndex + 1}-{Math.min(endIndex, totalProducts)} of {totalProducts} results
                      </span>
                     <div className="d-inline-block">
