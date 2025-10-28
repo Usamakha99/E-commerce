@@ -336,7 +336,9 @@ const ShopGrid = () => {
                         height: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
+                        transition: 'box-shadow 0.3s ease'
                       }}>
                         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <div className="text-center mb-2">
