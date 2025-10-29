@@ -450,7 +450,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
               type="submit"
               style={{
                 padding: '11px 28px',
-                backgroundColor: '#111A45',
+              backgroundColor: '#df2020',
                 border: 'none',
                 borderRadius: '25px',
                 fontSize: '14px',
@@ -459,15 +459,15 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 fontFamily: 'Space Grotesk, sans-serif',
-                boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)'
+              boxShadow: '0 2px 8px rgba(223, 32, 32, 0.2)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#1c1463';
-                e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)';
+              e.target.style.backgroundColor = '#c71b1b';
+              e.target.style.boxShadow = '0 4px 12px rgba(223, 32, 32, 0.3)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#111A45';
-                e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
+              e.target.style.backgroundColor = '#df2020';
+              e.target.style.boxShadow = '0 2px 8px rgba(223, 32, 32, 0.2)';
               }}
             >
               Submit
