@@ -112,7 +112,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
       {/* Categories */}
       <div style={{marginBottom: '20px'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px'}}>
-          <h6 style={{margin: 0, color: '#000', fontWeight: 'bold', fontSize: '16px'}}>Product Categories</h6>
+            <h6 style={{margin: 0, color: '#000', fontWeight: 'bold', fontSize: '16px', borderBottom: '3px solid #df2020', paddingBottom: '8px'}}>Product Categories</h6>
           {selectedCategory && (
             <button
               onClick={() => onCategoryFilter && onCategoryFilter(null)}
@@ -330,7 +330,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
           </ul>
           */}
 
-          <h6 style={{margin: '20px 0 15px 0', color: '#000', fontWeight: 'bold', fontSize: '16px'}}>Brands</h6>
+            <h6 style={{margin: '20px 0 15px 0', color: '#000', fontWeight: 'bold', fontSize: '16px', borderBottom: '3px solid #df2020', paddingBottom: '8px', display: 'inline-block'}}>Brands</h6>
           
           {/* Active Brand Filter Display */}
           {selectedBrands.length > 0 && (
@@ -399,8 +399,8 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
 
       {/* Product Tags */}
       <div className="box-slider-item">
-        <div className="head pb-15 border-brand-2">
-          <h5 className="  " style={{color: '#000'}}>Product Tags</h5>
+        <div className="head pb-10 border-brand-2">
+          <h5 className="  " style={{color: '#000', fontSize: '16px'}}>Product Tags</h5>
         </div>
         <div className="content-slider mb-50">
           {productTags.map((tag, index) => (
