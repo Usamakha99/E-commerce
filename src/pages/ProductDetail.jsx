@@ -139,7 +139,7 @@ const ProductDetail = () => {
         </Helmet>
       )}
 
-      <main className="main">
+      <main className="main" style={{ paddingTop: '60px' }}>
       {loading && (
         <div className="container text-center py-5">
           <div className="spinner-border text-primary" role="status">

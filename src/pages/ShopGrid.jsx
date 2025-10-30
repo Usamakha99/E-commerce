@@ -273,10 +273,54 @@ const ShopGrid = () => {
                         </button>
                         {showItemsDropdown && (
                           <ul className="dropdown-menu dropdown-menu-light show" style={{ display: 'block', position: 'absolute', zIndex: 1000 }}>
-                            <li><a className={`dropdown-item ${showPerPage === 20 ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); handleShowPerPage(20); setShowItemsDropdown(false); }}>20 items</a></li>
-                            <li><a className={`dropdown-item ${showPerPage === 30 ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); handleShowPerPage(30); setShowItemsDropdown(false); }}>30 items</a></li>
-                            <li><a className={`dropdown-item ${showPerPage === 50 ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); handleShowPerPage(50); setShowItemsDropdown(false); }}>50 items</a></li>
-                            <li><a className={`dropdown-item ${showPerPage === 100 ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); handleShowPerPage(100); setShowItemsDropdown(false); }}>100 items</a></li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${showPerPage === 20 ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handleShowPerPage(20); setShowItemsDropdown(false); }}
+                                style={showPerPage === 20 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 20) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                onMouseLeave={(e) => { if (showPerPage !== 20) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                20 items
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${showPerPage === 30 ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handleShowPerPage(30); setShowItemsDropdown(false); }}
+                                style={showPerPage === 30 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 30) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                onMouseLeave={(e) => { if (showPerPage !== 30) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                30 items
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${showPerPage === 50 ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handleShowPerPage(50); setShowItemsDropdown(false); }}
+                                style={showPerPage === 50 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 50) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                onMouseLeave={(e) => { if (showPerPage !== 50) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                50 items
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${showPerPage === 100 ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handleShowPerPage(100); setShowItemsDropdown(false); }}
+                                style={showPerPage === 100 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 100) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                onMouseLeave={(e) => { if (showPerPage !== 100) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                100 items
+                              </a>
+                            </li>
                           </ul>
                         )}
                       </div>
