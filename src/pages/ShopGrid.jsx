@@ -248,10 +248,54 @@ const ShopGrid = () => {
                         </button>
                         {showSortDropdown && (
                           <ul className="dropdown-menu dropdown-menu-light show" style={{ display: 'block', position: 'absolute', zIndex: 1000 }}>
-                            <li><a className={`dropdown-item ${sortBy === 'latest' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); setSortBy('latest'); setShowSortDropdown(false); }}>Latest products</a></li>
-                            <li><a className={`dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); setSortBy('oldest'); setShowSortDropdown(false); }}>Oldest products</a></li>
-                            <li><a className={`dropdown-item ${sortBy === 'price-low' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); setSortBy('price-low'); setShowSortDropdown(false); }}>Price: Low to High</a></li>
-                            <li><a className={`dropdown-item ${sortBy === 'price-high' ? 'active' : ''}`} href="#" onClick={(e) => { e.preventDefault(); setSortBy('price-high'); setShowSortDropdown(false); }}>Price: High to Low</a></li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${sortBy === 'latest' ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setSortBy('latest'); setShowSortDropdown(false); }}
+                                style={sortBy === 'latest' ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (sortBy !== 'latest') { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
+                                onMouseLeave={(e) => { if (sortBy !== 'latest') { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                Latest products
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${sortBy === 'oldest' ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setSortBy('oldest'); setShowSortDropdown(false); }}
+                                style={sortBy === 'oldest' ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (sortBy !== 'oldest') { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
+                                onMouseLeave={(e) => { if (sortBy !== 'oldest') { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                Oldest products
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${sortBy === 'price-low' ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setSortBy('price-low'); setShowSortDropdown(false); }}
+                                style={sortBy === 'price-low' ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (sortBy !== 'price-low') { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
+                                onMouseLeave={(e) => { if (sortBy !== 'price-low') { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                Price: Low to High
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                className={`dropdown-item ${sortBy === 'price-high' ? 'active' : ''}`}
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); setSortBy('price-high'); setShowSortDropdown(false); }}
+                                style={sortBy === 'price-high' ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (sortBy !== 'price-high') { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
+                                onMouseLeave={(e) => { if (sortBy !== 'price-high') { e.currentTarget.style.backgroundColor = 'transparent'; } }}
+                              >
+                                Price: High to Low
+                              </a>
+                            </li>
                           </ul>
                         )}
                       </div>
@@ -278,8 +322,8 @@ const ShopGrid = () => {
                                 className={`dropdown-item ${showPerPage === 20 ? 'active' : ''}`}
                                 href="#"
                                 onClick={(e) => { e.preventDefault(); handleShowPerPage(20); setShowItemsDropdown(false); }}
-                                style={showPerPage === 20 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
-                                onMouseEnter={(e) => { if (showPerPage !== 20) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                style={showPerPage === 20 ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 20) { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
                                 onMouseLeave={(e) => { if (showPerPage !== 20) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
                               >
                                 20 items
@@ -290,8 +334,8 @@ const ShopGrid = () => {
                                 className={`dropdown-item ${showPerPage === 30 ? 'active' : ''}`}
                                 href="#"
                                 onClick={(e) => { e.preventDefault(); handleShowPerPage(30); setShowItemsDropdown(false); }}
-                                style={showPerPage === 30 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
-                                onMouseEnter={(e) => { if (showPerPage !== 30) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                style={showPerPage === 30 ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 30) { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
                                 onMouseLeave={(e) => { if (showPerPage !== 30) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
                               >
                                 30 items
@@ -302,8 +346,8 @@ const ShopGrid = () => {
                                 className={`dropdown-item ${showPerPage === 50 ? 'active' : ''}`}
                                 href="#"
                                 onClick={(e) => { e.preventDefault(); handleShowPerPage(50); setShowItemsDropdown(false); }}
-                                style={showPerPage === 50 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
-                                onMouseEnter={(e) => { if (showPerPage !== 50) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                style={showPerPage === 50 ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 50) { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
                                 onMouseLeave={(e) => { if (showPerPage !== 50) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
                               >
                                 50 items
@@ -314,8 +358,8 @@ const ShopGrid = () => {
                                 className={`dropdown-item ${showPerPage === 100 ? 'active' : ''}`}
                                 href="#"
                                 onClick={(e) => { e.preventDefault(); handleShowPerPage(100); setShowItemsDropdown(false); }}
-                                style={showPerPage === 100 ? { backgroundColor: '#df2020', color: '#fff' } : { color: '#000' }}
-                                onMouseEnter={(e) => { if (showPerPage !== 100) { e.currentTarget.style.backgroundColor = '#fde6e6'; } }}
+                                style={showPerPage === 100 ? { backgroundColor: 'rgb(17, 26, 69)', color: '#fff' } : { color: 'rgb(17, 26, 69)' }}
+                                onMouseEnter={(e) => { if (showPerPage !== 100) { e.currentTarget.style.backgroundColor = 'rgba(17, 26, 69, 0.08)'; } }}
                                 onMouseLeave={(e) => { if (showPerPage !== 100) { e.currentTarget.style.backgroundColor = 'transparent'; } }}
                               >
                                 100 items
