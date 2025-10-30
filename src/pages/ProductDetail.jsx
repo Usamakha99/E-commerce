@@ -158,22 +158,10 @@ const ProductDetail = () => {
           </div>
         </div>
       )}
-
+<div className='mt-35'></div>
       {!loading && (
         <>
-      {/* Breadcrumb */}
-      <div className="section-box">
-        <div className="breadcrumbs-div">
-          <div className="container">
-            <ul className="breadcrumb">
-              <li><a className="font-xs color-gray-1000" href="/">Home</a></li>
-              <li><a className="font-xs color-gray-500" href="/shop">Electronics</a></li>
-              <li><a className="font-xs color-gray-500" href="/shop">Cell phone</a></li>
-              <li><a className="font-xs color-gray-500" href="/shop">Accessories</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Product Detail Section */}
       <section className="section-box shop-template">
