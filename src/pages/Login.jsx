@@ -23,7 +23,7 @@ const Login = () => {
   };
 
   return (
-    <main className="main">
+    <main className="main" style={{ paddingTop: '50px' }}>
         <section className="section-box shop-template mt-60">
           <div className="container">
             <div className="row mb-100">
