@@ -437,7 +437,7 @@ const ShopGrid = () => {
                     {index > 0 && index % 3 === 0 && <div className="w-100 mt-20"></div>}
                     <div className={viewType === 'list' ? 'col-12' : 'col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12'}>
                       <div className="product-card" style={{
-                        border: '1px solid #e0e0e0',
+                        border: '1px solid #b0b0b0',
                         borderRadius: '0',
                         padding: '15px',
                         backgroundColor: '#fff',
