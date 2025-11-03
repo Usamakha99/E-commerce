@@ -466,7 +466,7 @@ const ShopGrid = () => {
                           <div className="text-center">
                             <h6 className="mb-1" style={{
                               fontSize: '13px',
-                              fontWeight: 'bold',
+                              fontWeight: '500',
                               color: '#000',
                               lineHeight: '1.3',
                               minHeight: '32px',

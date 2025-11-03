@@ -168,40 +168,41 @@ const ProductDetail = () => {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <h3 className="color-brand-3 mb-5 mw-80">{product.name || product.title}</h3>
+              <h3 className="color-brand-3 mb-5 mw-80" style={{ fontWeight: '500', fontSize: '2em' }}>{product.name || product.title}</h3>
               <div className="row">
-                    <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile">
+                    <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile" style={{ fontSize: '.9em', margin: '.15em 0 .5em', fontFamily: 'DM Sans, sans-serif', color: '#000' }}>
                       <div className="d-inline-block">
-                        <span className="font-sm color-brand-3 font-medium">Brand:</span>
-                        <a className="font-sm color-brand-3 font-medium" href="/vendor"> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
+                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Brand:</span>
+                        <a href="/vendor" style={{ fontFamily: 'DM Sans, sans-serif', color: '#000', textDecoration: 'none' }}> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
                       </div>
 
-                      <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                      <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
 
                       <div className="sku-product d-inline-block">
-                        <span className="font-sm color-brand-3 font-medium">SKU:</span>
-                        <span className="font-sm color-brand-3 font-medium"> {product.sku || 'N/A'}</span>
+                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>SKU:</span>
+                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.sku || 'N/A'}</span>
                       </div>
 
                       {product.upc && (
                         <>
-                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
                           <div className="upc-product d-inline-block">
-                            <span className="font-sm color-brand-3 font-medium">UPC:</span>
-                            <span className="font-sm color-brand-3 font-medium"> {product.upc}</span>
+                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>UPC:</span>
+                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.upc}</span>
                           </div>
                         </>
                       )}
 
                       {product.category && (
                         <>
-                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
                           <div className="d-inline-block">
-                            <span className="font-sm color-brand-3 font-medium">Category: </span>
+                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Category: </span>
                             <a 
-                              className="font-sm color-brand-3 font-medium" 
                               href={`/shop?category=${typeof product.category === 'object' ? product.category.id : product.category}`}
                               style={{ 
+                                fontFamily: 'DM Sans, sans-serif',
+                                color: '#000',
                                 textDecoration: 'none', 
                                 cursor: 'pointer',
                                 transition: 'color 0.3s ease'
@@ -210,7 +211,7 @@ const ProductDetail = () => {
                                 e.target.style.setProperty('color', '#df2020', 'important');
                               }}
                               onMouseLeave={(e) => {
-                                e.target.style.removeProperty('color');
+                                e.target.style.setProperty('color', '#000', 'important');
                               }}
                             > 
                               {typeof product.category === 'object' ? product.category.title : product.category}
@@ -221,13 +222,14 @@ const ProductDetail = () => {
 
                       {product.subCategory && (
                         <>
-                          <span className="d-inline-block" style={{ margin: '0 10px', color: '#666' }}>|</span>
+                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
                           <div className="d-inline-block">
-                            <span className="font-sm color-brand-3 font-medium">Sub Category: </span>
+                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Sub Category: </span>
                             <a 
-                              className="font-sm color-brand-3 font-medium" 
                               href={`/shop?category=${typeof product.subCategory === 'object' ? product.subCategory.id : product.subCategory}`}
                               style={{ 
+                                fontFamily: 'DM Sans, sans-serif',
+                                color: '#000',
                                 textDecoration: 'none', 
                                 cursor: 'pointer',
                                 transition: 'color 0.3s ease'
@@ -236,7 +238,7 @@ const ProductDetail = () => {
                                 e.target.style.setProperty('color', '#df2020', 'important');
                               }}
                               onMouseLeave={(e) => {
-                                e.target.style.removeProperty('color');
+                                e.target.style.setProperty('color', '#000', 'important');
                               }}
                             > 
                               {typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}

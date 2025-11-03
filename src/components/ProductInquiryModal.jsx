@@ -106,7 +106,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
         <form onSubmit={handleSubmit}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: '1fr',
             gap: '16px',
             marginBottom: '16px'
           }}>
@@ -151,7 +151,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
             </div>
 
             {/* Last Name */}
-            <div>
+            {/* <div>
               <label style={{
                 display: 'block',
                 marginBottom: '8px',
@@ -188,7 +188,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
                   e.target.style.backgroundColor = '#fafafa';
                 }}
               />
-            </div>
+            </div> */}
 
             {/* Email */}
             <div>
@@ -231,7 +231,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
             </div>
 
             {/* Company Name */}
-            <div>
+            {/* <div>
               <label style={{
                 display: 'block',
                 marginBottom: '8px',
@@ -268,10 +268,10 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
                   e.target.style.backgroundColor = '#fafafa';
                 }}
               />
-            </div>
+            </div> */}
 
             {/* City */}
-            <div>
+            {/* <div>
               <label style={{
                 display: 'block',
                 marginBottom: '8px',
@@ -308,7 +308,7 @@ const ProductInquiryModal = ({ isOpen, onClose, productName }) => {
                   e.target.style.backgroundColor = '#fafafa';
                 }}
               />
-            </div>
+            </div> */}
 
             {/* Country */}
             <div>
