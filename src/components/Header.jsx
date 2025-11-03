@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { productService } from '../services/product.service';
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
@@ -14,6 +15,9 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [dropdownTimeouts, setDropdownTimeouts] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [languageData, setLanguageData] = useState({
     English: { flag: '/src/assets/imgs/template/en.svg', name: 'English' },
     Français: { flag: '/src/assets/imgs/template/flag-fr.svg', name: 'Français' },
@@ -72,6 +76,59 @@ const Header = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  // Handle search input change with live search
+  const handleSearchChange = async (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim().length >= 2) {
+      try {
+        const response = await productService.getAllProducts();
+        const products = Array.isArray(response) ? response : (response?.data || []);
+        
+        const filtered = products.filter(product => {
+          const productName = (product.name || product.title || '').toLowerCase();
+          const productShortDesc = (product.shortDescp || '').toLowerCase();
+          const productSku = (product.sku || '').toString().toLowerCase();
+          const searchLower = query.toLowerCase();
+          
+          return productName.includes(searchLower) || 
+                 productShortDesc.includes(searchLower) || 
+                 productSku.includes(searchLower);
+        }).slice(0, 5); // Show max 5 results
+        
+        setSearchResults(filtered);
+        setShowSearchDropdown(filtered.length > 0);
+      } catch (error) {
+        console.error('Error searching products:', error);
+        setSearchResults([]);
+        setShowSearchDropdown(false);
+      }
+    } else {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+    }
+  };
+
+  // Handle search submit
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+      setShowSearchDropdown(false);
+      setSearchResults([]);
+    }
+  };
+
+  // Handle product selection from dropdown
+  const handleProductSelect = (productId) => {
+    navigate(`/product/${productId}`);
+    setSearchQuery('');
+    setShowSearchDropdown(false);
+    setSearchResults([]);
+  };
 
   return (
     <>
@@ -459,28 +516,30 @@ const Header = () => {
             </div>
 
             {/* Search - Right side */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              position: 'relative',
-              left: '100px',
-              backgroundColor: '#f8f9fa',
-              borderRadius: '25px',
-              padding: '0',
-              border: '2px solid transparent',
-              transition: 'all 0.3s ease',
-              width: '240px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#fff';
-              e.currentTarget.style.borderColor = '#111A45';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#f8f9fa';
-              e.currentTarget.style.borderColor = 'transparent';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
+            <form 
+              onSubmit={handleSearch}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                position: 'relative',
+                left: '100px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '25px',
+                padding: '0',
+                border: '2px solid transparent',
+                transition: 'all 0.3s ease',
+                width: '240px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.borderColor = '#111A45';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#f8f9fa';
+                e.currentTarget.style.borderColor = 'transparent';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               <svg 
                 width="20" 
@@ -501,6 +560,8 @@ const Header = () => {
               <input 
                 type="text" 
                 placeholder="Search products..." 
+                value={searchQuery}
+                onChange={handleSearchChange}
                 style={{
                   padding: '12px 16px 12px 48px',
                   border: 'none',
@@ -519,12 +580,94 @@ const Header = () => {
                   e.target.parentElement.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.15)';
                 }}
                 onBlur={(e) => {
-                  e.target.parentElement.style.backgroundColor = '#f8f9fa';
-                  e.target.parentElement.style.borderColor = 'transparent';
-                  e.target.parentElement.style.boxShadow = 'none';
+                  // Delay to allow click on dropdown items
+                  setTimeout(() => {
+                    e.target.parentElement.style.backgroundColor = '#f8f9fa';
+                    e.target.parentElement.style.borderColor = 'transparent';
+                    e.target.parentElement.style.boxShadow = 'none';
+                    setShowSearchDropdown(false);
+                  }, 200);
                 }}
               />
-            </div>
+              {/* Search Results Dropdown */}
+              {showSearchDropdown && searchResults.length > 0 && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 8px)',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '600px',
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 32px rgba(17, 26, 69, 0.12)',
+                  border: '1px solid #e0e0e0',
+                  zIndex: 2000,
+                  maxHeight: '500px',
+                  overflowY: 'auto'
+                }}>
+                  {searchResults.map((product) => (
+                    <div
+                      key={product.id}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        handleProductSelect(product.id);
+                      }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '12px',
+                        padding: '14px 16px',
+                        cursor: 'pointer',
+                        borderBottom: '1px solid #f0f0f0',
+                        transition: 'background-color 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'white';
+                      }}
+                    >
+                      <img
+                        src={product.image || '/src/assets/imgs/page/homepage1/imgsp1.png'}
+                        alt={product.name || product.title}
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          objectFit: 'contain',
+                          borderRadius: '8px',
+                          border: '1px solid #e0e0e0',
+                          padding: '4px',
+                          backgroundColor: '#fafafa'
+                        }}
+                        onError={(e) => { e.target.src = '/src/assets/imgs/page/homepage1/imgsp1.png'; }}
+                      />
+                      <div style={{ flex: 1, width: '100%', overflow: 'visible' }}>
+                        <div style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: 'rgb(17, 26, 69)',
+                          marginBottom: '4px',
+                          lineHeight: '1.5',
+                          wordWrap: 'break-word',
+                          whiteSpace: 'normal',
+                          overflow: 'visible'
+                        }}>
+                          {product.name || product.title}
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#888',
+                          fontWeight: '500'
+                        }}>
+                          SKU: {product.sku || 'N/A'} {product.brand?.title && `• ${product.brand.title}`}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </form>
           </div>
         </div>
       </header>

@@ -17,6 +17,7 @@ const ShopGrid = () => {
   const [showItemsDropdown, setShowItemsDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch ALL products from API once
   const { products: allProducts, loading, error, fetchProducts } = useProducts({
@@ -45,10 +46,11 @@ const ShopGrid = () => {
     fetchCategories();
   }, []);
 
-  // Handle URL parameters for category filtering
+  // Handle URL parameters for category filtering and search
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
+    const searchParam = urlParams.get('search');
 
     if (categoryParam) {
       const categoryId = parseInt(categoryParam);
@@ -56,7 +58,13 @@ const ShopGrid = () => {
         setSelectedCategory(categoryId);
       }
     }
-  }, []);
+
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    } else {
+      setSearchQuery('');
+    }
+  }, [window.location.search]);
 
   // Update selected category name when category changes
   useEffect(() => {
@@ -70,8 +78,20 @@ const ShopGrid = () => {
     }
   }, [selectedCategory, categories]);
 
-  // CLIENT-SIDE FILTERING AND PAGINATION: Filter by category and brands then sort and paginate
+  // CLIENT-SIDE FILTERING AND PAGINATION: Filter by search, category and brands then sort and paginate
   const filteredProducts = allProducts ? allProducts.filter(product => {
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const productName = (product.name || product.title || '').toLowerCase();
+      const productShortDesc = (product.shortDescp || '').toLowerCase();
+      const productSku = (product.sku || '').toString().toLowerCase();
+      
+      if (!productName.includes(query) && !productShortDesc.includes(query) && !productSku.includes(query)) {
+        return false;
+      }
+    }
+
     // Filter by category (using subCategoryId since we're showing subcategories)
     if (selectedCategory !== null) {
       if (product.subCategoryId !== selectedCategory) return false;
