@@ -728,7 +728,7 @@ const MarketplaceProductDetail = () => {
 
             {/* Full Width Description Section */}
             <div className="row mt-4">
-              <div className="col-12">
+              <div className="col-6">
                 <div style={{
                   border: '2px solid #e0e0e0',
                   borderRadius: '12px',
