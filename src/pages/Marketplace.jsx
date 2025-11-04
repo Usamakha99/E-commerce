@@ -224,7 +224,7 @@ const Marketplace = () => {
                 {showDeliveryMethods && (
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {deliveryMethods.map((method, index) => (
-                      <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <li key={index} style={{ marginBottom: '1px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <label className="cb-container" style={{ flex: 1 }}>
                           <input
                             type="checkbox"
