@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 const MarketplaceProductDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   // Mock product data
   const product = {
@@ -349,8 +350,8 @@ const MarketplaceProductDetail = () => {
                     border: 'none',
                     backgroundColor: 'transparent',
                     cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '600',
+                    fontSize: '16px',
+                    fontWeight: '700',
                     color: activeTab === tab.toLowerCase().replace(' ', '-') ? '#007185' : '#0F1111',
                     borderBottom: activeTab === tab.toLowerCase().replace(' ', '-') ? '3px solid #007185' : '3px solid transparent',
                     transition: 'all 0.2s',
@@ -411,29 +412,33 @@ const MarketplaceProductDetail = () => {
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
         }}>
           {activeTab === 'overview' && (
-            <div className="row">
-              {/* Left Column - Video and Description */}
-              <div className="col-lg-8">
-                <h2 style={{
-                  fontSize: '24px',
-                  fontWeight: '600',
-                  color: '#0F1111',
-                  marginBottom: '20px',
-                  fontFamily: 'DM Sans, sans-serif'
-                }}>
-                  Overview
-                </h2>
+            <div>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#0F1111',
+                marginBottom: '20px',
+                fontFamily: 'DM Sans, sans-serif'
+              }}>
+                Overview
+              </h2>
 
-                {/* Product Video */}
+              <div className="row" style={{ alignItems: 'stretch' }}>
+                {/* Left Column - Video */}
+                <div className="col-lg-6" style={{ display: 'flex', flexDirection: 'column' }}>
+                  {/* Product Video */}
                 <div style={{
                   position: 'relative',
-                  width: '100%',
-                  paddingBottom: '56.25%',
+                  width: '85%',
+                  paddingBottom: '48%',
                   backgroundColor: '#f0f0f0',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   overflow: 'hidden',
-                  marginBottom: '20px',
-                  cursor: 'pointer'
+                  marginBottom: '12px',
+                  cursor: 'pointer',
+                  border: '2px solid #e0e0e0',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  flex: 1
                 }}>
                   <img
                     src={product.videoThumbnail}
@@ -446,34 +451,56 @@ const MarketplaceProductDetail = () => {
                       height: '100%',
                       objectFit: 'cover'
                     }}
+                    onError={(e) => { e.target.src = '/src/assets/imgs/page/homepage1/imgsp1.png'; }}
                   />
+                  {/* Gradient Overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%)'
+                  }}></div>
                   {/* Play Button Overlay */}
                   <div style={{
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '80px',
-                    height: '80px',
-                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    width: '90px',
+                    height: '90px',
+                    backgroundColor: 'rgba(255,255,255,0.95)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '32px',
-                    color: '#232F3E'
-                  }}>
+                    fontSize: '36px',
+                    color: '#007185',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,1)';
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+                  }}
+                  >
                     ▶
                   </div>
                   {/* Video Title Overlay */}
                   <div style={{
                     position: 'absolute',
-                    top: '20px',
-                    left: '20px',
+                    top: '24px',
+                    left: '24px',
                     color: 'white',
-                    fontSize: '24px',
-                    fontWeight: '600',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                    fontSize: '28px',
+                    fontWeight: '700',
+                    textShadow: '0 3px 6px rgba(0,0,0,0.6)',
+                    fontFamily: 'DM Sans, sans-serif'
                   }}>
                     What is Okta?
                   </div>
@@ -481,29 +508,31 @@ const MarketplaceProductDetail = () => {
 
                 {/* Product Video Label */}
                 <p style={{
-                  fontSize: '13px',
+                  fontSize: '14px',
                   color: '#565959',
-                  marginBottom: '20px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  marginBottom: '0',
+                  fontFamily: 'DM Sans, sans-serif',
+                  fontWeight: '500',
+                  fontStyle: 'italic'
                 }}>
                   Product video
                 </p>
-
-                {/* Detailed Description */}
-                <div style={{
-                  fontSize: '14px',
-                  color: '#0F1111',
-                  lineHeight: '1.8',
-                  fontFamily: 'DM Sans, sans-serif'
-                }}>
-                  <p>{product.overview}</p>
-                </div>
               </div>
 
               {/* Right Column - Highlights and Details */}
-              <div className="col-lg-4">
+              <div className="col-lg-6" style={{ display: 'flex', flexDirection: 'column' }}>
                 {/* Highlights */}
-                <div style={{ marginBottom: '30px' }}>
+                <div style={{
+                  flex: 1,
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginBottom: '12px'
+                }}>
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '600',
@@ -516,7 +545,8 @@ const MarketplaceProductDetail = () => {
                   <ul style={{
                     listStyle: 'none',
                     padding: 0,
-                    margin: 0
+                    margin: 0,
+                    flex: 1
                   }}>
                     {product.highlights.map((highlight, index) => (
                       <li key={index} style={{
@@ -545,39 +575,222 @@ const MarketplaceProductDetail = () => {
 
                 {/* Details */}
                 <div style={{
-                  paddingTop: '20px',
-                  borderTop: '1px solid #e7e7e7'
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  padding: '18px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
                 }}>
                   <h3 style={{
-                    fontSize: '18px',
-                    fontWeight: '600',
+                    fontSize: '16px',
+                    fontWeight: '700',
                     color: '#0F1111',
-                    marginBottom: '12px',
-                    fontFamily: 'DM Sans, sans-serif'
+                    marginBottom: '14px',
+                    fontFamily: 'DM Sans, sans-serif',
+                    paddingBottom: '10px',
+                    borderBottom: '2px solid #f0f0f0'
                   }}>
                     Details
                   </h3>
-                  <div>
-                    <span style={{
-                      fontSize: '14px',
-                      color: '#565959',
-                      fontFamily: 'DM Sans, sans-serif'
-                    }}>
-                      Sold by{' '}
-                    </span>
-                    <a href="#" style={{
-                      fontSize: '14px',
-                      color: '#007185',
-                      textDecoration: 'none',
-                      fontFamily: 'DM Sans, sans-serif'
-                    }}>
-                      {product.seller}
-                    </a>
-                    <span style={{ marginLeft: '5px', fontSize: '12px', color: '#007185' }}>🔗</span>
+
+                  {/* Row 1: Sold by & Categories */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '14px' }}>
+                    {/* Sold by */}
+                    <div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#565959',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        marginBottom: '6px'
+                      }}>
+                        Sold by
+                      </div>
+                      <a href="#" style={{
+                        fontSize: '14px',
+                        color: '#007185',
+                        textDecoration: 'none',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#C7511F';
+                        e.target.style.textDecoration = 'underline';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = '#007185';
+                        e.target.style.textDecoration = 'none';
+                      }}
+                      >
+                        {product.seller}
+                        <span style={{ fontSize: '11px' }}>🔗</span>
+                      </a>
+                    </div>
+
+                    {/* Categories */}
+                    <div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#565959',
+                        marginBottom: '6px',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500'
+                      }}>
+                        Categories
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        {['Security', 'Application Development', 'IT Support'].map((category, index) => (
+                          <a
+                            key={index}
+                            href="#"
+                            style={{
+                              fontSize: '14px',
+                              color: '#007185',
+                              textDecoration: 'none',
+                              fontFamily: 'DM Sans, sans-serif',
+                              fontWeight: '500',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              width: 'fit-content'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.color = '#C7511F';
+                              e.target.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.color = '#007185';
+                              e.target.style.textDecoration = 'none';
+                            }}
+                          >
+                            {category}
+                            <span style={{ fontSize: '11px' }}>🔗</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Delivery method & Deployed on AWS */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    {/* Delivery method */}
+                    <div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#565959',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        marginBottom: '6px'
+                      }}>
+                        Delivery method
+                      </div>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#0F1111',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        borderBottom: '1px dotted #565959',
+                        display: 'inline-block'
+                      }}>
+                        Software as a Service (SaaS)
+                      </span>
+                    </div>
+
+                    {/* Deployed on AWS */}
+                    <div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#565959',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        marginBottom: '6px'
+                      }}>
+                        Deployed on AWS
+                      </div>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#0F1111',
+                        fontFamily: 'DM Sans, sans-serif',
+                        fontWeight: '500',
+                        borderBottom: '1px dotted #565959',
+                        display: 'inline-block'
+                      }}>
+                        Yes
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Full Width Description Section */}
+            <div className="row mt-4">
+              <div className="col-12">
+                <div style={{
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                  position: 'relative'
+                }}>
+                  <div style={{
+                    fontSize: '14px',
+                    color: '#0F1111',
+                    lineHeight: '1.8',
+                    fontFamily: 'DM Sans, sans-serif',
+                    maxHeight: isDescriptionExpanded ? 'none' : '120px',
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease'
+                  }}>
+                    <p style={{ margin: 0 }}>{product.overview}</p>
+                  </div>
+
+                  {/* See More/Less Button */}
+                  {product.overview && product.overview.length > 200 && (
+                    <div style={{
+                      marginTop: '12px',
+                      paddingTop: '12px',
+                      borderTop: '1px solid #e7e7e7'
+                    }}>
+                      <button
+                        onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#007185',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          fontFamily: 'DM Sans, sans-serif',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: 0
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = '#C7511F';
+                          e.target.style.textDecoration = 'underline';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = '#007185';
+                          e.target.style.textDecoration = 'none';
+                        }}
+                      >
+                        {isDescriptionExpanded ? 'See less' : 'See more'}
+                        <span style={{ fontSize: '12px' }}>
+                          {isDescriptionExpanded ? '▲' : '▼'}
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
           )}
 
           {activeTab === 'features' && (
