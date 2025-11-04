@@ -264,8 +264,19 @@ const Header = () => {
                 )}
               </div>
 
-              {/* Vendors Dropdown */}
-              <div 
+              {/* Marketplace - No Dropdown */}
+              <Link to="/marketplace" style={{
+                color: '#111A45',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontFamily: 'Space Grotesk, sans-serif',
+                fontWeight: '600'
+              }}>
+                Marketplace
+              </Link>
+
+              {/* Vendors Dropdown - COMMENTED OUT */}
+              {/* <div 
                 style={{ position: 'relative' }}
                 onMouseEnter={() => {
                   clearTimeout(dropdownTimeouts.vendors);
@@ -371,7 +382,7 @@ const Header = () => {
                     >Vendor Dashboard</a>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* About Dropdown */}
               <div 

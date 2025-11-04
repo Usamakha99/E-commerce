@@ -113,36 +113,41 @@ const Marketplace = () => {
   };
 
   return (
-    <main className="main" style={{ paddingTop: '60px', backgroundColor: '#f5f5f5' }}>
+    <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
       <div className="container-fluid" style={{ padding: '20px 40px' }}>
         <div className="row">
           {/* Left Sidebar - Filters */}
-          <div className="col-lg-3" style={{ paddingRight: '30px' }}>
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              padding: '20px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-            }}>
+          <div className="col-lg-3 order-last order-lg-first" style={{ paddingRight: '30px' }}>
+            <div>
               {/* Refine Results Header */}
-              <h5 style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#232F3E',
+              <h6 style={{
+                margin: 0,
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                borderBottom: '3px solid #df2020',
+                paddingBottom: '8px',
                 marginBottom: '20px',
-                fontFamily: 'DM Sans, sans-serif'
+                display: 'inline-block'
               }}>
                 Refine results
-              </h5>
+              </h6>
 
               {/* All Categories Link */}
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '15px' }}>
                 <a href="#" style={{
-                  color: '#0066C0',
-                  fontSize: '13px',
-                  textDecoration: 'none',
+                  color: '#000',
+                  fontSize: '14px',
+                  textDecoration: 'underline',
                   fontFamily: 'DM Sans, sans-serif'
-                }}>
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#000';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#000';
+                }}
+                >
                   &lt; All categories
                 </a>
               </div>
@@ -150,127 +155,136 @@ const Marketplace = () => {
               {/* Selected Category */}
               <div style={{
                 fontSize: '16px',
-                fontWeight: '600',
-                color: '#0F1111',
+                fontWeight: 'bold',
+                color: '#000',
                 marginBottom: '15px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'DM Sans, sans-serif',
+                borderBottom: '3px solid #df2020',
+                paddingBottom: '8px',
+                display: 'inline-block'
               }}>
                 {selectedCategory}
               </div>
 
               {/* Categories List */}
               <div style={{ marginBottom: '25px' }}>
-                {categories.map((cat, index) => (
-                  <div key={index} style={{ marginBottom: '8px' }}>
-                    <a href="#" style={{
-                      color: '#007185',
-                      fontSize: '13px',
-                      textDecoration: 'none',
-                      fontFamily: 'DM Sans, sans-serif',
-                      display: 'block'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.color = '#C7511F';
-                      e.target.style.textDecoration = 'underline';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.color = '#007185';
-                      e.target.style.textDecoration = 'none';
-                    }}
-                    >
-                      {cat.name} {cat.count > 0 && `(${cat.count})`}
-                    </a>
-                  </div>
-                ))}
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {categories.map((cat, index) => (
+                    <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <a href="#" style={{
+                        color: '#000',
+                        fontSize: '14px',
+                        textDecoration: 'underline',
+                        fontFamily: 'DM Sans, sans-serif',
+                        flex: 1
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#000';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = '#000';
+                      }}
+                      >
+                        {cat.name}
+                      </a>
+                      {cat.count > 0 && (
+                        <span style={{
+                          color: '#000',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          marginLeft: '10px'
+                        }}>
+                          {cat.count}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               {/* Delivery Methods */}
-              <div style={{ borderTop: '1px solid #e7e7e7', paddingTop: '15px', marginBottom: '25px' }}>
+              <div style={{ marginBottom: '25px' }}>
                 <h6 
                   style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#0F1111',
-                    marginBottom: '12px',
+                    margin: 0,
+                    color: '#000',
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    borderBottom: '3px solid #df2020',
+                    paddingBottom: '8px',
+                    marginBottom: '15px',
+                    display: 'inline-block',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px'
+                    fontFamily: 'DM Sans, sans-serif'
                   }}
                   onClick={() => setShowDeliveryMethods(!showDeliveryMethods)}
                 >
-                  <span style={{ fontSize: '12px' }}>{showDeliveryMethods ? '▾' : '▸'}</span>
                   Delivery methods
                 </h6>
                 {showDeliveryMethods && (
-                  <div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {deliveryMethods.map((method, index) => (
-                      <div key={index} style={{ marginBottom: '8px' }}>
-                        <label style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                          color: '#0F1111',
-                          fontFamily: 'DM Sans, sans-serif'
-                        }}>
+                      <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <label className="cb-container" style={{ flex: 1 }}>
                           <input
                             type="checkbox"
                             checked={selectedDeliveryMethods.includes(method.name)}
                             onChange={() => handleDeliveryMethodToggle(method.name)}
-                            style={{ marginRight: '8px', cursor: 'pointer' }}
                           />
-                          {method.name} ({method.count})
+                          <span className="text-small" style={{ color: '#000', fontSize: '14px', textDecoration: 'underline' }}>
+                            {method.name}
+                          </span>
+                          <span className="checkmark"></span>
                         </label>
-                      </div>
+                        <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
+                          {method.count}
+                        </span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </div>
 
               {/* Publishers */}
-              <div style={{ borderTop: '1px solid #e7e7e7', paddingTop: '15px' }}>
+              <div style={{ marginBottom: '25px' }}>
                 <h6 
                   style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#0F1111',
-                    marginBottom: '12px',
+                    margin: 0,
+                    color: '#000',
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    borderBottom: '3px solid #df2020',
+                    paddingBottom: '8px',
+                    marginBottom: '15px',
+                    display: 'inline-block',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px'
+                    fontFamily: 'DM Sans, sans-serif'
                   }}
                   onClick={() => setShowPublishers(!showPublishers)}
                 >
-                  <span style={{ fontSize: '12px' }}>{showPublishers ? '▾' : '▸'}</span>
                   Publisher
                 </h6>
                 {showPublishers && (
-                  <div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {publishers.map((publisher, index) => (
-                      <div key={index} style={{ marginBottom: '8px' }}>
-                        <label style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                          color: '#0F1111',
-                          fontFamily: 'DM Sans, sans-serif'
-                        }}>
+                      <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <label className="cb-container" style={{ flex: 1 }}>
                           <input
                             type="checkbox"
                             checked={selectedPublishers.includes(publisher.name)}
                             onChange={() => handlePublisherToggle(publisher.name)}
-                            style={{ marginRight: '8px', cursor: 'pointer' }}
                           />
-                          {publisher.name} ({publisher.count})
+                          <span className="text-small" style={{ color: '#000', fontSize: '14px', textDecoration: 'underline' }}>
+                            {publisher.name}
+                          </span>
+                          <span className="checkmark"></span>
                         </label>
-                      </div>
+                        <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
+                          {publisher.count}
+                        </span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </div>
             </div>
@@ -452,7 +466,7 @@ const Marketplace = () => {
                     <div style={{ flex: 1 }}>
                       {/* Product Name */}
                       <Link
-                        to={`/product/${product.id}`}
+                        to={`/marketplace/${product.id}`}
                         style={{
                           fontSize: '18px',
                           fontWeight: '600',
