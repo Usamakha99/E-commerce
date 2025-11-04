@@ -4,6 +4,7 @@ import ShopGrid from './pages/ShopGrid'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Marketplace from './pages/Marketplace'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Preloader from './components/Preloader'
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ShopGrid />} />
           <Route path="/shop" element={<ShopGrid />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/product" element={<ProductDetail />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />

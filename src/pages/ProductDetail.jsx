@@ -226,7 +226,7 @@ const ProductDetail = () => {
                           <div className="d-inline-block">
                             <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Sub Category: </span>
                             <a 
-                              href={`/shop?category=${typeof product.subCategory === 'object' ? product.subCategory.id : product.subCategory}`}
+                              href={`/shop?category =${typeof product.subCategory === 'object' ? product.subCategory.id : product.subCategory}`}
                               style={{ 
                                 fontFamily: 'DM Sans, sans-serif',
                                 color: '#000',
