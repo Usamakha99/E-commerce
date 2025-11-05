@@ -18,6 +18,19 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 992);
+      if (window.innerWidth >= 992) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [languageData, setLanguageData] = useState({
     English: { flag: '/src/assets/imgs/template/en.svg', name: 'English' },
     Français: { flag: '/src/assets/imgs/template/flag-fr.svg', name: 'Français' },
@@ -150,27 +163,70 @@ const Header = () => {
             alignItems: 'center', 
             justifyContent: 'space-between',
             width: '100%',
-            gap: '20px'
+            gap: isMobile ? '10px' : '20px'
           }}>
             
+            {/* Mobile Hamburger Menu Button */}
+            {isMobile && (
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  zIndex: 1001
+                }}
+                aria-label="Toggle menu"
+              >
+                <span style={{
+                  width: '24px',
+                  height: '2px',
+                  backgroundColor: '#111A45',
+                  display: 'block',
+                  transition: 'all 0.3s',
+                  transform: isMobileMenuOpen ? 'rotate(45deg) translateY(6px)' : 'none'
+                }}></span>
+                <span style={{
+                  width: '24px',
+                  height: '2px',
+                  backgroundColor: '#111A45',
+                  display: 'block',
+                  transition: 'all 0.3s',
+                  opacity: isMobileMenuOpen ? '0' : '1'
+                }}></span>
+                <span style={{
+                  width: '24px',
+                  height: '2px',
+                  backgroundColor: '#111A45',
+                  display: 'block',
+                  transition: 'all 0.3s',
+                  transform: isMobileMenuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none'
+                }}></span>
+              </button>
+            )}
+            
             {/* Left side - Logo and Navigation */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '120px', flex: '1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '10px' : '120px', flex: '1' }}>
               {/* Logo */}
               <Link to="/" style={{ display: 'flex', alignItems:"center", textDecoration: 'none' }}>
                 <img 
                   alt="V Cloud" 
                   src="/src/assets/V Cloud Logo final-01.svg" 
                   style={{ 
-                    width: '200px', 
+                    width: isMobile ? '120px' : '200px', 
                     position: 'relative',
-                    right: '10px',
-                    height: '50px'
+                    right: isMobile ? '0' : '10px',
+                    height: isMobile ? '30px' : '50px'
                   }} 
                 />
               </Link>
 
-              {/* Navigation */}
-              <nav style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+              {/* Navigation - Desktop Only */}
+              <nav style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', gap: '30px' }}>
               {/* Shop Dropdown */}
               <div 
                 style={{ position: 'relative' }}
@@ -530,7 +586,7 @@ const Header = () => {
             <form 
               onSubmit={handleSearch}
               style={{ 
-                display: 'flex', 
+                display: isMobile ? 'none' : 'flex', 
                 alignItems: 'center',
                 position: 'relative',
                 left: '100px',
@@ -683,8 +739,282 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile Header */}
-      <div className={`mobile-header-active mobile-header-wrapper-style perfect-scrollbar ${isMobileMenuOpen ? 'active' : ''}`}>
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 999,
+            animation: 'fadeIn 0.3s ease'
+          }}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu Sidebar */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: isMobileMenuOpen ? 0 : '-100%',
+          width: '80%',
+          maxWidth: '320px',
+          height: '100vh',
+          backgroundColor: 'white',
+          zIndex: 1000,
+          transition: 'left 0.3s ease',
+          overflowY: 'auto',
+          boxShadow: isMobileMenuOpen ? '2px 0 10px rgba(0,0,0,0.1)' : 'none'
+        }}
+      >
+        <div style={{ padding: '20px' }}>
+          {/* Close Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            style={{
+              position: 'absolute',
+              top: '15px',
+              right: '15px',
+              background: 'none',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#111A45',
+              padding: '5px',
+              width: '35px',
+              height: '35px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ×
+          </button>
+
+          {/* Logo */}
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)} style={{ display: 'block', marginBottom: '30px', marginTop: '10px' }}>
+            <img 
+              alt="V Cloud" 
+              src="/src/assets/V Cloud Logo final-01.svg" 
+              style={{ width: '150px', height: 'auto' }} 
+            />
+          </Link>
+
+          {/* Search Bar in Mobile Menu */}
+          <form 
+            onSubmit={(e) => {
+              handleSearch(e);
+              setIsMobileMenuOpen(false);
+            }}
+            style={{ 
+              marginBottom: '25px',
+              position: 'relative'
+            }}
+          >
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              value={searchQuery}
+              onChange={handleSearchChange}
+              style={{
+                width: '100%',
+                padding: '12px 40px 12px 15px',
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontFamily: 'Space Grotesk, sans-serif',
+                outline: 'none'
+              }}
+            />
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 20 20" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ 
+                position: 'absolute', 
+                right: '12px', 
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+                color: '#888'
+              }}
+            >
+              <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M19 19L14.65 14.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </form>
+
+          {/* Mobile Navigation Links */}
+          <nav>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ marginBottom: '8px' }}>
+                <Link 
+                  to="/shop" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '12px 10px',
+                    color: '#111A45',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    borderBottom: '1px solid #f0f0f0'
+                  }}
+                >
+                  Shop
+                </Link>
+              </li>
+              <li style={{ marginBottom: '8px' }}>
+                <Link 
+                  to="/marketplace" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '12px 10px',
+                    color: '#111A45',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    borderBottom: '1px solid #f0f0f0'
+                  }}
+                >
+                  Marketplace
+                </Link>
+              </li>
+              <li style={{ marginBottom: '8px' }}>
+                <Link 
+                  to="/about" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '12px 10px',
+                    color: '#111A45',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    borderBottom: '1px solid #f0f0f0'
+                  }}
+                >
+                  About
+                </Link>
+              </li>
+              <li style={{ marginBottom: '8px' }}>
+                <Link 
+                  to="/blog" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '12px 10px',
+                    color: '#111A45',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    borderBottom: '1px solid #f0f0f0'
+                  }}
+                >
+                  Blog
+                </Link>
+              </li>
+            </ul>
+
+            {/* Categories in Mobile */}
+            {categories.length > 0 && (
+              <div style={{ marginTop: '25px' }}>
+                <h3 style={{
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  color: '#111A45',
+                  marginBottom: '12px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  fontFamily: 'Space Grotesk, sans-serif'
+                }}>
+                  Categories
+                </h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {categories.slice(0, 6).map((category) => (
+                    <li key={category.id} style={{ marginBottom: '4px' }}>
+                      <Link 
+                        to={`/shop?category=${category.id}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        style={{
+                          display: 'block',
+                          padding: '10px',
+                          color: '#666',
+                          textDecoration: 'none',
+                          fontSize: '14px',
+                          fontFamily: 'Space Grotesk, sans-serif',
+                          borderRadius: '6px'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                      >
+                        {category.name || category.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Mobile Account Links */}
+            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #f0f0f0' }}>
+              <Link 
+                to="/login" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '12px 20px',
+                  backgroundColor: '#111A45',
+                  color: 'white',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  marginBottom: '10px'
+                }}
+              >
+                Sign In
+              </Link>
+              <Link 
+                to="/register" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  padding: '12px 20px',
+                  backgroundColor: 'transparent',
+                  color: '#111A45',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  borderRadius: '8px',
+                  textAlign: 'center',
+                  border: '2px solid #111A45'
+                }}
+              >
+                Sign Up
+              </Link>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      {/* Old Mobile Header - Hidden */}
+      <div className={`mobile-header-active mobile-header-wrapper-style perfect-scrollbar`} style={{ display: 'none' }}>
         <div className="mobile-header-wrapper-inner">
           <div className="mobile-header-content-area">
             <div className="mobile-logo">

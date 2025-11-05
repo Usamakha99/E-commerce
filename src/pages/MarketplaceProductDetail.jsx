@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
 const MarketplaceProductDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('overview');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
+  const [isTablet, setIsTablet] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth < 992);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Mock product data
   const product = {
@@ -62,23 +73,23 @@ const MarketplaceProductDetail = () => {
 
   return (
     <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
-      <div className="container-fluid" style={{ padding: '0 40px' }}>
+      <div className="container-fluid" style={{ padding: isMobile ? '0 15px' : '0 40px' }}>
         {/* Product Header */}
         <div style={{
           backgroundColor: 'white',
           borderRadius: '8px',
-          padding: '24px',
+          padding: isMobile ? '15px' : '24px',
           marginBottom: '20px',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
         }}>
           <div className="row">
             {/* Left - Product Info */}
             <div className="col-lg-8">
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', gap: isMobile ? '12px' : '20px', alignItems: 'flex-start' }}>
                 {/* Logo */}
                 <div style={{
-                  width: '80px',
-                  height: '80px',
+                  width: isMobile ? '60px' : '80px',
+                  height: isMobile ? '60px' : '80px',
                   flexShrink: 0,
                   backgroundColor: '#000',
                   borderRadius: '8px',
@@ -101,9 +112,9 @@ const MarketplaceProductDetail = () => {
                 {/* Product Info */}
                 <div style={{ flex: 1 }}>
                   {/* Title */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', flexWrap: 'wrap' }}>
                     <h1 style={{
-                      fontSize: '28px',
+                      fontSize: isMobile ? '20px' : '28px',
                       fontWeight: '600',
                       color: '#0F1111',
                       margin: 0,
@@ -219,7 +230,7 @@ const MarketplaceProductDetail = () => {
             </div>
 
             {/* Right - Action Buttons */}
-            <div className="col-lg-4">
+            <div className="col-lg-4" style={{ marginTop: isTablet ? '20px' : '0' }}>
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -408,13 +419,13 @@ const MarketplaceProductDetail = () => {
         <div style={{
           backgroundColor: 'white',
           borderRadius: '0 0 8px 8px',
-          padding: '30px',
+          padding: isMobile ? '15px' : '30px',
           boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
         }}>
           {activeTab === 'overview' && (
             <div>
               <h2 style={{
-                fontSize: '24px',
+                fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
                 color: '#0F1111',
                 marginBottom: '20px',
@@ -423,14 +434,14 @@ const MarketplaceProductDetail = () => {
                 Overview
               </h2>
 
-              <div className="row" style={{ alignItems: 'stretch' }}>
+              <div className="row" style={{ alignItems: isTablet ? 'flex-start' : 'stretch' }}>
                 {/* Left Column - Video */}
-                <div className="col-lg-6" style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="col-lg-6" style={{ display: 'flex', flexDirection: 'column', marginBottom: isTablet ? '20px' : '0' }}>
                   {/* Product Video */}
                 <div style={{
                   position: 'relative',
-                  width: '85%',
-                  paddingBottom: '48%',
+                  width: isMobile ? '100%' : '85%',
+                  paddingBottom: isMobile ? '56%' : '48%',
                   backgroundColor: '#f0f0f0',
                   borderRadius: '12px',
                   overflow: 'hidden',
@@ -438,7 +449,7 @@ const MarketplaceProductDetail = () => {
                   cursor: 'pointer',
                   border: '2px solid #e0e0e0',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                  flex: 1
+                  flex: isTablet ? 'none' : 1
                 }}>
                   <img
                     src={product.videoThumbnail}
@@ -494,10 +505,10 @@ const MarketplaceProductDetail = () => {
                   {/* Video Title Overlay */}
                   <div style={{
                     position: 'absolute',
-                    top: '24px',
-                    left: '24px',
+                    top: isMobile ? '16px' : '24px',
+                    left: isMobile ? '16px' : '24px',
                     color: 'white',
-                    fontSize: '28px',
+                    fontSize: isMobile ? '18px' : '28px',
                     fontWeight: '700',
                     textShadow: '0 3px 6px rgba(0,0,0,0.6)',
                     fontFamily: 'DM Sans, sans-serif'
@@ -728,11 +739,11 @@ const MarketplaceProductDetail = () => {
 
             {/* Full Width Description Section */}
             <div className="row mt-4">
-              <div className="col-6">
+              <div className="col-12">
                 <div style={{
                   border: '2px solid #e0e0e0',
                   borderRadius: '12px',
-                  padding: '20px',
+                  padding: isMobile ? '15px' : '20px',
                   backgroundColor: 'white',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                   position: 'relative'
@@ -1084,7 +1095,7 @@ const MarketplaceProductDetail = () => {
           {activeTab === 'pricing' && (
             <div>
               <h2 style={{
-                fontSize: '24px',
+                fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
                 color: '#0F1111',
                 marginBottom: '30px',
@@ -1097,11 +1108,13 @@ const MarketplaceProductDetail = () => {
               <div style={{
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
-                padding: '20px',
+                padding: isMobile ? '15px' : '20px',
                 marginBottom: '20px',
                 display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                gap: isMobile ? '15px' : '0',
                 backgroundColor: 'white'
               }}>
                 <div style={{ flex: 1 }}>
@@ -1314,19 +1327,20 @@ const MarketplaceProductDetail = () => {
                 <div style={{
                   border: '1px solid #D5D9D9',
                   borderRadius: '8px',
-                  overflow: 'hidden'
+                  overflow: isMobile ? 'auto' : 'hidden'
                 }}>
                   {/* Table Header */}
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '2fr 3fr 1.5fr',
+                    gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
                     backgroundColor: '#F7F8F8',
-                    padding: '12px 16px',
+                    padding: isMobile ? '10px 12px' : '12px 16px',
                     borderBottom: '1px solid #D5D9D9',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: isMobile ? '12px' : '14px',
                     color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'DM Sans, sans-serif',
+                    minWidth: isMobile ? '470px' : 'auto'
                   }}>
                     <div>Dimension</div>
                     <div>Description</div>
@@ -1350,13 +1364,14 @@ const MarketplaceProductDetail = () => {
                       key={index}
                       style={{
                         display: 'grid',
-                        gridTemplateColumns: '2fr 3fr 1.5fr',
-                        padding: '16px',
+                        gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
+                        padding: isMobile ? '12px' : '16px',
                         borderBottom: index < 1 ? '1px solid #D5D9D9' : 'none',
-                        fontSize: '14px',
+                        fontSize: isMobile ? '12px' : '14px',
                         color: '#0F1111',
                         fontFamily: 'DM Sans, sans-serif',
-                        backgroundColor: 'white'
+                        backgroundColor: 'white',
+                        minWidth: isMobile ? '470px' : 'auto'
                       }}
                     >
                       <div style={{ fontWeight: '500' }}>{row.dimension}</div>
@@ -1938,9 +1953,11 @@ const MarketplaceProductDetail = () => {
               {/* Header with Buttons */}
               <div style={{
                 display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '30px'
+                alignItems: isMobile ? 'flex-start' : 'center',
+                marginBottom: '30px',
+                gap: isMobile ? '15px' : '0'
               }}>
                 <div>
                   <h2 style={{
@@ -2006,14 +2023,15 @@ const MarketplaceProductDetail = () => {
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
                 backgroundColor: 'white',
-                overflow: 'hidden'
+                overflow: isMobile ? 'auto' : 'hidden'
               }}>
                 {/* Product Headers */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
                   borderBottom: '1px solid #D5D9D9',
-                  backgroundColor: '#F7F8F8'
+                  backgroundColor: '#F7F8F8',
+                  minWidth: isMobile ? '750px' : 'auto'
                 }}>
                   <div style={{ padding: '20px' }}></div>
                   {/* Product 1 */}
@@ -2141,7 +2159,8 @@ const MarketplaceProductDetail = () => {
                 {/* Accolades Section */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2189,7 +2208,8 @@ const MarketplaceProductDetail = () => {
                 {/* Customer Reviews Section Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9',
                   backgroundColor: '#F7F8F8'
                 }}>
@@ -2208,7 +2228,8 @@ const MarketplaceProductDetail = () => {
                 {/* Sentiment Note */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr',
+                  gridTemplateColumns: isMobile ? '150px 1fr' : '250px 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9',
                   backgroundColor: 'white'
                 }}>
@@ -2242,7 +2263,8 @@ const MarketplaceProductDetail = () => {
                 {/* Reviews Count */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2262,7 +2284,8 @@ const MarketplaceProductDetail = () => {
                 {/* Functionality */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2297,7 +2320,8 @@ const MarketplaceProductDetail = () => {
                 {/* Ease of use */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2332,7 +2356,8 @@ const MarketplaceProductDetail = () => {
                 {/* Customer service */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2371,7 +2396,8 @@ const MarketplaceProductDetail = () => {
                 {/* Cost effectiveness */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2407,7 +2433,8 @@ const MarketplaceProductDetail = () => {
                 {/* Overview Section Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9',
                   backgroundColor: '#F7F8F8'
                 }}>
@@ -2434,7 +2461,8 @@ const MarketplaceProductDetail = () => {
                 {/* Overview Details - Identity Management */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2460,7 +2488,8 @@ const MarketplaceProductDetail = () => {
                 {/* Authentication Mechanism */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9'
                 }}>
                   <div style={{
@@ -2488,7 +2517,8 @@ const MarketplaceProductDetail = () => {
                 {/* Contract Section Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr',
+                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
+                  minWidth: isMobile ? '750px' : 'auto',
                   borderBottom: '1px solid #D5D9D9',
                   backgroundColor: '#F7F8F8'
                 }}>

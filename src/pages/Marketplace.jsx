@@ -11,6 +11,15 @@ const Marketplace = () => {
   const [showCategories, setShowCategories] = useState(true);
   const [showDeliveryMethods, setShowDeliveryMethods] = useState(true);
   const [showPublishers, setShowPublishers] = useState(true);
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Mock data for categories
   const categories = [
@@ -114,10 +123,10 @@ const Marketplace = () => {
 
   return (
     <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
-      <div className="container-fluid" style={{ padding: '20px 40px' }}>
+      <div className="container-fluid" style={{ padding: isMobile ? '15px' : '20px 40px' }}>
         <div className="row">
           {/* Left Sidebar - Filters */}
-          <div className="col-lg-3 order-last order-lg-first" style={{ paddingRight: '30px' }}>
+          <div className="col-lg-3 order-first order-lg-first" style={{ paddingRight: isMobile ? '0' : '30px', marginBottom: isMobile ? '30px' : '0' }}>
             <div>
               {/* Refine Results Header */}
               <h6 style={{
@@ -148,7 +157,7 @@ const Marketplace = () => {
                   e.target.style.color = '#000';
                 }}
                 >
-                  &lt; All categories
+                All categories
                 </a>
               </div>
 
@@ -295,21 +304,23 @@ const Marketplace = () => {
             <div style={{
               backgroundColor: 'white',
               borderRadius: '8px',
-              padding: '20px',
+              padding: isMobile ? '15px' : '20px',
               boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
             }}>
               {/* Search Results Header */}
               <div style={{
                 display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
+                alignItems: isMobile ? 'flex-start' : 'center',
                 marginBottom: '20px',
                 paddingBottom: '15px',
-                borderBottom: '1px solid #e7e7e7'
+                borderBottom: '1px solid #e7e7e7',
+                gap: isMobile ? '15px' : '0'
               }}>
                 <div>
                   <h4 style={{
-                    fontSize: '22px',
+                    fontSize: isMobile ? '18px' : '22px',
                     fontWeight: '600',
                     color: '#232F3E',
                     marginBottom: '5px',
@@ -318,7 +329,7 @@ const Marketplace = () => {
                     Search results
                   </h4>
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: isMobile ? '12px' : '14px',
                     color: '#565959',
                     margin: 0,
                     fontFamily: 'DM Sans, sans-serif'
@@ -328,7 +339,7 @@ const Marketplace = () => {
                 </div>
 
                 {/* Pagination and Sort */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '10px' : '20px', flexWrap: 'wrap' }}>
                   {/* Pagination */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <button style={{
@@ -439,8 +450,8 @@ const Marketplace = () => {
                   >
                     {/* Product Logo */}
                     <div style={{
-                      width: '100px',
-                      height: '100px',
+                      width: isMobile ? '60px' : '100px',
+                      height: isMobile ? '60px' : '100px',
                       flexShrink: 0,
                       display: 'flex',
                       alignItems: 'center',
@@ -468,7 +479,7 @@ const Marketplace = () => {
                       <Link
                         to={`/marketplace/${product.id}`}
                         style={{
-                          fontSize: '18px',
+                          fontSize: isMobile ? '16px' : '18px',
                           fontWeight: '600',
                           color: '#007185',
                           textDecoration: 'none',
@@ -547,7 +558,7 @@ const Marketplace = () => {
 
                       {/* Description */}
                       <p style={{
-                        fontSize: '14px',
+                        fontSize: isMobile ? '13px' : '14px',
                         color: '#0F1111',
                         lineHeight: '1.6',
                         margin: 0,
