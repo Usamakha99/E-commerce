@@ -189,19 +189,27 @@ const Marketplace = () => {
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.color = '#000';
+                        // Underline the count when hovering on category name
+                        const countSpan = e.target.parentElement.querySelector('.category-count');
+                        if (countSpan) countSpan.style.textDecoration = 'underline';
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.color = '#000';
+                        // Remove underline from count
+                        const countSpan = e.target.parentElement.querySelector('.category-count');
+                        if (countSpan) countSpan.style.textDecoration = 'none';
                       }}
                       >
                         {cat.name}
                       </a>
                       {cat.count > 0 && (
-                        <span style={{
+                        <span className="category-count" style={{
                           color: '#000',
                           fontSize: '14px',
                           fontWeight: '600',
-                          marginLeft: '10px'
+                          marginLeft: '10px',
+                          textDecoration: 'none',
+                          transition: 'text-decoration 0.2s ease'
                         }}>
                           {cat.count}
                         </span>

@@ -836,22 +836,10 @@ const ProductDetail = () => {
                                 <td className="font-sm ">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
                         </tr>
                             )}
-                            {product.productSource && (
-                        <tr>
-                                <td className="font-sm-bold ">Product Source</td>
-                                <td className="font-sm ">{product.productSource}</td>
-                        </tr>
-                            )}
                             {product.endOfLifeDate && (
                               <tr>
                                 <td className="font-sm-bold ">End of Life Date</td>
                                 <td className="font-sm ">{product.endOfLifeDate}</td>
-                              </tr>
-                            )}
-                            {product.quantity !== undefined && (
-                              <tr>
-                                <td className="font-sm-bold ">Available Quantity</td>
-                                <td className="font-sm ">{product.quantity}</td>
                               </tr>
                             )}
                             {/* Fallback message */}
