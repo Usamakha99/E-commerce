@@ -116,9 +116,8 @@ export const useCart = () => {
   };
 
   useEffect(() => {
-    // Only fetch cart if user is authenticated or if you want to fetch guest cart
-    // Commenting out auto-fetch to prevent errors on initial load
-    // fetchCart();
+    // Fetch cart on component mount
+    fetchCart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

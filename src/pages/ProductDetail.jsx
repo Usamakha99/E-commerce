@@ -540,19 +540,42 @@ const ProductDetail = () => {
                   )} */}
 
 
-                  {/* <div className="buy-product mt-25">
+                  <div className="buy-product mt-25">
                     <div className="font-sm text-quantity mb-10">Quantity</div>
                     <div className="box-quantity">
                       <div className="input-quantity">
-                        <input type="text" defaultValue="1" />
-                        <span className="minus-cart"></span>
-                        <span className="plus-cart"></span>
+                        <input 
+                          type="number" 
+                          value={quantity} 
+                          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                          min="1"
+                        />
+                        <span 
+                          className="minus-cart" 
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                          style={{ cursor: 'pointer' }}
+                        ></span>
+                        <span 
+                          className="plus-cart" 
+                          onClick={() => setQuantity(quantity + 1)}
+                          style={{ cursor: 'pointer' }}
+                        ></span>
                       </div>
                       <div className="button-buy button-buy-full">
-                        <a className="btn btn-buy" href="/checkout">Buy now</a>
+                        <button 
+                          className="btn btn-buy" 
+                          onClick={handleAddToCart}
+                          disabled={cartLoading || (product.stock !== undefined && product.stock === 0)}
+                          style={{
+                            opacity: (cartLoading || (product.stock !== undefined && product.stock === 0)) ? 0.6 : 1,
+                            cursor: (cartLoading || (product.stock !== undefined && product.stock === 0)) ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          {cartLoading ? 'Adding...' : (product.stock !== undefined && product.stock === 0) ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
                       </div>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
                 <div className="col-lg-5 col-md-5">
                   <div className="pl-30 pl-mb-0">

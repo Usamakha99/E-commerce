@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ShopGrid from './pages/ShopGrid'
 import ProductDetail from './pages/ProductDetail'
+import Cart from './pages/Cart'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Marketplace from './pages/Marketplace'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/marketplace/:id" element={<MarketplaceProductDetail />} />
           <Route path="/product" element={<ProductDetail />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

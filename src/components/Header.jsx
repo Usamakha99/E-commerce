@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { productService } from '../services/product.service';
+import { useCart } from '../hooks/useCart';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { cart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
@@ -19,6 +21,9 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
+  
+  // Calculate cart item count
+  const cartItemCount = cart?.items?.length || 0;
 
   // Handle window resize
   useEffect(() => {
@@ -166,47 +171,49 @@ const Header = () => {
             gap: isMobile ? '10px' : '20px'
           }}>
             
-            {/* Mobile Hamburger Menu Button */}
+            {/* Mobile Menu and Cart */}
             {isMobile && (
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                  zIndex: 1001
-                }}
-                aria-label="Toggle menu"
-              >
-                <span style={{
-                  width: '24px',
-                  height: '2px',
-                  backgroundColor: '#111A45',
-                  display: 'block',
-                  transition: 'all 0.3s',
-                  transform: isMobileMenuOpen ? 'rotate(45deg) translateY(6px)' : 'none'
-                }}></span>
-                <span style={{
-                  width: '24px',
-                  height: '2px',
-                  backgroundColor: '#111A45',
-                  display: 'block',
-                  transition: 'all 0.3s',
-                  opacity: isMobileMenuOpen ? '0' : '1'
-                }}></span>
-                <span style={{
-                  width: '24px',
-                  height: '2px',
-                  backgroundColor: '#111A45',
-                  display: 'block',
-                  transition: 'all 0.3s',
-                  transform: isMobileMenuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none'
-                }}></span>
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '8px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    zIndex: 1001
+                  }}
+                  aria-label="Toggle menu"
+                >
+                  <span style={{
+                    width: '24px',
+                    height: '2px',
+                    backgroundColor: '#111A45',
+                    display: 'block',
+                    transition: 'all 0.3s',
+                    transform: isMobileMenuOpen ? 'rotate(45deg) translateY(6px)' : 'none'
+                  }}></span>
+                  <span style={{
+                    width: '24px',
+                    height: '2px',
+                    backgroundColor: '#111A45',
+                    display: 'block',
+                    transition: 'all 0.3s',
+                    opacity: isMobileMenuOpen ? '0' : '1'
+                  }}></span>
+                  <span style={{
+                    width: '24px',
+                    height: '2px',
+                    backgroundColor: '#111A45',
+                    display: 'block',
+                    transition: 'all 0.3s',
+                    transform: isMobileMenuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none'
+                  }}></span>
+                </button>
+              </div>
             )}
             
             {/* Left side - Logo and Navigation */}
@@ -582,32 +589,88 @@ const Header = () => {
             </nav>
             </div>
 
-            {/* Search - Right side */}
-            <form 
-              onSubmit={handleSearch}
-              style={{ 
-                display: isMobile ? 'none' : 'flex', 
-                alignItems: 'center',
-                position: 'relative',
-                left: '100px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '25px',
-                padding: '0',
-                border: '2px solid transparent',
-                transition: 'all 0.3s ease',
-                width: '240px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#fff';
-                e.currentTarget.style.borderColor = '#111A45';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#f8f9fa';
-                e.currentTarget.style.borderColor = 'transparent';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
+            {/* Right Side Actions */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: isMobile ? '10px' : '20px'
+            }}>
+              {/* Mobile Cart Icon */}
+              {isMobile && (
+                <Link 
+                  to="/cart" 
+                  style={{ 
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textDecoration: 'none',
+                    padding: '5px'
+                  }}
+                >
+                  <svg 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ color: '#111A45' }}
+                  >
+                    <path 
+                      d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM4 6H20V19H4V6ZM12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7Z" 
+                      fill="currentColor"
+                    />
+                  </svg>
+                  {cartItemCount > 0 && (
+                    <span style={{
+                      position: 'absolute',
+                      top: '0',
+                      right: '-2px',
+                      backgroundColor: '#df2020',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '18px',
+                      height: '18px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '10px',
+                      fontWeight: 'bold',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      border: '2px solid white',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }}>
+                      {cartItemCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              {/* Search - Right side */}
+              <form 
+                onSubmit={handleSearch}
+                style={{ 
+                  display: isMobile ? 'none' : 'flex', 
+                  alignItems: 'center',
+                  position: 'relative',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '25px',
+                  padding: '0',
+                  border: '2px solid transparent',
+                  transition: 'all 0.3s ease',
+                  width: '240px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#fff';
+                  e.currentTarget.style.borderColor = '#111A45';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8f9fa';
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
               <svg 
                 width="20" 
                 height="20" 
@@ -735,6 +798,62 @@ const Header = () => {
                 </div>
               )}
             </form>
+
+            {/* Cart Icon */}
+            <Link 
+              to="/cart" 
+              style={{ 
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textDecoration: 'none',
+                transition: 'transform 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <svg 
+                width="28" 
+                height="28" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ color: '#111A45' }}
+              >
+                <path 
+                  d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM4 6H20V19H4V6ZM12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7Z" 
+                  fill="currentColor"
+                />
+              </svg>
+              {cartItemCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-5px',
+                  right: '-8px',
+                  backgroundColor: '#df2020',
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '22px',
+                  height: '22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  border: '2px solid white',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }}>
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            </div>
           </div>
         </div>
       </header>
