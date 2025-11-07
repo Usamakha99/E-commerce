@@ -43,6 +43,9 @@ export const useCart = () => {
         await fetchCart(); // Refetch cart to get updated data
       }
       
+      // Always refetch to ensure we have latest cart state
+      await fetchCart();
+      
       return response;
     } catch (err) {
       setError(err.message || 'Failed to add to cart');

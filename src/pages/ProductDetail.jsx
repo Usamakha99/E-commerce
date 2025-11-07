@@ -28,6 +28,7 @@ const ProductDetail = () => {
     sku: 'EcomTech13689',
     upc: '123456789012',
     rating: 5,
+    stock: 50, // Testing: Available stock
     description: 'High-quality smartphone with amazing features',
     features: [
       '8k super steady video',
@@ -62,11 +63,19 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     try {
-      await addToCart(product.id, quantity);
-      alert('Product added to cart!');
+      await addToCart(product.id, quantity, {
+        name: product.name || product.title,
+        price: product.price || 0,
+        image: product.image,
+        sku: product.sku,
+        brand: typeof product.brand === 'object' ? product.brand.title : product.brand
+      });
+      alert(`✅ ${quantity} item(s) added to cart successfully!`);
+      // Scroll to top to see cart icon update
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Failed to add to cart:', err);
-      alert('Failed to add to cart. Please try again.');
+      alert('❌ Failed to add to cart. Please try again.');
     }
   };
 
@@ -565,13 +574,13 @@ const ProductDetail = () => {
                         <button 
                           className="btn btn-buy" 
                           onClick={handleAddToCart}
-                          disabled={cartLoading || (product.stock !== undefined && product.stock === 0)}
+                          disabled={cartLoading || product.stock === 0}
                           style={{
-                            opacity: (cartLoading || (product.stock !== undefined && product.stock === 0)) ? 0.6 : 1,
-                            cursor: (cartLoading || (product.stock !== undefined && product.stock === 0)) ? 'not-allowed' : 'pointer'
+                            opacity: (cartLoading || product.stock === 0) ? 0.6 : 1,
+                            cursor: (cartLoading || product.stock === 0) ? 'not-allowed' : 'pointer'
                           }}
                         >
-                          {cartLoading ? 'Adding...' : (product.stock !== undefined && product.stock === 0) ? 'Out of Stock' : 'Add to Cart'}
+                          {cartLoading ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>
                       </div>
                     </div>
@@ -611,7 +620,7 @@ const ProductDetail = () => {
                                   </svg>
                                 </span>
                                 <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
-                                  {product.stock > 0 ? `In Stock: ${product.stock}` : 'Out of Stock'}
+                                  {product.stock === 0 ? 'Out of Stock' : `In Stock${product.stock ? `: ${product.stock}` : ''}`}
                                 </span>
                         </div>
                         </div>
