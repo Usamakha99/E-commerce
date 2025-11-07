@@ -239,8 +239,9 @@ const CartSidebar = ({ isOpen, onClose }) => {
                 {/* Product Image */}
                 <div style={{ 
                   flexShrink: 0,
-                  background: '#f8f9fa',
-                  borderRadius: '10px',
+                  background: 'white',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
                   padding: '8px',
                   width: '80px',
                   height: '80px',
