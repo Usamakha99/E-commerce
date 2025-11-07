@@ -77,10 +77,10 @@ const Cart = () => {
             {/* Modern Page Header */}
             <div style={{ 
               marginBottom: '40px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
               borderRadius: '20px',
               padding: '30px 40px',
-              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+              boxShadow: '0 10px 30px rgba(223, 32, 32, 0.3)',
               color: 'white'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
@@ -123,12 +123,12 @@ const Cart = () => {
                   width: '60px',
                   height: '60px',
                   border: '4px solid #f3f3f3',
-                  borderTop: '4px solid #667eea',
+                  borderTop: '4px solid #df2020',
                   borderRadius: '50%',
                   margin: '0 auto 30px',
                   animation: 'spin 1s linear infinite'
                 }}></div>
-                <p style={{ fontSize: '18px', fontWeight: '500', color: '#667eea' }}>Loading your amazing cart...</p>
+                <p style={{ fontSize: '18px', fontWeight: '500', color: '#df2020' }}>Loading your amazing cart...</p>
                 <style>
                   {`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}
                 </style>
@@ -169,12 +169,12 @@ const Cart = () => {
                   width: '180px',
                   height: '180px',
                   margin: '0 auto 30px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 15px 35px rgba(102, 126, 234, 0.3)',
+                  boxShadow: '0 15px 35px rgba(223, 32, 32, 0.3)',
                   position: 'relative',
                   animation: 'float 3s ease-in-out infinite'
                 }}>
@@ -195,23 +195,23 @@ const Cart = () => {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '10px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                     color: 'white',
                     padding: '15px 35px',
                     borderRadius: '50px',
                     textDecoration: 'none',
                     fontSize: '16px',
                     fontWeight: '600',
-                    boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+                    boxShadow: '0 10px 30px rgba(223, 32, 32, 0.3)',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
+                    e.target.style.boxShadow = '0 15px 40px rgba(223, 32, 32, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
+                    e.target.style.boxShadow = '0 10px 30px rgba(223, 32, 32, 0.3)';
                   }}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -259,14 +259,14 @@ const Cart = () => {
                         <span style={{
                           width: '8px',
                           height: '8px',
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                           borderRadius: '50%',
                           display: 'inline-block'
                         }}></span>
                         Your Items
                       </h5>
                       <span style={{
-                        backgroundColor: '#667eea',
+                        backgroundColor: '#df2020',
                         color: 'white',
                         padding: '6px 16px',
                         borderRadius: '20px',
@@ -326,7 +326,7 @@ const Cart = () => {
                             position: 'absolute',
                             top: '-5px',
                             left: '-5px',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                             color: 'white',
                             width: '24px',
                             height: '24px',
@@ -336,7 +336,7 @@ const Cart = () => {
                             justifyContent: 'center',
                             fontSize: '12px',
                             fontWeight: 'bold',
-                            boxShadow: '0 2px 8px rgba(102, 126, 234, 0.4)'
+                            boxShadow: '0 2px 8px rgba(223, 32, 32, 0.4)'
                           }}>
                             {index + 1}
                           </div>
@@ -384,7 +384,7 @@ const Cart = () => {
                                   width: '36px',
                                   height: '36px',
                                   border: 'none',
-                                  background: item.quantity <= 1 ? '#f5f5f5' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  background: item.quantity <= 1 ? '#f5f5f5' : 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                                   color: item.quantity <= 1 ? '#ccc' : 'white',
                                   cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer',
                                   fontSize: '18px',
@@ -410,7 +410,7 @@ const Cart = () => {
                                   width: '36px',
                                   height: '36px',
                                   border: 'none',
-                                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                                   color: 'white',
                                   cursor: 'pointer',
                                   fontSize: '18px',
@@ -418,10 +418,10 @@ const Cart = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                                 onMouseEnter={(e) => {
-                                  e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
+                                  e.target.style.background = 'linear-gradient(135deg, #1c1463 0%, #df2020 100%)';
                                 }}
                                 onMouseLeave={(e) => {
-                                  e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                                  e.target.style.background = 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)';
                                 }}
                               >
                                 +
@@ -464,24 +464,36 @@ const Cart = () => {
                         {/* Price */}
                         <div style={{ 
                           textAlign: 'right', 
-                          minWidth: '120px',
+                          minWidth: '130px',
                           display: 'flex',
                           flexDirection: 'column',
-                          justifyContent: 'space-between',
+                          justifyContent: 'center',
                           alignItems: 'flex-end'
                         }}>
-                          <div>
+                          <div style={{
+                            background: 'linear-gradient(135deg, rgba(223, 32, 32, 0.08) 0%, rgba(28, 20, 99, 0.08) 100%)',
+                            padding: '12px 18px',
+                            borderRadius: '12px',
+                            textAlign: 'center',
+                            minWidth: '110px'
+                          }}>
                             <div style={{ 
-                              fontSize: '1.4em', 
-                              fontWeight: '800', 
-                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              fontSize: '1.3em', 
+                              fontWeight: '700', 
+                              background: 'linear-gradient(135deg, #df2020 0%, #1c1463 100%)',
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
-                              backgroundClip: 'text'
+                              backgroundClip: 'text',
+                              lineHeight: '1.3'
                             }}>
                               ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                             </div>
-                            <div style={{ fontSize: '0.8em', color: '#888', marginTop: '4px' }}>
+                            <div style={{ 
+                              fontSize: '0.7em', 
+                              color: '#666', 
+                              marginTop: '4px',
+                              fontWeight: '500'
+                            }}>
                               ${(item.price || 0).toFixed(2)} × {item.quantity}
                             </div>
                           </div>
