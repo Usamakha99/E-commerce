@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../hooks/useCart';
@@ -6,6 +6,8 @@ import { useCart } from '../hooks/useCart';
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, loading, error, updateCartItem, removeFromCart, refetch } = useCart();
+  const [removingItem, setRemovingItem] = useState(null);
+  const [updatingItem, setUpdatingItem] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -14,22 +16,25 @@ const Cart = () => {
 
   const handleUpdateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
+    setUpdatingItem(itemId);
     try {
       await updateCartItem(itemId, newQuantity);
     } catch (err) {
       console.error('Failed to update quantity:', err);
       alert('Failed to update quantity. Please try again.');
+    } finally {
+      setUpdatingItem(null);
     }
   };
 
   const handleRemoveItem = async (itemId) => {
-    if (window.confirm('Are you sure you want to remove this item from cart?')) {
-      try {
-        await removeFromCart(itemId);
-      } catch (err) {
-        console.error('Failed to remove item:', err);
-        alert('Failed to remove item. Please try again.');
-      }
+    setRemovingItem(itemId);
+    try {
+      await removeFromCart(itemId);
+    } catch (err) {
+      console.error('Failed to remove item:', err);
+      alert('Failed to remove item. Please try again.');
+      setRemovingItem(null);
     }
   };
 
@@ -50,6 +55,10 @@ const Cart = () => {
   const tax = subtotal * 0.1; // 10% tax
   const shipping = cart?.items?.length > 0 ? 10 : 0; // $10 flat shipping
   const total = subtotal + tax + shipping;
+  
+  const savings = cart?.items?.reduce((total, item) => {
+    return total + ((item.originalPrice || item.price) - item.price) * item.quantity;
+  }, 0) || 0;
 
   return (
     <>
@@ -58,44 +67,164 @@ const Cart = () => {
         <meta name="description" content="View your shopping cart and proceed to checkout" />
       </Helmet>
 
-      <main className="main" style={{ paddingTop: '80px', minHeight: '100vh' }}>
+      <main className="main" style={{ 
+        paddingTop: '80px', 
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%)'
+      }}>
         <div className="container">
           <div className="pt-30 pb-50">
-            {/* Page Header */}
-            <div className="mb-40">
-              <h2 className="color-brand-3" style={{ fontSize: '2em', fontWeight: '600' }}>Shopping Cart</h2>
-              <p className="color-gray-500">
-                <Link to="/" style={{ color: '#666', textDecoration: 'none' }}>Home</Link>
-                <span style={{ margin: '0 8px' }}>/</span>
-                <span>Cart</span>
-              </p>
+            {/* Modern Page Header */}
+            <div style={{ 
+              marginBottom: '40px',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '20px',
+              padding: '30px 40px',
+              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+              color: 'white'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z" 
+                    fill="white"/>
+                </svg>
+                <h2 style={{ fontSize: '2.2em', fontWeight: '700', margin: 0 }}>My Shopping Cart</h2>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', opacity: 0.9 }}>
+                <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
+                <span>›</span>
+                <Link to="/shop" style={{ color: 'white', textDecoration: 'none' }}>Shop</Link>
+                <span>›</span>
+                <span style={{ fontWeight: '600' }}>Cart</span>
+                {cart?.items?.length > 0 && (
+                  <span style={{
+                    marginLeft: '15px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}>
+                    {cart.items.length} {cart.items.length === 1 ? 'Item' : 'Items'}
+                  </span>
+                )}
+              </div>
             </div>
 
             {loading && (
-              <div className="text-center py-5">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <p className="mt-3">Loading your cart...</p>
+              <div style={{
+                textAlign: 'center',
+                padding: '80px 20px',
+                background: 'white',
+                borderRadius: '20px',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.08)'
+              }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  border: '4px solid #f3f3f3',
+                  borderTop: '4px solid #667eea',
+                  borderRadius: '50%',
+                  margin: '0 auto 30px',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
+                <p style={{ fontSize: '18px', fontWeight: '500', color: '#667eea' }}>Loading your amazing cart...</p>
+                <style>
+                  {`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}
+                </style>
               </div>
             )}
 
             {error && (
-              <div className="alert alert-warning" role="alert">
-                Error loading cart: {error}
+              <div style={{
+                background: 'linear-gradient(135deg, #FFE5E5 0%, #FFD1D1 100%)',
+                border: '2px solid #ff4444',
+                borderRadius: '15px',
+                padding: '25px 30px',
+                marginBottom: '30px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '15px',
+                boxShadow: '0 8px 25px rgba(255, 68, 68, 0.15)'
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="#ff4444"/>
+                </svg>
+                <div>
+                  <p style={{ margin: 0, fontWeight: '600', color: '#ff4444' }}>Oops! Something went wrong</p>
+                  <p style={{ margin: 0, fontSize: '14px', color: '#666', marginTop: '5px' }}>{error}</p>
+                </div>
               </div>
             )}
 
             {!loading && cart?.items?.length === 0 && (
-              <div className="text-center py-5">
-                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: '0 auto 20px', opacity: 0.3 }}>
-                  <path d="M9 2L7.17 4H4C2.9 4 2 4.9 2 6V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V6C22 4.9 21.1 4 20 4H16.83L15 2H9ZM4 6H20V19H4V6ZM12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7Z" fill="currentColor" />
-                </svg>
-                <h4 className="color-brand-3 mb-20">Your cart is empty</h4>
-                <p className="mb-30 color-gray-500">Add some products to get started!</p>
-                <Link to="/shop" className="btn btn-buy" style={{ backgroundColor: '#df2020', color: 'white', padding: '12px 30px', borderRadius: '25px', textDecoration: 'none' }}>
-                  Continue Shopping
+              <div style={{
+                textAlign: 'center',
+                padding: '80px 20px',
+                background: 'white',
+                borderRadius: '20px',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.08)'
+              }}>
+                <div style={{
+                  width: '180px',
+                  height: '180px',
+                  margin: '0 auto 30px',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 15px 35px rgba(102, 126, 234, 0.3)',
+                  position: 'relative',
+                  animation: 'float 3s ease-in-out infinite'
+                }}>
+                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18C5.9 18 5.01 18.9 5.01 20C5.01 21.1 5.9 22 7 22C8.1 22 9 21.1 9 20C9 18.9 8.1 18 7 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.1 5.9 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5.48C20.96 5.34 21 5.17 21 5C21 4.45 20.55 4 20 4H5.21L4.27 2H1ZM17 18C15.9 18 15.01 18.9 15.01 20C15.01 21.1 15.9 22 17 22C18.1 22 19 21.1 19 20C19 18.9 18.1 18 17 18Z" 
+                      fill="white"/>
+                  </svg>
+                </div>
+                <h4 style={{ fontSize: '28px', fontWeight: '700', color: '#111A45', marginBottom: '15px' }}>
+                  Your Cart is Empty
+                </h4>
+                <p style={{ fontSize: '16px', color: '#666', marginBottom: '35px', maxWidth: '400px', margin: '0 auto 35px' }}>
+                  Looks like you haven't added anything yet. Start shopping to fill your cart!
+                </p>
+                <Link 
+                  to="/shop" 
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    padding: '15px 35px',
+                    borderRadius: '50px',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-3px)';
+                    e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.3)';
+                  }}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M5 12L12 5M5 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Start Shopping
                 </Link>
+                <style>
+                  {`@keyframes float { 
+                    0%, 100% { transform: translateY(0px); } 
+                    50% { transform: translateY(-20px); } 
+                  }`}
+                </style>
               </div>
             )}
 
@@ -103,80 +232,196 @@ const Cart = () => {
               <div className="row">
                 {/* Cart Items */}
                 <div className="col-lg-8">
-                  <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '20px', marginBottom: '20px' }}>
-                    <h5 className="mb-20" style={{ fontSize: '1.2em', fontWeight: '600', color: '#000' }}>
-                      Cart Items ({cart.items.length})
-                    </h5>
+                  <div style={{ 
+                    background: 'white', 
+                    borderRadius: '20px', 
+                    padding: '30px', 
+                    marginBottom: '20px',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.08)'
+                  }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      marginBottom: '25px',
+                      paddingBottom: '20px',
+                      borderBottom: '2px solid #f0f0f0'
+                    }}>
+                      <h5 style={{ 
+                        fontSize: '1.5em', 
+                        fontWeight: '700', 
+                        color: '#111A45',
+                        margin: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px'
+                      }}>
+                        <span style={{
+                          width: '8px',
+                          height: '8px',
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          borderRadius: '50%',
+                          display: 'inline-block'
+                        }}></span>
+                        Your Items
+                      </h5>
+                      <span style={{
+                        backgroundColor: '#667eea',
+                        color: 'white',
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}>
+                        {cart.items.length} {cart.items.length === 1 ? 'Item' : 'Items'}
+                      </span>
+                    </div>
 
-                    {cart.items.map((item) => (
+                    {cart.items.map((item, index) => (
                       <div 
                         key={item.id || item.productId}
                         style={{
                           display: 'flex',
                           gap: '20px',
-                          padding: '20px',
-                          borderBottom: '1px solid #f0f0f0',
-                          marginBottom: '15px'
+                          padding: '25px',
+                          borderRadius: '15px',
+                          marginBottom: '15px',
+                          background: 'linear-gradient(135deg, #fafbfd 0%, #f5f7fa 100%)',
+                          border: '1px solid #e8ecf1',
+                          transition: 'all 0.3s ease',
+                          opacity: removingItem === item.id ? 0.5 : 1,
+                          transform: removingItem === item.id ? 'scale(0.95)' : 'scale(1)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.08)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = 'none';
+                          e.currentTarget.style.transform = 'translateY(0)';
                         }}
                       >
                         {/* Product Image */}
-                        <div style={{ flexShrink: 0 }}>
+                        <div style={{ 
+                          flexShrink: 0,
+                          position: 'relative',
+                          background: 'white',
+                          borderRadius: '12px',
+                          padding: '10px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                        }}>
                           <img
                             src={item.image || item.product?.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
                             alt={item.name || item.product?.name || 'Product'}
                             style={{
-                              width: '100px',
-                              height: '100px',
+                              width: '110px',
+                              height: '110px',
                               objectFit: 'contain',
-                              borderRadius: '8px',
-                              border: '1px solid #e0e0e0'
+                              borderRadius: '8px'
                             }}
                             onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
                           />
+                          {/* Item number badge */}
+                          <div style={{
+                            position: 'absolute',
+                            top: '-5px',
+                            left: '-5px',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: 'white',
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            boxShadow: '0 2px 8px rgba(102, 126, 234, 0.4)'
+                          }}>
+                            {index + 1}
+                          </div>
                         </div>
 
                         {/* Product Details */}
-                        <div style={{ flex: 1 }}>
-                          <h6 style={{ fontSize: '1em', fontWeight: '600', marginBottom: '8px', color: '#000' }}>
-                            {item.name || item.product?.name || 'Product'}
-                          </h6>
-                          <p style={{ fontSize: '0.9em', color: '#666', marginBottom: '10px' }}>
-                            SKU: {item.sku || item.product?.sku || 'N/A'}
-                          </p>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                          <div>
+                            <h6 style={{ 
+                              fontSize: '1.1em', 
+                              fontWeight: '600', 
+                              marginBottom: '8px', 
+                              color: '#111A45',
+                              lineHeight: '1.4'
+                            }}>
+                              {item.name || item.product?.name || 'Product'}
+                            </h6>
+                            <div style={{ display: 'flex', gap: '15px', marginBottom: '12px' }}>
+                              <p style={{ fontSize: '0.85em', color: '#666', margin: 0 }}>
+                                <span style={{ fontWeight: '600' }}>SKU:</span> {item.sku || item.product?.sku || 'N/A'}
+                              </p>
+                              {item.brand && (
+                                <p style={{ fontSize: '0.85em', color: '#666', margin: 0 }}>
+                                  <span style={{ fontWeight: '600' }}>Brand:</span> {item.brand}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
                             {/* Quantity Controls */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '0',
+                              background: 'white',
+                              borderRadius: '10px',
+                              border: '2px solid #e0e0e0',
+                              overflow: 'hidden'
+                            }}>
                               <button
                                 onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                                disabled={loading || item.quantity <= 1}
+                                disabled={updatingItem === item.id || item.quantity <= 1}
                                 style={{
-                                  width: '30px',
-                                  height: '30px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  backgroundColor: 'white',
+                                  width: '36px',
+                                  height: '36px',
+                                  border: 'none',
+                                  background: item.quantity <= 1 ? '#f5f5f5' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  color: item.quantity <= 1 ? '#ccc' : 'white',
                                   cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer',
-                                  fontSize: '16px',
-                                  fontWeight: 'bold'
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  transition: 'all 0.2s ease'
                                 }}
                               >
-                                -
+                                −
                               </button>
-                              <span style={{ minWidth: '30px', textAlign: 'center', fontWeight: '600' }}>
-                                {item.quantity || 1}
+                              <span style={{ 
+                                minWidth: '45px', 
+                                textAlign: 'center', 
+                                fontWeight: '700',
+                                fontSize: '16px',
+                                color: '#111A45'
+                              }}>
+                                {updatingItem === item.id ? '...' : item.quantity || 1}
                               </span>
                               <button
                                 onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                                disabled={loading}
+                                disabled={updatingItem === item.id}
                                 style={{
-                                  width: '30px',
-                                  height: '30px',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '4px',
-                                  backgroundColor: 'white',
+                                  width: '36px',
+                                  height: '36px',
+                                  border: 'none',
+                                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  color: 'white',
                                   cursor: 'pointer',
-                                  fontSize: '16px',
-                                  fontWeight: 'bold'
+                                  fontSize: '18px',
+                                  fontWeight: 'bold',
+                                  transition: 'all 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                                 }}
                               >
                                 +
@@ -186,28 +431,59 @@ const Cart = () => {
                             {/* Remove Button */}
                             <button
                               onClick={() => handleRemoveItem(item.id)}
-                              disabled={loading}
+                              disabled={removingItem === item.id}
                               style={{
-                                color: '#df2020',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                color: '#ff4444',
                                 backgroundColor: 'transparent',
                                 border: 'none',
                                 cursor: 'pointer',
                                 fontSize: '14px',
-                                textDecoration: 'underline'
+                                fontWeight: '600',
+                                padding: '8px 12px',
+                                borderRadius: '8px',
+                                transition: 'all 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = '#fff0f0';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = 'transparent';
                               }}
                             >
-                              Remove
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" fill="currentColor"/>
+                              </svg>
+                              {removingItem === item.id ? 'Removing...' : 'Remove'}
                             </button>
                           </div>
                         </div>
 
                         {/* Price */}
-                        <div style={{ textAlign: 'right', minWidth: '100px' }}>
-                          <div style={{ fontSize: '1.2em', fontWeight: '700', color: '#df2020' }}>
-                            ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
-                          </div>
-                          <div style={{ fontSize: '0.85em', color: '#666', marginTop: '5px' }}>
-                            ${(item.price || 0).toFixed(2)} each
+                        <div style={{ 
+                          textAlign: 'right', 
+                          minWidth: '120px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-end'
+                        }}>
+                          <div>
+                            <div style={{ 
+                              fontSize: '1.4em', 
+                              fontWeight: '800', 
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              backgroundClip: 'text'
+                            }}>
+                              ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                            </div>
+                            <div style={{ fontSize: '0.8em', color: '#888', marginTop: '4px' }}>
+                              ${(item.price || 0).toFixed(2)} × {item.quantity}
+                            </div>
                           </div>
                         </div>
                       </div>
