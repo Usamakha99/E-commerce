@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { CartProvider } from './context/CartContext'
 import ShopGrid from './pages/ShopGrid'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
@@ -17,26 +18,28 @@ import './App.css'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen w-screen">
-        <JavaScriptIntegration />
-        <Preloader />
-        <NavigationPreloader />
-        <Header />
-        
-        <Routes>
-          <Route path="/" element={<ShopGrid />} />
-          <Route path="/shop" element={<ShopGrid />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/marketplace/:id" element={<MarketplaceProductDetail />} />
-          <Route path="/product" element={<ProductDetail />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-        
-        {/* <Footer /> */}
-      </div>
+      <CartProvider>
+        <div className="min-h-screen w-screen">
+          <JavaScriptIntegration />
+          <Preloader />
+          <NavigationPreloader />
+          <Header />
+          
+          <Routes>
+            <Route path="/" element={<ShopGrid />} />
+            <Route path="/shop" element={<ShopGrid />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/marketplace/:id" element={<MarketplaceProductDetail />} />
+            <Route path="/product" element={<ProductDetail />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+          
+          {/* <Footer /> */}
+        </div>
+      </CartProvider>
     </Router>
   )
 }

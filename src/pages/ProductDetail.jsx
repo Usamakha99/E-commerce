@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import SocialShare from '../components/SocialShare';
 import ProductInquiryModal from '../components/ProductInquiryModal';
 import { useProduct } from '../hooks/useProduct';
-import { useCart } from '../hooks/useCart';
+import { useCart } from '../context/CartContext';
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');

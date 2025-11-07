@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { productService } from '../services/product.service';
-import { useCart } from '../hooks/useCart';
+import { useCart } from '../context/CartContext';
+import CartSidebar from './CartSidebar';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
+  const [showCartSidebar, setShowCartSidebar] = useState(false);
   
   // Calculate cart item count
   const cartItemCount = cart?.items?.length || 0;
@@ -634,10 +636,10 @@ const Header = () => {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '10px',
-                      fontWeight: 'bold',
+                      fontSize: '12px',
+                      fontWeight: '600',
                       fontFamily: 'Space Grotesk, sans-serif',
-                      border: '2px solid white',
+                      border: '2  px solid white',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                     }}>
                       {cartItemCount}
@@ -800,14 +802,17 @@ const Header = () => {
             </form>
 
             {/* Cart Icon */}
-            <Link 
-              to="/cart" 
+            <button 
+              onClick={() => setShowCartSidebar(true)}
               style={{ 
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                textDecoration: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '5px',
                 transition: 'transform 0.2s ease'
               }}
               onMouseEnter={(e) => {
@@ -838,13 +843,13 @@ const Header = () => {
                   backgroundColor: '#df2020',
                   color: 'white',
                   borderRadius: '50%',
-                  width: '22px',
-                  height: '22px',
+                  width: '20px',
+                  height: '20px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '11px',
-                  fontWeight: 'bold',
+                  fontWeight: '600',
                   fontFamily: 'Space Grotesk, sans-serif',
                   border: '2px solid white',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
@@ -852,7 +857,7 @@ const Header = () => {
                   {cartItemCount}
                 </span>
               )}
-            </Link>
+            </button>
             </div>
           </div>
         </div>
@@ -1132,113 +1137,11 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Old Mobile Header - Hidden */}
-      <div className={`mobile-header-active mobile-header-wrapper-style perfect-scrollbar`} style={{ display: 'none' }}>
-        <div className="mobile-header-wrapper-inner">
-          <div className="mobile-header-content-area">
-            <div className="mobile-logo">
-              <a className="d-flex" href="/">
-                <img alt="V Cloud" src="/src/assets/V Cloud Logo final-01.svg" style={{width: '280px', height: 'auto', maxWidth: '100%'}} />
-              </a>
-            </div>
-            <div className="perfect-scroll">
-              <div className="mobile-menu-wrap mobile-header-border">
-                <nav className="mt-15">
-                  <ul className="mobile-menu font-heading">
-                    <li className="has-children">
-                      <a className="active" href="/">Home</a>
-                      <ul className="sub-menu">
-                        <li><a href="/">Homepage - 1</a></li>
-                        <li><a href="/">Homepage - 2</a></li>
-                        <li><a href="/">Homepage - 3</a></li>
-                        <li><a href="/">Homepage - 4</a></li>
-                        <li><a href="/">Homepage - 5</a></li>
-                        <li><a href="/">Homepage - 6</a></li>
-                        <li><a href="/">Homepage - 7</a></li>
-                        <li><a href="/">Homepage - 8</a></li>
-                        <li><a href="/">Homepage - 9</a></li>
-                        <li><a href="/">Homepage - 10</a></li>
-                      </ul>
-                    </li>
-                    <li className="has-children">
-                      <a href="/shop">Shop</a>
-                      <ul className="sub-menu">
-                        <li><a href="/shop">Shop Grid</a></li>
-                        <li><a href="/shop">Shop Grid 2</a></li>
-                        <li><a href="/shop">Shop List</a></li>
-                        <li><a href="/shop">Shop List 2</a></li>
-                        <li><a href="/shop">Shop Fullwidth</a></li>
-                        <li><a href="/product">Single Product</a></li>
-                        <li><a href="/product">Single Product 2</a></li>
-                        <li><a href="/product">Single Product 3</a></li>
-                        <li><a href="/product">Single Product 4</a></li>
-                        <li><a href="/cart">Shop Cart</a></li>
-                        <li><a href="/checkout">Shop Checkout</a></li>
-                        <li><a href="/compare">Shop Compare</a></li>
-                        <li><a href="/wishlist">Shop Wishlist</a></li>
-                      </ul>
-                    </li>
-                    <li className="has-children">
-                      <a href="/vendors">Vendors</a>
-                      <ul className="sub-menu">
-                        <li><a href="/vendors">Vendors Listing</a></li>
-                        <li><a href="/vendor">Vendor Single</a></li>
-                      </ul>
-                    </li>
-                    <li className="has-children">
-                      <a href="#">Pages</a>
-                      <ul className="sub-menu">
-                        <li><a href="/about">About Us</a></li>
-                        <li><a href="/careers">Careers</a></li>
-                        <li><a href="/terms">Term and Condition</a></li>
-                        <li><a href="/register">Register</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/404">Error 404</a></li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="/blog">Blog</a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-              <div className="mobile-account">
-                <div className="mobile-header-top">
-                  <div className="user-account">
-                    <a href="/account">
-                      <img src="/src/assets/imgs/template/ava_1.png" alt="Ecom" />
-                    </a>
-                    <div className="content">
-                      <h6 className="user-name">Hello<span className="text-brand"> Steven !</span></h6>
-                      <p className="font-xs text-muted">You have 3 new messages</p>
-                    </div>
-                  </div>
-                </div>
-                <ul className="mobile-menu">
-                  <li><a href="/account">My Account</a></li>
-                  <li><a href="/orders">Order Tracking</a></li>
-                  <li><a href="/orders">My Orders</a></li>
-                  <li><a href="/wishlist">My Wishlist</a></li>
-                  <li><a href="/settings">Setting</a></li>
-                  <li><a href="/login">Sign out</a></li>
-                </ul>
-              </div>
-              <div className="mobile-banner">
-                <div className="bg-5 block-iphone">
-                  <span className="color-brand-3 font-sm-lh32">Starting from $899</span>
-                  <h3 className="font-xl mb-10">iPhone 12 Pro 128Gb</h3>
-                  <p className="font-base color-brand-3 mb-10">Special Sale</p>
-                  <a className="btn btn-arrow" href="/shop">learn more</a>
-                </div>
-              </div>
-              <div className="site-copyright color-gray-400 mt-30">
-                Copyright 2022 &copy; Ecom - Marketplace Template.<br />
-                Designed by<a href="http://alithemes.com" target="_blank" rel="noopener noreferrer">&nbsp; AliThemes</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Cart Sidebar Component */}
+      <CartSidebar 
+        isOpen={showCartSidebar}
+        onClose={() => setShowCartSidebar(false)}
+      />
     </>
   );
 };
