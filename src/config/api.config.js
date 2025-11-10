@@ -64,6 +64,13 @@ export const API_ENDPOINTS = {
     update: (id) => `/reviews/${id}`,
     delete: (id) => `/reviews/${id}`,
   },
+  
+  // Payments (Stripe)
+  payments: {
+    createIntent: '/payments/create-intent',
+    confirm: (id) => `/payments/confirm/${id}`,
+    status: (id) => `/payments/status/${id}`,
+  },
 };
 
 export default API_CONFIG;
