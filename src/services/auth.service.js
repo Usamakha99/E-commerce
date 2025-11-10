@@ -25,12 +25,13 @@ export const authService = {
     }
   },
 
-  // Register
+  // Register (Initiate - sends verification email)
   register: async (userData) => {
     try {
       const response = await apiService.post(API_ENDPOINTS.users.register, userData);
       
-      // Store token if registration successful
+      // Note: Token may not be provided until email is verified
+      // Only store token if backend sends it immediately
       if (response.token) {
         localStorage.setItem('authToken', response.token);
         if (response.user) {
@@ -41,6 +42,42 @@ export const authService = {
       return response;
     } catch (error) {
       console.error('Error registering:', error);
+      throw error;
+    }
+  },
+
+  // Verify Email
+  verifyEmail: async (email, code) => {
+    try {
+      const response = await apiService.post('/users/verify-email', {
+        email,
+        verificationCode: code,
+      });
+      
+      // Store token after successful verification
+      if (response.token) {
+        localStorage.setItem('authToken', response.token);
+        if (response.user) {
+          localStorage.setItem('user', JSON.stringify(response.user));
+        }
+      }
+      
+      return response;
+    } catch (error) {
+      console.error('Error verifying email:', error);
+      throw error;
+    }
+  },
+
+  // Resend Verification Code
+  resendVerificationCode: async (email) => {
+    try {
+      const response = await apiService.post('/users/resend-verification', {
+        email,
+      });
+      return response;
+    } catch (error) {
+      console.error('Error resending verification code:', error);
       throw error;
     }
   },

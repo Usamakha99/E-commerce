@@ -42,10 +42,10 @@ export const API_ENDPOINTS = {
     cancel: (id) => `/orders/${id}/cancel`,
   },
   
-  // Users
+  // Users / Auth
   users: {
-    login: '/auth/login',
-    register: '/auth/register',
+    login: '/users/login',
+    register: '/users/register',
     profile: '/users/profile',
     updateProfile: '/users/profile',
   },

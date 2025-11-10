@@ -9,6 +9,7 @@ import PaymentSuccess from './pages/PaymentSuccess'
 import PaymentCancel from './pages/PaymentCancel'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import VerifyEmail from './pages/VerifyEmail'
 import Marketplace from './pages/Marketplace'
 import MarketplaceProductDetail from './pages/MarketplaceProductDetail'
 import Header from './components/Header'
@@ -41,6 +42,7 @@ function App() {
             <Route path="/payment-cancel" element={<PaymentCancel />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
           </Routes>
           
           {/* <Footer /> */}

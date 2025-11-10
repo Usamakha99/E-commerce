@@ -166,30 +166,64 @@ const Register = () => {
 
       const response = await authService.register(registrationData);
       
-      setSuccessMessage('Registration successful! Redirecting...');
-      
-      // Redirect to login or dashboard after 2 seconds
-      setTimeout(() => {
-        if (authService.isAuthenticated()) {
-          navigate('/');
-        } else {
-          navigate('/login');
-        }
-      }, 2000);
+      // Check if email verification is required
+      if (response.requiresVerification || response.message?.includes('verification')) {
+        setSuccessMessage('Registration successful! Check your email for verification code.');
+        
+        // Redirect to verification page after 2 seconds
+        setTimeout(() => {
+          navigate('/verify-email', { 
+            state: { email: formData.email } 
+          });
+        }, 2000);
+      } else {
+        // Direct registration (no verification required)
+        setSuccessMessage('Registration successful! Redirecting...');
+        
+        setTimeout(() => {
+          if (authService.isAuthenticated()) {
+            navigate('/');
+          } else {
+            navigate('/login');
+          }
+        }, 2000);
+      }
       
     } catch (error) {
       console.error('Registration error:', error);
       
       // Handle different error responses
       if (error.response) {
-        const errorMessage = error.response.data?.message || 
-                           error.response.data?.error || 
+        const errorData = error.response.data;
+        const errorMessage = errorData?.message || 
+                           errorData?.error || 
                            'Registration failed. Please try again.';
-        setApiError(errorMessage);
+        
+        // Check if it's email sending error (500 with email message)
+        if (error.response.status === 500 && 
+            (errorMessage.includes('email') || errorMessage.includes('verification'))) {
+          
+          // User was created but email failed - still redirect to verification
+          console.log('ℹ️ User created but email failed. Redirecting to verify page.');
+          console.log('ℹ️ User can request resend or contact admin.');
+          
+          setSuccessMessage('Registration successful! Redirecting to verification...');
+          
+          setTimeout(() => {
+            navigate('/verify-email', { 
+              state: { 
+                email: formData.email,
+                emailFailed: true 
+              } 
+            });
+          }, 2000);
+        } else {
+          setApiError(errorMessage);
+        }
         
         // Handle field-specific errors
-        if (error.response.data?.errors) {
-          setFormErrors(error.response.data.errors);
+        if (errorData?.errors) {
+          setFormErrors(errorData.errors);
         }
       } else if (error.request) {
         setApiError('Unable to connect to server. Please check your connection.');
@@ -204,7 +238,7 @@ const Register = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+      background: 'linear-gradient(135deg, #df2020 0%, #c41a1a 25%, #111A45 75%, #0a0f2c 100%)',
       padding: '60px 20px',
       position: 'relative',
       overflow: 'hidden'
@@ -224,7 +258,7 @@ const Register = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: 'radial-gradient(circle, rgba(223, 32, 32, 0.15) 0%, rgba(223, 32, 32, 0.05) 70%, transparent 100%)',
           top: '-200px',
           right: '-100px',
           animation: 'float 20s ease-in-out infinite'
@@ -234,10 +268,20 @@ const Register = () => {
           width: '300px',
           height: '300px',
           borderRadius: '50%',
-          background: 'rgba(255, 255, 255, 0.08)',
+          background: 'radial-gradient(circle, rgba(17, 26, 69, 0.2) 0%, rgba(17, 26, 69, 0.08) 70%, transparent 100%)',
           bottom: '-150px',
           left: '-80px',
           animation: 'float 15s ease-in-out infinite reverse'
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: '200px',
+          height: '200px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255, 107, 107, 0.12) 0%, transparent 70%)',
+          top: '40%',
+          left: '10%',
+          animation: 'float 18s ease-in-out infinite'
         }} />
       </div>
 
@@ -251,6 +295,7 @@ const Register = () => {
         <div style={{
           textAlign: 'center',
           marginBottom: '40px',
+          marginTop: '40px',
           animation: 'fadeInDown 0.8s ease'
         }}>
           <div style={{
@@ -258,17 +303,29 @@ const Register = () => {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 20px',
-            background: 'rgba(255, 255, 255, 0.2)',
+            background: 'rgba(255, 255, 255, 0.15)',
             backdropFilter: 'blur(10px)',
             borderRadius: '50px',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            marginBottom: '20px'
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+            marginBottom: '25px',
+            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-            <span style={{ color: 'white', fontSize: '13px', fontWeight: '600' }}>
-              Join V Cloud Tech
+            <div style={{
+              width: '20px',
+              height: '20px',
+              background: 'linear-gradient(135deg, #df2020 0%, #ff6b6b 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(223, 32, 32, 0.4)'
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            </div>
+            <span style={{ color: 'white', fontSize: '13px', fontWeight: '700', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+              Join VCloud Tech
             </span>
           </div>
 
@@ -379,12 +436,16 @@ const Register = () => {
                   }}
                   onFocus={(e) => {
                     if (!isLoading) {
-                      e.target.style.borderColor = '#667eea';
-                      e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                      e.target.style.borderColor = '#df2020';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                     }
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = formErrors.name ? '#df2020' : '#e0e0e0';
+                    if (formErrors.name) {
+                      e.target.style.borderColor = '#df2020';
+                    } else {
+                      e.target.style.borderColor = '#e0e0e0';
+                    }
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -432,12 +493,16 @@ const Register = () => {
                   }}
                   onFocus={(e) => {
                     if (!isLoading) {
-                      e.target.style.borderColor = '#667eea';
-                      e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                      e.target.style.borderColor = '#df2020';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                     }
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = formErrors.username ? '#df2020' : '#e0e0e0';
+                    if (formErrors.username) {
+                      e.target.style.borderColor = '#df2020';
+                    } else {
+                      e.target.style.borderColor = '#e0e0e0';
+                    }
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -486,12 +551,16 @@ const Register = () => {
                 }}
                 onFocus={(e) => {
                   if (!isLoading) {
-                    e.target.style.borderColor = '#667eea';
-                    e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                    e.target.style.borderColor = '#df2020';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                   }
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = formErrors.email ? '#df2020' : '#e0e0e0';
+                  if (formErrors.email) {
+                    e.target.style.borderColor = '#df2020';
+                  } else {
+                    e.target.style.borderColor = '#e0e0e0';
+                  }
                   e.target.style.boxShadow = 'none';
                 }}
               />
@@ -539,12 +608,16 @@ const Register = () => {
                 }}
                 onFocus={(e) => {
                   if (!isLoading) {
-                    e.target.style.borderColor = '#667eea';
-                    e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                    e.target.style.borderColor = '#df2020';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                   }
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = formErrors.phone ? '#df2020' : '#e0e0e0';
+                  if (formErrors.phone) {
+                    e.target.style.borderColor = '#df2020';
+                  } else {
+                    e.target.style.borderColor = '#e0e0e0';
+                  }
                   e.target.style.boxShadow = 'none';
                 }}
               />
@@ -600,12 +673,16 @@ const Register = () => {
                     }}
                     onFocus={(e) => {
                       if (!isLoading) {
-                        e.target.style.borderColor = '#667eea';
-                        e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                        e.target.style.borderColor = '#df2020';
+                        e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                       }
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = formErrors.password ? '#df2020' : '#e0e0e0';
+                      if (formErrors.password) {
+                        e.target.style.borderColor = '#df2020';
+                      } else {
+                        e.target.style.borderColor = '#e0e0e0';
+                      }
                       e.target.style.boxShadow = 'none';
                     }}
                   />
@@ -699,12 +776,16 @@ const Register = () => {
                     }}
                     onFocus={(e) => {
                       if (!isLoading) {
-                        e.target.style.borderColor = '#667eea';
-                        e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)';
+                        e.target.style.borderColor = '#df2020';
+                        e.target.style.boxShadow = '0 0 0 4px rgba(223, 32, 32, 0.1)';
                       }
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = formErrors.confirmPassword ? '#df2020' : '#e0e0e0';
+                      if (formErrors.confirmPassword) {
+                        e.target.style.borderColor = '#df2020';
+                      } else {
+                        e.target.style.borderColor = '#e0e0e0';
+                      }
                       e.target.style.boxShadow = 'none';
                     }}
                   />
@@ -767,11 +848,11 @@ const Register = () => {
                   lineHeight: '1.5'
                 }}>
                   I agree to the{' '}
-                  <Link to="/terms" style={{ color: '#667eea', textDecoration: 'none', fontWeight: '600' }}>
+                  <Link to="/terms" style={{ color: '#df2020', textDecoration: 'none', fontWeight: '600' }}>
                     Terms and Conditions
                   </Link>{' '}
                   and{' '}
-                  <Link to="/privacy" style={{ color: '#667eea', textDecoration: 'none', fontWeight: '600' }}>
+                  <Link to="/privacy" style={{ color: '#111A45', textDecoration: 'none', fontWeight: '600' }}>
                     Privacy Policy
                   </Link>
                 </span>
@@ -797,7 +878,7 @@ const Register = () => {
               style={{
                 width: '100%',
                 padding: '16px',
-                background: isLoading ? '#ccc' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: isLoading ? '#ccc' : 'linear-gradient(135deg, #df2020 0%, #111A45 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
@@ -805,7 +886,7 @@ const Register = () => {
                 fontWeight: '700',
                 cursor: isLoading ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: isLoading ? 'none' : '0 6px 20px rgba(102, 126, 234, 0.3)',
+                boxShadow: isLoading ? 'none' : '0 6px 20px rgba(223, 32, 32, 0.4)',
                 marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
@@ -815,13 +896,13 @@ const Register = () => {
               onMouseEnter={(e) => {
                 if (!isLoading) {
                   e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                  e.target.style.boxShadow = '0 8px 25px rgba(223, 32, 32, 0.5)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isLoading) {
                   e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.3)';
+                  e.target.style.boxShadow = '0 6px 20px rgba(223, 32, 32, 0.4)';
                 }
               }}
             >
@@ -854,16 +935,16 @@ const Register = () => {
                 <Link
                   to="/login"
                   style={{
-                    color: '#667eea',
+                    color: '#df2020',
                     textDecoration: 'none',
                     fontWeight: '700',
                     transition: 'color 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.color = '#764ba2';
+                    e.target.style.color = '#111A45';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.color = '#667eea';
+                    e.target.style.color = '#df2020';
                   }}
                 >
                   Sign In
