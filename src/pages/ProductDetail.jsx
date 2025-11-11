@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import SocialShare from '../components/SocialShare';
 import ProductInquiryModal from '../components/ProductInquiryModal';
 import { useProduct } from '../hooks/useProduct';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../hooks/useAuth';
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState('description');
@@ -16,6 +17,9 @@ const ProductDetail = () => {
   // Fetch product from API
   const { product: apiProduct, loading, error } = useProduct(id, !!id); // Only fetch if id exists
   const { addToCart, loading: cartLoading } = useCart();
+  
+  // ✅ Check if user is logged in (reactive to auth changes)
+  const { isLoggedIn } = useAuth();
 
   // Fallback product data (used if API fails)
   const fallbackProduct = {
@@ -590,7 +594,7 @@ const ProductDetail = () => {
                   <div className="pl-30 pl-mb-0">
                         {/* Right Side Pricing & Contact Section */}
                         <div className="pricing-contact-section mb-30">
-                          {/* Sign In to see pricing box */}
+                          {/* Pricing Box - Shows Price or Sign In Message */}
                           <div className="pricing-box" style={{
                             backgroundColor: 'white',
                             border: '1px solid #ccc',
@@ -600,12 +604,53 @@ const ProductDetail = () => {
                             textAlign: 'center'
                           }}>
                             <div style={{ textAlign: 'center' }}>
-                              <a href="/login" style={{
-                                fontSize: '14px',
-                                color: '#1c1463',
-                                textDecoration: 'underline',
-                                fontWeight: 'bold'
-                              }}>Sign In to see pricing</a>
+                              {isLoggedIn ? (
+                                // ✅ Show Price for Logged In Users
+                                <>
+                                  <div style={{ 
+                                    fontSize: '28px', 
+                                    fontWeight: 'bold', 
+                                    color: '#111A45',
+                                    marginBottom: '10px'
+                                  }}>
+                                    ${product.price?.toFixed(2) || '0.00'}
+                                  </div>
+                                  {product.originalPrice && product.originalPrice !== product.price && (
+                                    <div style={{ 
+                                      fontSize: '16px', 
+                                      color: '#999', 
+                                      textDecoration: 'line-through',
+                                      marginBottom: '12px'
+                                    }}>
+                                      ${product.originalPrice.toFixed(2)}
+                                    </div>
+                                  )}
+                                  {product.discount > 0 && (
+                                    <div style={{
+                                      display: 'inline-block',
+                                      backgroundColor: '#ff4444',
+                                      color: 'white',
+                                      padding: '4px 12px',
+                                      borderRadius: '4px',
+                                      fontSize: '12px',
+                                      fontWeight: 'bold',
+                                      marginBottom: '12px'
+                                    }}>
+                                      Save {product.discount}%
+                                    </div>
+                                  )}
+                                </>
+                              ) : (
+                                // ❌ Show Sign In Message for Guests
+                                <Link to="/login" style={{
+                                  fontSize: '14px',
+                                  color: '#111A45',
+                                  textDecoration: 'underline',
+                                  fontWeight: 'bold'
+                                }}>Sign In to see pricing</Link>
+                              )}
+                              
+                              {/* Stock Status */}
                               <div style={{
                                 marginTop: '12px',
                                 display: 'flex',
@@ -622,9 +667,9 @@ const ProductDetail = () => {
                                 <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
                                   {product.stock === 0 ? 'Out of Stock' : `In Stock${product.stock ? `: ${product.stock}` : ''}`}
                                 </span>
-                        </div>
-                        </div>
-                      </div>
+                              </div>
+                            </div>
+                          </div>
 
                           {/* Contact Sales Team box */}
                           <div className="contact-box" style={{

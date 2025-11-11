@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
+  
+  // ✅ Check if user is logged in (reactive to auth changes)
+  const { isLoggedIn } = useAuth();
 
   return (
     <div 
@@ -66,9 +70,27 @@ const ProductCard = ({ product }) => {
 
         {/* Price */}
         <div className="price-info">
-          <span className="price-main">${product.price}</span>
-          {product.originalPrice && (
-            <span className="price-line">${product.originalPrice}</span>
+          {isLoggedIn ? (
+            // ✅ Show Price for Logged In Users
+            <>
+              <span className="price-main">${product.price}</span>
+              {product.originalPrice && (
+                <span className="price-line">${product.originalPrice}</span>
+              )}
+            </>
+          ) : (
+            // ❌ Show Sign In Message for Guests
+            <Link
+              to="/login"
+              style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#111A45',
+                textDecoration: 'underline'
+              }}
+            >
+              Sign In to see pricing
+            </Link>
           )}
         </div>
 

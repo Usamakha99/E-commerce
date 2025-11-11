@@ -6,10 +6,12 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const emailFromState = location.state?.email || '';
+  const tokenFromState = location.state?.token || '';
   const emailFailed = location.state?.emailFailed || false;
   
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const [email, setEmail] = useState(emailFromState);
+  const [token, setToken] = useState(tokenFromState);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -76,11 +78,17 @@ const VerifyEmail = () => {
       return;
     }
 
+    // Debug: Check what we're sending
+    console.log('🔍 Verification Request:');
+    console.log('   Email:', email);
+    console.log('   Code:', code);
+    console.log('   Token:', token || 'NOT PROVIDED');
+
     setIsLoading(true);
     setApiError('');
 
     try {
-      const response = await authService.verifyEmail(email, code);
+      const response = await authService.verifyEmail(email, code, token);
       
       setSuccessMessage('Email verified successfully! Redirecting...');
       
@@ -90,6 +98,7 @@ const VerifyEmail = () => {
       
     } catch (error) {
       console.error('Verification error:', error);
+      console.log('📝 Error details:', error.response?.data);
       
       if (error.response) {
         const errorMessage = error.response.data?.message || 
@@ -110,9 +119,27 @@ const VerifyEmail = () => {
     setResendLoading(true);
     setResendSuccess(false);
     setApiError('');
+    setShowEmailWarning(false);
 
     try {
-      await authService.resendVerificationCode(email);
+      const response = await authService.resendVerificationCode(email);
+      
+      console.log('📥 Resend response:', response);
+      
+      // Extract token from resend response
+      // Backend sends: { data: { verificationToken } }
+      const newToken = response.data?.verificationToken || 
+                      response.verificationToken || 
+                      response.token || 
+                      response.data?.token;
+      
+      if (newToken) {
+        setToken(newToken);
+        console.log('✅ Token received from resend:', newToken);
+      } else {
+        console.log('⚠️ No token in resend response');
+      }
+      
       setResendSuccess(true);
       
       setTimeout(() => {
@@ -121,7 +148,12 @@ const VerifyEmail = () => {
       
     } catch (error) {
       console.error('Resend error:', error);
-      setApiError('Failed to resend code. Please try again.');
+      console.log('📝 Resend error details:', error.response?.data);
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Failed to resend code. Please try again.';
+      setApiError(errorMessage);
     } finally {
       setResendLoading(false);
     }
@@ -317,11 +349,13 @@ const VerifyEmail = () => {
               </svg>
               <div>
                 <h4 style={{ margin: '0 0 5px 0', color: '#111A45', fontSize: '14px', fontWeight: '700' }}>
-                  Email Service Temporarily Down
+                  ⚠️ Email Service Issue
                 </h4>
                 <p style={{ margin: 0, fontSize: '13px', color: '#666', lineHeight: '1.5' }}>
                   Your account was created but verification email couldn't be sent. 
-                  Click "Resend Code" below to try again, or contact support.
+                  <strong style={{ display: 'block', marginTop: '8px', color: '#f57c00' }}>
+                    IMPORTANT: Click "Resend Code" button below to get your verification code!
+                  </strong>
                 </p>
               </div>
             </div>
@@ -475,34 +509,45 @@ const VerifyEmail = () => {
             {/* Resend Code */}
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
               <p style={{ fontSize: '14px', color: '#666', marginBottom: '10px' }}>
-                Didn't receive the code?
+                {!token ? '⚠️ Token missing! You must resend code first:' : 'Didn\'t receive the code?'}
               </p>
               <button
                 type="button"
                 onClick={handleResendCode}
                 disabled={resendLoading}
                 style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#df2020',
+                  background: !token ? 'linear-gradient(135deg, #df2020 0%, #ff6b6b 100%)' : 'transparent',
+                  border: !token ? 'none' : 'none',
+                  color: !token ? 'white' : '#df2020',
                   fontSize: '14px',
                   fontWeight: '700',
                   cursor: resendLoading ? 'not-allowed' : 'pointer',
-                  textDecoration: 'underline',
-                  transition: 'color 0.3s ease'
+                  textDecoration: !token ? 'none' : 'underline',
+                  transition: 'all 0.3s ease',
+                  padding: !token ? '12px 24px' : '0',
+                  borderRadius: !token ? '8px' : '0',
+                  boxShadow: !token ? '0 4px 12px rgba(223, 32, 32, 0.3)' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   if (!resendLoading) {
-                    e.target.style.color = '#111A45';
+                    if (!token) {
+                      e.target.style.background = 'linear-gradient(135deg, #c41a1a 0%, #df2020 100%)';
+                    } else {
+                      e.target.style.color = '#111A45';
+                    }
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!resendLoading) {
-                    e.target.style.color = '#df2020';
+                    if (!token) {
+                      e.target.style.background = 'linear-gradient(135deg, #df2020 0%, #ff6b6b 100%)';
+                    } else {
+                      e.target.style.color = '#df2020';
+                    }
                   }
                 }}
               >
-                {resendLoading ? 'Sending...' : 'Resend Code'}
+                {resendLoading ? 'Sending...' : (!token ? '🔑 Get Verification Token & Code' : 'Resend Code')}
               </button>
             </div>
 

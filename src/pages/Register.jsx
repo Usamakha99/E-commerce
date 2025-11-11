@@ -166,31 +166,36 @@ const Register = () => {
 
       const response = await authService.register(registrationData);
       
-      // Check if email verification is required
-      if (response.requiresVerification || response.message?.includes('verification')) {
-        setSuccessMessage('Registration successful! Check your email for verification code.');
-        
-        // Redirect to verification page after 2 seconds
-        setTimeout(() => {
-          navigate('/verify-email', { 
-            state: { email: formData.email } 
-          });
-        }, 2000);
-      } else {
-        // Direct registration (no verification required)
-        setSuccessMessage('Registration successful! Redirecting...');
-        
-        setTimeout(() => {
-          if (authService.isAuthenticated()) {
-            navigate('/');
-          } else {
-            navigate('/login');
-          }
-        }, 2000);
-      }
+      // Debug: Log response
+      console.log('📥 Registration response:', response);
+      
+      // ALWAYS redirect to email verification page
+      // Your backend uses email verification system
+      setSuccessMessage('Registration successful! Check your email for verification code.');
+      
+      // Extract token from backend response
+      // Backend sends: { data: { verificationToken } }
+      const tempToken = response.data?.verificationToken || 
+                       response.verificationToken || 
+                       response.token || 
+                       response.data?.token;
+      
+      console.log('🔑 Token extracted:', tempToken || 'NO TOKEN RECEIVED');
+      
+      // Redirect to verification page after 1.5 seconds
+      setTimeout(() => {
+        navigate('/verify-email', { 
+          state: { 
+            email: formData.email,
+            token: tempToken, // Pass token for verification
+            emailFailed: false 
+          } 
+        });
+      }, 1500);
       
     } catch (error) {
       console.error('Registration error:', error);
+      console.log('📝 Error response:', error.response?.data);
       
       // Handle different error responses
       if (error.response) {
@@ -199,24 +204,32 @@ const Register = () => {
                            errorData?.error || 
                            'Registration failed. Please try again.';
         
-        // Check if it's email sending error (500 with email message)
+        // Check if user was created but email failed (500)
         if (error.response.status === 500 && 
             (errorMessage.includes('email') || errorMessage.includes('verification'))) {
           
-          // User was created but email failed - still redirect to verification
+          // User was created but email failed
           console.log('ℹ️ User created but email failed. Redirecting to verify page.');
-          console.log('ℹ️ User can request resend or contact admin.');
           
-          setSuccessMessage('Registration successful! Redirecting to verification...');
+          // Extract token from error response if available
+          const tempToken = errorData?.token || errorData?.verificationToken || errorData?.tempToken;
           
+          console.log('🔑 Token from error response:', tempToken || 'NO TOKEN IN ERROR RESPONSE');
+          
+          // Show warning that email service is down
+          setApiError('⚠️ User created but email service is down. Click OK to continue to verification page. Use "Resend Code" there to get your verification code.');
+          
+          // Wait for user to see message, then redirect
           setTimeout(() => {
             navigate('/verify-email', { 
               state: { 
                 email: formData.email,
-                emailFailed: true 
+                token: tempToken,
+                emailFailed: true,
+                needsResend: true
               } 
             });
-          }, 2000);
+          }, 3000);
         } else {
           setApiError(errorMessage);
         }

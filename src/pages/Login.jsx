@@ -107,14 +107,34 @@ const Login = () => {
       
       // Handle different error responses
       if (error.response) {
-        const errorMessage = error.response.data?.message || 
-                           error.response.data?.error || 
+        const errorData = error.response.data;
+        const errorMessage = errorData?.message || 
+                           errorData?.error || 
                            'Login failed. Please check your credentials.';
-        setApiError(errorMessage);
+        
+        // Check if user needs to verify email first
+        if (errorMessage.includes('verify') || errorMessage.includes('verification')) {
+          setApiError('⚠️ Please verify your email before logging in.');
+          
+          // Show option to go to verification page
+          setTimeout(() => {
+            const goToVerify = window.confirm('Go to email verification page?');
+            if (goToVerify) {
+              navigate('/verify-email', { 
+                state: { 
+                  email: formData.email,
+                  fromLogin: true 
+                } 
+              });
+            }
+          }, 1000);
+        } else {
+          setApiError(errorMessage);
+        }
         
         // Handle field-specific errors
-        if (error.response.data?.errors) {
-          setFormErrors(error.response.data.errors);
+        if (errorData?.errors) {
+          setFormErrors(errorData.errors);
         }
       } else if (error.request) {
         setApiError('Unable to connect to server. Please check your connection.');

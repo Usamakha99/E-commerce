@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import ApiStatus from '../components/ApiStatus';
 import { useProducts } from '../hooks/useProducts';
 import { productService } from '../services/product.service';
+import { useAuth } from '../hooks/useAuth';
 
 const ShopGrid = () => {
   const [viewType, setViewType] = useState('grid');
@@ -18,6 +19,9 @@ const ShopGrid = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // ✅ Check if user is logged in (reactive to auth changes)
+  const { isLoggedIn } = useAuth();
 
   // Fetch ALL products from API once
   const { products: allProducts, loading, error, fetchProducts } = useProducts({
@@ -511,19 +515,44 @@ const ShopGrid = () => {
                             </div>
 
                             <div className="mb-2">
-                              <span style={{ fontSize: '11px', fontWeight: '500', color: '#000' }}>
-                                <a
-                                  href="/login"
-                                  onClick={(e) => e.stopPropagation()}
-                                  style={{
-                                    color: '#000',
-                                    textDecoration: 'underline'
-                                  }}
-                                >
-                                  Sign In
-                                </a>
-                                {' '}to see pricing
-                              </span>
+                              {isLoggedIn ? (
+                                // ✅ Show Price for Logged In Users
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                  <span style={{ 
+                                    fontSize: '16px', 
+                                    fontWeight: '700', 
+                                    color: '#111A45' 
+                                  }}>
+                                    ${product.price || '0.00'}
+                                  </span>
+                                  {product.originalPrice && (
+                                    <span style={{ 
+                                      fontSize: '13px', 
+                                      fontWeight: '400', 
+                                      color: '#999', 
+                                      textDecoration: 'line-through' 
+                                    }}>
+                                      ${product.originalPrice}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                // ❌ Show Sign In Message for Guests
+                                <span style={{ fontSize: '11px', fontWeight: '500', color: '#000' }}>
+                                  <Link
+                                    to="/login"
+                                    onClick={(e) => e.stopPropagation()}
+                                    style={{
+                                      color: '#111A45',
+                                      textDecoration: 'underline',
+                                      fontWeight: '600'
+                                    }}
+                                  >
+                                    Sign In
+                                  </Link>
+                                  {' '}to see pricing
+                                </span>
+                              )}
                             </div>
 
                             <div className="d-flex justify-content-between align-items-center">
