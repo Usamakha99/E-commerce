@@ -63,7 +63,7 @@ const Login = () => {
         ...prev,
         ...fieldErrors,
         [name]: fieldErrors[name] || ''
-      }));
+    }));
     }
   };
 
@@ -308,7 +308,7 @@ const Login = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit}>
             {/* Email */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{
@@ -320,11 +320,11 @@ const Login = () => {
               }}>
                 Email Address *
               </label>
-              <input
+                      <input 
                 type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                 placeholder="john@example.com"
                 disabled={isLoading}
                 style={{
@@ -364,7 +364,7 @@ const Login = () => {
                   {formErrors.email}
                 </span>
               )}
-            </div>
+          </div>
 
             {/* Password */}
             <div style={{ marginBottom: '15px' }}>
@@ -378,11 +378,11 @@ const Login = () => {
                 Password *
               </label>
               <div style={{ position: 'relative' }}>
-                <input
+                      <input 
                   type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
                   placeholder="••••••••"
                   disabled={isLoading}
                   style={{
@@ -440,7 +440,7 @@ const Login = () => {
                   {formErrors.password}
                 </span>
               )}
-            </div>
+        </div>
 
             {/* Remember Me & Forgot Password */}
             <div style={{
@@ -455,11 +455,11 @@ const Login = () => {
                 gap: '8px',
                 cursor: 'pointer'
               }}>
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
+                            <input 
+                              type="checkbox" 
+                              name="rememberMe"
+                              checked={formData.rememberMe}
+                              onChange={handleInputChange}
                   disabled={isLoading}
                   style={{
                     width: '18px',
@@ -471,9 +471,9 @@ const Login = () => {
                   fontSize: '14px',
                   color: '#666'
                 }}>
-                  Remember me
+                            Remember me
                 </span>
-              </label>
+                          </label>
               <Link
                 to="/forgot-password"
                 style={{
@@ -491,8 +491,8 @@ const Login = () => {
                 }}
               >
                 Forgot Password?
-              </Link>
-            </div>
+                          </Link>
+              </div>
 
             {/* Submit Button */}
             <button
@@ -604,7 +604,7 @@ const Login = () => {
                 </svg>
                 Continue with Google
               </button>
-            </div>
+                    </div>
 
             {/* Register Link */}
             <div style={{ textAlign: 'center' }}>
@@ -625,12 +625,12 @@ const Login = () => {
                     e.target.style.color = '#df2020';
                   }}
                 >
-                  Sign Up
-                </Link>
+                        Sign Up
+                      </Link>
               </span>
-            </div>
-          </form>
-        </div>
+                    </div>
+                  </form>
+                </div>
 
         {/* Security Badge */}
         <div style={{
@@ -647,8 +647,8 @@ const Login = () => {
             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
           </svg>
           <span>Secure login powered by V Cloud Tech</span>
-        </div>
-      </div>
+            </div>
+          </div>
 
       {/* Animations */}
       <style>
@@ -702,8 +702,8 @@ const Login = () => {
           }
         `}
       </style>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Login;

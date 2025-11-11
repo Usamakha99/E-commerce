@@ -120,7 +120,7 @@ const Register = () => {
         ...prev,
         ...fieldErrors,
         [name]: fieldErrors[name] || ''
-      }));
+    }));
     }
   };
 
@@ -410,7 +410,7 @@ const Register = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
             {/* Form Grid */}
             <div style={{
               display: 'grid',
@@ -486,11 +486,11 @@ const Register = () => {
                 }}>
                   Username *
                 </label>
-                <input
-                  type="text"
+                    <input 
+                      type="text" 
                   name="username"
                   value={formData.username}
-                  onChange={handleInputChange}
+                      onChange={handleInputChange}
                   placeholder="johndoe123"
                   disabled={isLoading}
                   style={{
@@ -531,7 +531,7 @@ const Register = () => {
                   </span>
                 )}
               </div>
-            </div>
+          </div>
 
             {/* Email */}
             <div style={{ marginBottom: '20px' }}>
@@ -544,11 +544,11 @@ const Register = () => {
               }}>
                 Email Address *
               </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                    <input 
+                      type="email" 
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                 placeholder="john@example.com"
                 disabled={isLoading}
                 style={{
@@ -588,7 +588,7 @@ const Register = () => {
                   {formErrors.email}
                 </span>
               )}
-            </div>
+                  </div>
 
             {/* Phone (Optional) */}
             <div style={{ marginBottom: '20px' }}>
@@ -601,11 +601,11 @@ const Register = () => {
               }}>
                 Phone Number (Optional)
               </label>
-              <input
+                    <input 
                 type="tel"
                 name="phone"
                 value={formData.phone}
-                onChange={handleInputChange}
+                      onChange={handleInputChange}
                 placeholder="+1 (123) 456-7890"
                 disabled={isLoading}
                 style={{
@@ -645,7 +645,7 @@ const Register = () => {
                   {formErrors.phone}
                 </span>
               )}
-            </div>
+                  </div>
 
             {/* Password Grid */}
             <div style={{
@@ -666,11 +666,11 @@ const Register = () => {
                   Password *
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <input
+                    <input 
                     type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
                     placeholder="••••••••"
                     disabled={isLoading}
                     style={{
@@ -769,11 +769,11 @@ const Register = () => {
                   Confirm Password *
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <input
+                    <input 
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
                     value={formData.confirmPassword}
-                    onChange={handleInputChange}
+                      onChange={handleInputChange}
                     placeholder="••••••••"
                     disabled={isLoading}
                     style={{
@@ -832,7 +832,7 @@ const Register = () => {
                   </span>
                 )}
               </div>
-            </div>
+                  </div>
 
             {/* Terms and Conditions */}
             <div style={{ marginBottom: '25px' }}>
@@ -842,11 +842,11 @@ const Register = () => {
                 gap: '10px',
                 cursor: 'pointer'
               }}>
-                <input
-                  type="checkbox"
-                  name="agreeTerms"
-                  checked={formData.agreeTerms}
-                  onChange={handleInputChange}
+                      <input 
+                        type="checkbox" 
+                        name="agreeTerms"
+                        checked={formData.agreeTerms}
+                        onChange={handleInputChange}
                   disabled={isLoading}
                   style={{
                     marginTop: '3px',
@@ -869,7 +869,7 @@ const Register = () => {
                     Privacy Policy
                   </Link>
                 </span>
-              </label>
+                    </label>
               {formErrors.agreeTerms && (
                 <span style={{
                   display: 'block',
@@ -882,11 +882,11 @@ const Register = () => {
                   {formErrors.agreeTerms}
                 </span>
               )}
-            </div>
+                  </div>
 
             {/* Submit Button */}
             <button
-              type="submit"
+                      type="submit" 
               disabled={isLoading}
               style={{
                 width: '100%',
@@ -960,13 +960,13 @@ const Register = () => {
                     e.target.style.color = '#df2020';
                   }}
                 >
-                  Sign In
-                </Link>
+                      Sign In
+                    </Link>
               </span>
+                  </div>
+                </form>
+              </div>
             </div>
-          </form>
-        </div>
-      </div>
 
       {/* Animations */}
       <style>
@@ -1020,7 +1020,7 @@ const Register = () => {
           }
         `}
       </style>
-    </div>
+        </div>
   );
 };
 
