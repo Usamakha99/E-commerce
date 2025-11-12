@@ -92,12 +92,10 @@ const MarketplaceProductDetail = () => {
   const tabs = [
     'Overview',
     'Features',
-    'Pricing',
-    'Legal',
-    'Usage',
     'Resources',
     'Support',
-    'Product comparison'
+    'Product comparison',
+    'Pricing'
   ];
 
   const renderStars = (rating) => {
@@ -160,16 +158,16 @@ const MarketplaceProductDetail = () => {
                 {/* Product Info */}
                 <div style={{ flex: 1 }}>
                   {/* Title */}
-                  <h1 style={{
+                    <h1 style={{
                     fontSize: isMobile ? '22px' : '30px',
                     fontWeight: '700',
                     color: '#16191f',
                     margin: '0 0 16px 0',
                     fontFamily: 'inherit',
                     lineHeight: '1.2'
-                  }}>
-                    {product.name}
-                  </h1>
+                    }}>
+                      {product.name}
+                    </h1>
 
                   {/* Badges - Soft Colors */}
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
@@ -345,7 +343,7 @@ const MarketplaceProductDetail = () => {
           zIndex: 100,
           backgroundColor: '#F9FAFB',
           borderRadius: '12px',
-          padding: '12px',
+          padding: '12px 20px',
           marginBottom: '25px',
           boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
           overflowX: 'auto',
@@ -440,91 +438,91 @@ const MarketplaceProductDetail = () => {
               <div className="row" style={{ alignItems: isTablet ? 'flex-start' : 'stretch' }}>
                 {/* Left Column - Video - COMMENTED OUT */}
                 {/* <div className="col-lg-6" style={{ display: 'flex', flexDirection: 'column', marginBottom: isTablet ? '20px' : '0' }}>
-                  <div style={{
-                    position: 'relative',
-                    width: isMobile ? '100%' : '85%',
-                    paddingBottom: isMobile ? '56%' : '48%',
-                    backgroundColor: '#f0f0f0',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    marginBottom: '12px',
-                    cursor: 'pointer',
-                    border: '2px solid #e0e0e0',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                    flex: isTablet ? 'none' : 1
-                  }}>
-                    <img
-                      src={product.videoThumbnail}
-                      alt="Product Video"
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                      onError={(e) => { e.target.src = '/src/assets/imgs/page/homepage1/imgsp1.png'; }}
-                    />
-                    <div style={{
+                <div style={{
+                  position: 'relative',
+                  width: isMobile ? '100%' : '85%',
+                  paddingBottom: isMobile ? '56%' : '48%',
+                  backgroundColor: '#f0f0f0',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  marginBottom: '12px',
+                  cursor: 'pointer',
+                  border: '2px solid #e0e0e0',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  flex: isTablet ? 'none' : 1
+                }}>
+                  <img
+                    src={product.videoThumbnail}
+                    alt="Product Video"
+                    style={{
                       position: 'absolute',
                       top: 0,
                       left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%)'
-                    }}></div>
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '90px',
-                      height: '90px',
-                      backgroundColor: 'rgba(255,255,255,0.95)',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '36px',
-                      color: '#007185',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                      transition: 'all 0.3s ease'
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,1)';
-                      e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
-                      e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }}
-                    >
-                      ▶
-                    </div>
-                    <div style={{
-                      position: 'absolute',
-                      top: isMobile ? '16px' : '24px',
-                      left: isMobile ? '16px' : '24px',
-                      color: 'white',
-                      fontSize: isMobile ? '18px' : '28px',
-                      fontWeight: '700',
-                      textShadow: '0 3px 6px rgba(0,0,0,0.6)',
-                      fontFamily: 'inherit'
-                    }}>
-                      What is Okta?
-                    </div>
+                    onError={(e) => { e.target.src = '/src/assets/imgs/page/homepage1/imgsp1.png'; }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%)'
+                  }}></div>
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '90px',
+                    height: '90px',
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '36px',
+                    color: '#007185',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,1)';
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.95)';
+                    e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+                  }}
+                  >
+                    ▶
                   </div>
-                  <p style={{
-                    fontSize: '14px',
+                  <div style={{
+                    position: 'absolute',
+                    top: isMobile ? '16px' : '24px',
+                    left: isMobile ? '16px' : '24px',
+                    color: 'white',
+                    fontSize: isMobile ? '18px' : '28px',
+                    fontWeight: '700',
+                    textShadow: '0 3px 6px rgba(0,0,0,0.6)',
+                      fontFamily: 'inherit'
+                  }}>
+                    What is Okta?
+                  </div>
+                </div>
+                <p style={{
+                  fontSize: '14px',
                     color: '#16191f',
-                    marginBottom: '0',
+                  marginBottom: '0',
                     fontFamily: 'inherit',
                     fontWeight: '400',
-                    fontStyle: 'italic'
-                  }}>
-                    Product video
-                  </p>
+                  fontStyle: 'italic'
+                }}>
+                  Product video
+                </p>
                 </div> */}
 
               {/* Highlights Column */}
@@ -576,7 +574,7 @@ const MarketplaceProductDetail = () => {
                     ))}
                   </ul>
                 </div>
-              </div>
+                </div>
 
               {/* Details Column */}
               <div className="col-lg-6">
@@ -744,37 +742,66 @@ const MarketplaceProductDetail = () => {
                     <p style={{ margin: 0 }}>{product.overview}</p>
                   </div>
 
-                  {/* See More/Less Button */}
+                  {/* See More/Less Button - Modern & Spicy */}
                   {product.overview && product.overview.length > 200 && (
                     <div style={{
-                      marginTop: '15px',
-                      paddingTop: '15px',
-                      borderTop: '2px solid #E5E7EB'
+                      marginTop: '20px',
+                      display: 'flex',
+                      justifyContent: 'center'
                     }}>
                       <button
                         onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                         style={{
-                          background: 'transparent',
-                          border: '2px solid #111A45',
-                          color: '#16191f',
-                          fontSize: '14px',
+                          background: isDescriptionExpanded 
+                            ? '#111A45'
+                            : 'rgba(17, 26, 69, 0.08)',
+                          border: '1px solid transparent',
+                          backgroundClip: 'padding-box',
+                          color: isDescriptionExpanded ? 'white' : '#111A45',
+                          fontSize: '13px',
                           fontWeight: '600',
                           cursor: 'pointer',
                           fontFamily: 'inherit',
-                          padding: '10px 24px',
-                          borderRadius: '8px',
-                          transition: 'all 0.3s ease'
+                          padding: '8px 20px',
+                          borderRadius: '20px',
+                          transition: 'all 0.3s ease',
+                          boxShadow: isDescriptionExpanded 
+                            ? '0 4px 15px rgba(17, 26, 69, 0.25)' 
+                            : '0 2px 8px rgba(0,0,0,0.06)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          position: 'relative',
+                          overflow: 'hidden'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = '#111A45';
-                          e.target.style.color = 'white';
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 6px 20px rgba(17, 26, 69, 0.3)';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#16191f';
+                          e.target.style.transform = 'translateY(0)';
+                          if (isDescriptionExpanded) {
+                            e.target.style.boxShadow = '0 4px 15px rgba(17, 26, 69, 0.25)';
+                          } else {
+                            e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+                          }
                         }}
                       >
-                        {isDescriptionExpanded ? 'Show less ▲' : 'Show more ▼'}
+                        {isDescriptionExpanded ? (
+                          <>
+                            Show less
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </>
+                        ) : (
+                          <>
+                            Show more
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </>
+                        )}
                       </button>
                     </div>
                   )}
@@ -934,7 +961,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         📚
                       </div>
-                      <h3 style={{
+                    <h3 style={{
                         fontSize: '20px',
                         fontWeight: '700',
                         color: '#16191f',
@@ -942,7 +969,7 @@ const MarketplaceProductDetail = () => {
                         fontFamily: 'inherit'
                       }}>
                         Buyer Guide
-                      </h3>
+                    </h3>
                     </div>
 
                     {/* Description */}
@@ -1084,7 +1111,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         💳
                       </div>
-                      <h3 style={{
+                    <h3 style={{
                         fontSize: '20px',
                         fontWeight: '700',
                         color: '#16191f',
@@ -1092,7 +1119,7 @@ const MarketplaceProductDetail = () => {
                         fontFamily: 'inherit'
                       }}>
                         Financing Options
-                      </h3>
+                    </h3>
                     </div>
 
                     {/* Description */}
@@ -1143,568 +1170,24 @@ const MarketplaceProductDetail = () => {
                       cursor: 'pointer',
                       fontFamily: 'inherit',
                       transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
+                      }}
+                      onMouseEnter={(e) => {
                       e.target.style.borderColor = '#111A45';
                       e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
+                      }}
+                      onMouseLeave={(e) => {
                       e.target.style.borderColor = '#6B7280';
                       e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(0)';
                     }}
                     >
                       View Financing Details →
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          {/* Pricing Section */}
-          <div id="pricing" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
-              <h2 style={{
-                fontSize: isMobile ? '20px' : '24px',
-                fontWeight: '600',
-                color: '#16191f',
-                marginBottom: '30px',
-                fontFamily: 'inherit'
-              }}>
-                Pricing
-              </h2>
-
-              {/* Free Trial Section */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: isMobile ? '15px' : '20px',
-                marginBottom: '20px',
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                justifyContent: 'space-between',
-                alignItems: isMobile ? 'flex-start' : 'center',
-                gap: isMobile ? '15px' : '0',
-                backgroundColor: 'white'
-              }}>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{
-                    fontSize: '18px',
-                    fontWeight: '600',
-                    color: '#16191f',
-                    marginBottom: '8px',
-                    fontFamily: 'inherit'
-                  }}>
-                    Free trial
-                  </h3>
-                  <p style={{
-                    fontSize: '14px',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
-                  }}>
-                    Try this product free according to the free trial terms set by the vendor.
-                  </p>
-                </div>
-                <button style={{
-                  padding: '10px 24px',
-                  backgroundColor: 'white',
-                  border: '1px solid #007185',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#007185',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'background-color 0.2s',
-                  whiteSpace: 'nowrap'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                >
-                  Try for free
-                </button>
-              </div>
-
-              {/* Okta Platform Pricing Section */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '24px',
-                marginBottom: '20px',
-                backgroundColor: 'white'
-              }}>
-                {/* Header */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  marginBottom: '20px'
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                      <h3 style={{
-                        fontSize: '20px',
-                        fontWeight: '600',
-                        color: '#16191f',
-                        margin: 0,
-                        fontFamily: 'inherit'
-                      }}>
-                        Okta Platform
-                      </h3>
-                      <a href="#" style={{
-                        fontSize: '13px',
-                        color: '#007185',
-                        textDecoration: 'none',
-                        fontFamily: 'inherit'
-                      }}>
-                        Info
-                      </a>
-                    </div>
-
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#16191f',
-                      lineHeight: '1.6',
-                      marginBottom: '12px',
-                      fontFamily: 'inherit'
-                    }}>
-                      Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.
-                    </p>
-
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#16191f',
-                      lineHeight: '1.6',
-                      margin: 0,
-                      fontFamily: 'inherit'
-                    }}>
-                      Additional AWS infrastructure costs may apply. Use the{' '}
-                      <a href="#" style={{
-                        color: '#007185',
-                        textDecoration: 'none'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.color = '#C7511F';
-                        e.target.style.textDecoration = 'underline';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.color = '#007185';
-                        e.target.style.textDecoration = 'none';
-                      }}
-                      >
-                        AWS Pricing Calculator
-                      </a>
-                      {' '}to estimate your infrastructure costs.
-                    </p>
-                  </div>
-
-                  <button style={{
-                    padding: '10px 24px',
-                    backgroundColor: 'white',
-                    border: '1px solid #007185',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#007185',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'background-color 0.2s',
-                    whiteSpace: 'nowrap',
-                    marginLeft: '20px'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  >
-                    View purchase options
                   </button>
                 </div>
-
-                {/* Contract Duration Tabs */}
-                <div style={{
-                  display: 'flex',
-                  gap: '0',
-                  borderBottom: '1px solid #D5D9D9',
-                  marginBottom: '20px'
-                }}>
-                  {[
-                    { duration: '12-month contract', discount: '' },
-                    { duration: '24-month contract', discount: 'save up to 2%' },
-                    { duration: '36-month contract', discount: 'save up to 4%' }
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      style={{
-                        padding: '12px 20px',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        borderBottom: index === 0 ? '3px solid #007185' : '3px solid transparent',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: '400',
-                        color: index === 0 ? '#007185' : '#0F1111',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (index !== 0) e.target.style.color = '#007185';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (index !== 0) e.target.style.color = '#16191f';
-                      }}
-                    >
-                      {option.duration}
-                      {option.discount && (
-                        <span style={{
-                          marginLeft: '6px',
-                          color: '#067D62',
-                          fontWeight: '600'
-                        }}>
-                          - {option.discount}
-                        </span>
-                      )}
-                    </button>
-                  ))}
                 </div>
-
-                {/* Pricing Table Header */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '16px'
-                }}>
-                  <h4 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
-                  }}>
-                    12-month contract (2)
-                  </h4>
-                  <a href="#" style={{
-                    fontSize: '13px',
-                    color: '#007185',
-                    textDecoration: 'none',
-                    fontFamily: 'inherit'
-                  }}>
-                    Info
-                  </a>
                 </div>
-
-                {/* Pricing Table */}
-                <div style={{
-                  border: '1px solid #D5D9D9',
-                  borderRadius: '8px',
-                  overflow: isMobile ? 'auto' : 'hidden'
-                }}>
-                  {/* Table Header */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
-                    backgroundColor: '#F7F8F8',
-                    padding: isMobile ? '10px 12px' : '12px 16px',
-                    borderBottom: '1px solid #D5D9D9',
-                    fontWeight: '600',
-                    fontSize: isMobile ? '12px' : '14px',
-                    color: '#16191f',
-                    fontFamily: 'inherit',
-                    minWidth: isMobile ? '470px' : 'auto'
-                  }}>
-                    <div>Dimension</div>
-                    <div>Description</div>
-                    <div>Cost/12 months</div>
                   </div>
-
-                  {/* Table Rows */}
-                  {[
-                    {
-                      dimension: 'Starter - 100 users',
-                      description: 'Starting your Identity journey? Put a strong foundation in place.',
-                      cost: '$7,200.00'
-                    },
-                    {
-                      dimension: 'Essentials - 1,000 users',
-                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: '$204,000.00'
-                    }
-                  ].map((row, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
-                        padding: isMobile ? '12px' : '16px',
-                        borderBottom: index < 1 ? '1px solid #D5D9D9' : 'none',
-                        fontSize: isMobile ? '12px' : '14px',
-                        color: '#16191f',
-                        fontFamily: 'inherit',
-                        backgroundColor: 'white',
-                        minWidth: isMobile ? '470px' : 'auto'
-                      }}
-                    >
-                      <div style={{ fontWeight: '400' }}>{row.dimension}</div>
-                      <div style={{ color: '#16191f' }}>{row.description}</div>
-                      <div style={{ fontWeight: '600' }}>{row.cost}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Vendor Refund Policy Section */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '20px',
-                marginBottom: '20px',
-                backgroundColor: 'white'
-              }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#16191f',
-                  marginBottom: '12px',
-                  fontFamily: 'inherit'
-                }}>
-                  Vendor refund policy
-                </h3>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#16191f',
-                  lineHeight: '1.6',
-                  margin: 0,
-                  fontFamily: 'inherit'
-                }}>
-                  All orders are non-cancellable and all fees and other amounts that you pay are non-refundable. If you have purchased a multi-year subscription, you agree to pay the annual fees due for each year of the multi-year subscription term.
-                </p>
-              </div>
-
-              {/* Custom Pricing Options Section */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '20px',
-                backgroundColor: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{
-                    fontSize: '18px',
-                    fontWeight: '600',
-                    color: '#16191f',
-                    marginBottom: '8px',
-                    fontFamily: 'inherit'
-                  }}>
-                    Custom pricing options
-                  </h3>
-                  <p style={{
-                    fontSize: '14px',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
-                  }}>
-                    Request a private offer to receive a custom quote.
-                  </p>
-                </div>
-                <button style={{
-                  padding: '10px 24px',
-                  backgroundColor: 'white',
-                  border: '1px solid #007185',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#007185',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'background-color 0.2s',
-                  whiteSpace: 'nowrap',
-                  marginLeft: '20px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                >
-                  Request private offer
-                </button>
-              </div>
-            </div>
-
-          {/* Legal Section */}
-          <div id="legal" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '600',
-                color: '#16191f',
-                marginBottom: '30px',
-                fontFamily: 'inherit'
-              }}>
-                Legal
-              </h2>
-
-              {/* Vendor Terms and Conditions */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '24px',
-                marginBottom: '20px',
-                backgroundColor: 'white'
-              }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#16191f',
-                  marginBottom: '12px',
-                  fontFamily: 'inherit'
-                }}>
-                  Vendor terms and conditions
-                </h3>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#16191f',
-                  lineHeight: '1.6',
-                  margin: 0,
-                  fontFamily: 'inherit'
-                }}>
-                  Upon subscribing to this product, you must acknowledge and agree to the terms and conditions outlined in the vendor's{' '}
-                  <a href="#" style={{
-                    color: '#007185',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = '#C7511F';
-                    e.target.style.textDecoration = 'underline';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = '#007185';
-                    e.target.style.textDecoration = 'none';
-                  }}
-                  >
-                    End User License Agreement (EULA)
-                  </a>
-                  <span style={{ marginLeft: '4px', fontSize: '12px', color: '#007185' }}>🔗</span>.
-                </p>
-              </div>
-
-              {/* Content Disclaimer */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '24px',
-                backgroundColor: 'white'
-              }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#16191f',
-                  marginBottom: '12px',
-                  fontFamily: 'inherit'
-                }}>
-                  Content disclaimer
-                </h3>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#16191f',
-                  lineHeight: '1.6',
-                  margin: 0,
-                  fontFamily: 'inherit'
-                }}>
-                  Vendors are responsible for their product descriptions and other product content. AWS does not warrant that vendors' product descriptions or other product content are accurate, complete, reliable, current, or error-free.
-                </p>
-              </div>
-            </div>
-
-          {/* Usage Section */}
-          <div id="usage" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
-              {/* Header with Request Demo Button */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '30px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <h2 style={{
-                    fontSize: '24px',
-                    fontWeight: '600',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
-                  }}>
-                    Usage information
-                  </h2>
-                  <a href="#" style={{
-                    fontSize: '13px',
-                    color: '#007185',
-                    textDecoration: 'none',
-                    fontFamily: 'inherit'
-                  }}>
-                    Info
-                  </a>
-                </div>
-
-                <button style={{
-                  padding: '10px 24px',
-                  backgroundColor: 'white',
-                  border: '1px solid #007185',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#007185',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'background-color 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                >
-                  Request demo
-                  <span style={{ fontSize: '12px' }}>🔗</span>
-                </button>
-              </div>
-
-              {/* Delivery Details Card */}
-              <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
-                padding: '24px',
-                backgroundColor: 'white'
-              }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#16191f',
-                  marginBottom: '16px',
-                  fontFamily: 'inherit'
-                }}>
-                  Delivery details
-                </h3>
-
-                <h4 style={{
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#16191f',
-                  marginBottom: '12px',
-                  fontFamily: 'inherit'
-                }}>
-                  Software as a Service (SaaS)
-                </h4>
-
-                <p style={{
-                  fontSize: '14px',
-                  color: '#16191f',
-                  lineHeight: '1.6',
-                  margin: 0,
-                  fontFamily: 'inherit'
-                }}>
-                  SaaS delivers cloud-based software applications directly to customers over the internet. You can access these applications through a subscription model. You will pay recurring monthly usage fees through your AWS bill, while AWS handles deployment and infrastructure management, ensuring scalability, reliability, and seamless integration with other AWS services.
-                </p>
-              </div>
-            </div>
 
           {/* Resources Section */}
           <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
@@ -2638,6 +2121,375 @@ const MarketplaceProductDetail = () => {
                 >
                   Show less
                 </a>
+              </div>
+            </div>
+
+          {/* Pricing Section */}
+          <div id="pricing" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+              <h2 style={{
+                fontSize: isMobile ? '20px' : '24px',
+                fontWeight: '600',
+                color: '#16191f',
+                marginBottom: '30px',
+                fontFamily: 'inherit'
+              }}>
+                Pricing
+              </h2>
+
+              {/* Free Trial Section */}
+              <div style={{
+                border: '1px solid #D5D9D9',
+                borderRadius: '8px',
+                padding: isMobile ? '15px' : '20px',
+                marginBottom: '20px',
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                gap: isMobile ? '15px' : '0',
+                backgroundColor: 'white'
+              }}>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    color: '#16191f',
+                    marginBottom: '8px',
+                    fontFamily: 'inherit'
+                  }}>
+                    Free trial
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#16191f',
+                    margin: 0,
+                    fontFamily: 'inherit'
+                  }}>
+                    Try this product free according to the free trial terms set by the vendor.
+                  </p>
+                </div>
+                <button style={{
+                  padding: '10px 24px',
+                  backgroundColor: 'white',
+                  border: '1px solid #007185',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#007185',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'background-color 0.2s',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                >
+                  Try for free
+                </button>
+              </div>
+
+              {/* Okta Platform Pricing Section */}
+              <div style={{
+                border: '1px solid #D5D9D9',
+                borderRadius: '8px',
+                padding: '24px',
+                marginBottom: '20px',
+                backgroundColor: 'white'
+              }}>
+                {/* Header */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '20px'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                      <h3 style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        color: '#16191f',
+                        margin: 0,
+                        fontFamily: 'inherit'
+                      }}>
+                        Okta Platform
+                      </h3>
+                      <a href="#" style={{
+                        fontSize: '13px',
+                        color: '#007185',
+                        textDecoration: 'none',
+                        fontFamily: 'inherit'
+                      }}>
+                        Info
+                      </a>
+                    </div>
+
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#16191f',
+                      lineHeight: '1.6',
+                      marginBottom: '12px',
+                      fontFamily: 'inherit'
+                    }}>
+                      Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.
+                    </p>
+
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#16191f',
+                      lineHeight: '1.6',
+                      margin: 0,
+                      fontFamily: 'inherit'
+                    }}>
+                      Additional AWS infrastructure costs may apply. Use the{' '}
+                      <a href="#" style={{
+                        color: '#007185',
+                        textDecoration: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#C7511F';
+                        e.target.style.textDecoration = 'underline';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = '#007185';
+                        e.target.style.textDecoration = 'none';
+                      }}
+                      >
+                        AWS Pricing Calculator
+                      </a>
+                      {' '}to estimate your infrastructure costs.
+                    </p>
+                  </div>
+
+                  <button style={{
+                    padding: '10px 24px',
+                    backgroundColor: 'white',
+                    border: '1px solid #007185',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#007185',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'background-color 0.2s',
+                    whiteSpace: 'nowrap',
+                    marginLeft: '20px'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                  >
+                    View purchase options
+                  </button>
+                </div>
+
+                {/* Contract Duration Tabs */}
+                <div style={{
+                  display: 'flex',
+                  gap: '0',
+                  borderBottom: '1px solid #D5D9D9',
+                  marginBottom: '20px'
+                }}>
+                  {[
+                    { duration: '12-month contract', discount: '' },
+                    { duration: '24-month contract', discount: 'save up to 2%' },
+                    { duration: '36-month contract', discount: 'save up to 4%' }
+                  ].map((option, index) => (
+                    <button
+                      key={index}
+                      style={{
+                        padding: '12px 20px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        borderBottom: index === 0 ? '3px solid #007185' : '3px solid transparent',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: index === 0 ? '#007185' : '#16191f',
+                        fontFamily: 'inherit',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (index !== 0) e.target.style.color = '#007185';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (index !== 0) e.target.style.color = '#16191f';
+                      }}
+                    >
+                      {option.duration}
+                      {option.discount && (
+                        <span style={{
+                          marginLeft: '6px',
+                          color: '#067D62',
+                          fontWeight: '600'
+                        }}>
+                          - {option.discount}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Pricing Table Header */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px'
+                }}>
+                  <h4 style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: '#16191f',
+                    margin: 0,
+                    fontFamily: 'inherit'
+                  }}>
+                    12-month contract (2)
+                  </h4>
+                  <a href="#" style={{
+                    fontSize: '13px',
+                    color: '#007185',
+                    textDecoration: 'none',
+                    fontFamily: 'inherit'
+                  }}>
+                    Info
+                  </a>
+                </div>
+
+                {/* Pricing Table */}
+                <div style={{
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  overflow: isMobile ? 'auto' : 'hidden'
+                }}>
+                  {/* Table Header */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
+                    backgroundColor: '#F7F8F8',
+                    padding: isMobile ? '10px 12px' : '12px 16px',
+                    borderBottom: '1px solid #D5D9D9',
+                    fontWeight: '600',
+                    fontSize: isMobile ? '12px' : '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    minWidth: isMobile ? '470px' : 'auto'
+                  }}>
+                    <div>Dimension</div>
+                    <div>Description</div>
+                    <div>Cost/12 months</div>
+                  </div>
+
+                  {/* Table Rows */}
+                  {[
+                    {
+                      dimension: 'Starter - 100 users',
+                      description: 'Starting your Identity journey? Put a strong foundation in place.',
+                      cost: '$7,200.00'
+                    },
+                    {
+                      dimension: 'Essentials - 1,000 users',
+                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
+                      cost: '$204,000.00'
+                    }
+                  ].map((row, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
+                        padding: isMobile ? '12px' : '16px',
+                        borderBottom: index < 1 ? '1px solid #D5D9D9' : 'none',
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        backgroundColor: 'white',
+                        minWidth: isMobile ? '470px' : 'auto'
+                      }}
+                    >
+                      <div style={{ fontWeight: '400' }}>{row.dimension}</div>
+                      <div style={{ color: '#16191f' }}>{row.description}</div>
+                      <div style={{ fontWeight: '600' }}>{row.cost}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Vendor Refund Policy Section */}
+              <div style={{
+                border: '1px solid #D5D9D9',
+                borderRadius: '8px',
+                padding: '20px',
+                marginBottom: '20px',
+                backgroundColor: 'white'
+              }}>
+                <h3 style={{
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  color: '#16191f',
+                  marginBottom: '12px',
+                  fontFamily: 'inherit'
+                }}>
+                  Vendor refund policy
+                </h3>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#16191f',
+                  lineHeight: '1.6',
+                  margin: 0,
+                  fontFamily: 'inherit'
+                }}>
+                  All orders are non-cancellable and all fees and other amounts that you pay are non-refundable. If you have purchased a multi-year subscription, you agree to pay the annual fees due for each year of the multi-year subscription term.
+                </p>
+              </div>
+
+              {/* Custom Pricing Options Section */}
+              <div style={{
+                border: '1px solid #D5D9D9',
+                borderRadius: '8px',
+                padding: '20px',
+                backgroundColor: 'white',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    color: '#16191f',
+                    marginBottom: '8px',
+                    fontFamily: 'inherit'
+                  }}>
+                    Custom pricing options
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#16191f',
+                    margin: 0,
+                    fontFamily: 'inherit'
+                  }}>
+                    Request a private offer to receive a custom quote.
+                  </p>
+                </div>
+                <button style={{
+                  padding: '10px 24px',
+                  backgroundColor: 'white',
+                  border: '1px solid #007185',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#007185',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'background-color 0.2s',
+                  whiteSpace: 'nowrap',
+                  marginLeft: '20px'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                >
+                  Request private offer
+                </button>
               </div>
             </div>
 
