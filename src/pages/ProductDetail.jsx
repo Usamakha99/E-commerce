@@ -45,7 +45,11 @@ const ProductDetail = () => {
   };
 
   // Use API product if available, otherwise use fallback
-  const product = apiProduct || fallbackProduct;
+  // ✅ Handle mainImage field from API (normalize to 'image')
+  const product = apiProduct ? {
+    ...apiProduct,
+    image: apiProduct.image || apiProduct.mainImage
+  } : fallbackProduct;
 
   // Scroll to top when component mounts or product changes
   useEffect(() => {
@@ -80,7 +84,7 @@ const ProductDetail = () => {
         price: product.price || 0,
         image: product.image,
         sku: product.sku,
-        brand: typeof product.brand === 'object' ? product.brand.title : product.brand
+        brand: typeof product.brand === 'object' && product.brand !== null ? product.brand.title : product.brand
       });
       alert(`✅ ${quantity} item(s) added to cart successfully!`);
       // Scroll to top to see cart icon update
@@ -98,7 +102,7 @@ const ProductDetail = () => {
         <Helmet>
           <title>{apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech</title>
           <meta name="description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
-          <meta name="keywords" content={`${apiProduct.name || apiProduct.title || ''}, ${typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || ''}, ${typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || ''}, ${typeof apiProduct.subCategory === 'object' ? apiProduct.subCategory.title : apiProduct.subCategory || ''}, electronics, technology, V Cloud Tech`} />
+          <meta name="keywords" content={`${apiProduct.name || apiProduct.title || ''}, ${typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || ''}, ${typeof apiProduct.category === 'object' && apiProduct.category !== null ? apiProduct.category.title : apiProduct.category || ''}, ${typeof apiProduct.subCategory === 'object' && apiProduct.subCategory !== null ? apiProduct.subCategory.title : apiProduct.subCategory || ''}, electronics, technology, V Cloud Tech`} />
           
           {/* Open Graph Meta Tags for Social Media */}
           <meta property="og:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
@@ -112,8 +116,8 @@ const ProductDetail = () => {
           <meta property="product:price:amount" content={apiProduct.price || '0'} />
           <meta property="product:price:currency" content="USD" />
           <meta property="product:availability" content={apiProduct.stock > 0 ? 'in stock' : 'out of stock'} />
-          <meta property="product:brand" content={typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || ''} />
-          <meta property="product:category" content={typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || ''} />
+          <meta property="product:brand" content={typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || ''} />
+          <meta property="product:category" content={typeof apiProduct.category === 'object' && apiProduct.category !== null ? apiProduct.category.title : apiProduct.category || ''} />
           
           {/* Twitter Card Meta Tags */}
           <meta name="twitter:card" content="summary_large_image" />
@@ -139,9 +143,9 @@ const ProductDetail = () => {
               "image": apiProduct.image || '/src/assets/V Cloud Logo final-01.svg',
               "brand": {
                 "@type": "Brand",
-                "name": typeof apiProduct.brand === 'object' ? apiProduct.brand.title : apiProduct.brand || 'V Cloud Tech'
+                "name": typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || 'V Cloud Tech'
               },
-              "category": typeof apiProduct.category === 'object' ? apiProduct.category.title : apiProduct.category || '',
+              "category": typeof apiProduct.category === 'object' && apiProduct.category !== null ? apiProduct.category.title : apiProduct.category || '',
               "offers": {
                 "@type": "Offer",
                 "price": apiProduct.price || '0',
@@ -194,7 +198,7 @@ const ProductDetail = () => {
                     <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile" style={{ fontSize: '.9em', margin: '.15em 0 .5em', fontFamily: 'DM Sans, sans-serif', color: '#000' }}>
                       <div className="d-inline-block">
                         <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Brand:</span>
-                        <a href="/vendor" style={{ fontFamily: 'DM Sans, sans-serif', color: '#000', textDecoration: 'none' }}> {typeof product.brand === 'object' ? product.brand?.title : product.brand || 'N/A'}</a>
+                        <a href="/vendor" style={{ fontFamily: 'DM Sans, sans-serif', color: '#000', textDecoration: 'none' }}> {typeof product.brand === 'object' && product.brand !== null ? product.brand?.title : product.brand || 'N/A'}</a>
                       </div>
 
                       <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
@@ -220,7 +224,7 @@ const ProductDetail = () => {
                           <div className="d-inline-block">
                             <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Category: </span>
                             <a 
-                              href={`/shop?category=${typeof product.category === 'object' ? product.category.id : product.category}`}
+                              href={`/shop?category=${typeof product.category === 'object' && product.category !== null ? product.category.id : product.category}`}
                               style={{ 
                                 fontFamily: 'DM Sans, sans-serif',
                                 color: '#000',
@@ -235,7 +239,7 @@ const ProductDetail = () => {
                                 e.target.style.setProperty('color', '#000', 'important');
                               }}
                             > 
-                              {typeof product.category === 'object' ? product.category.title : product.category}
+                              {typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}
                             </a>
                           </div>
                         </>
@@ -247,7 +251,7 @@ const ProductDetail = () => {
                           <div className="d-inline-block">
                             <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Sub Category: </span>
                             <a 
-                              href={`/shop?category =${typeof product.subCategory === 'object' ? product.subCategory.id : product.subCategory}`}
+                              href={`/shop?category =${typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.id : product.subCategory}`}
                               style={{ 
                                 fontFamily: 'DM Sans, sans-serif',
                                 color: '#000',
@@ -262,7 +266,7 @@ const ProductDetail = () => {
                                 e.target.style.setProperty('color', '#000', 'important');
                               }}
                             > 
-                              {typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}
+                              {typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}
                             </a>
                           </div>
                         </>
@@ -310,7 +314,10 @@ const ProductDetail = () => {
                             const allImages = [
                               product.image,
                               ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
-                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '')) : [])
+                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
+                                const imgUrl = img.url || img.imageUrl || img;
+                                return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                              }) : [])
                             ].filter(Boolean);
                             const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
                             const prevIndex = currentIndex > 0 ? currentIndex - 1 : allImages.length - 1;
@@ -343,7 +350,23 @@ const ProductDetail = () => {
                       )}
 
                       <img
-                        src={selectedImage || product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
+                        src={
+                          selectedImage || 
+                          (() => {
+                            // Handle different image path formats
+                            if (!product.image) return '/src/assets/imgs/page/product/img-gallery-1.jpg';
+                            
+                            const img = product.image;
+                            // If it's already a full URL (http/https)
+                            if (img.startsWith('http://') || img.startsWith('https://')) return img;
+                            // If it starts with /uploads (from backend)
+                            if (img.startsWith('/uploads/')) return `http://localhost:5000${img}`;
+                            // If it's just a filename
+                            if (!img.startsWith('/') && !img.startsWith('src/')) return `http://localhost:5000/uploads/products/${img}`;
+                            // Otherwise return as is
+                            return img;
+                          })()
+                        }
                         alt={product.name || 'product image'}
                         style={{
                           maxWidth: '100%',
@@ -361,7 +384,10 @@ const ProductDetail = () => {
                             const allImages = [
                               product.image,
                               ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
-                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '')) : [])
+                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
+                                const imgUrl = img.url || img.imageUrl || img;
+                                return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                              }) : [])
                             ].filter(Boolean);
                             const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
                             const nextIndex = currentIndex < allImages.length - 1 ? currentIndex + 1 : 0;
@@ -458,7 +484,9 @@ const ProductDetail = () => {
 
                       {/* Fallback Images */}
                       {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 4).map((img, index) => {
-                        const imageUrl = img.url || img.imageUrl || (typeof img === 'string' ? `http://localhost:5000/uploads/products/${img}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                        // Handle image URL - for manual uploads use /uploads/ without /products/
+                        const imgUrl = img.url || img.imageUrl || img;
+                        const imageUrl = typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '/src/assets/imgs/page/product/img-gallery-1.jpg';
                         return (
                           <div
                             key={index}
@@ -889,7 +917,7 @@ const ProductDetail = () => {
                             {product.brand && (
                         <tr>
                                 <td className="font-sm-bold ">Brand</td>
-                                <td className="font-sm ">{typeof product.brand === 'object' ? product.brand.title : product.brand}</td>
+                                <td className="font-sm ">{typeof product.brand === 'object' && product.brand !== null ? product.brand.title : product.brand}</td>
                         </tr>
                             )}
                             {product.mfr && (
@@ -913,13 +941,13 @@ const ProductDetail = () => {
                             {product.category && (
                         <tr>
                                 <td className="font-sm-bold ">Category</td>
-                                <td className="font-sm ">{typeof product.category === 'object' ? product.category.title : product.category}</td>
+                                <td className="font-sm ">{typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}</td>
                         </tr>
                             )}
                             {product.subCategory && (
                         <tr>
                                 <td className="font-sm-bold ">Sub Category</td>
-                                <td className="font-sm ">{typeof product.subCategory === 'object' ? product.subCategory.title : product.subCategory}</td>
+                                <td className="font-sm ">{typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}</td>
                         </tr>
                             )}
                             {product.endOfLifeDate && (

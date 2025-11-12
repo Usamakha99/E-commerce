@@ -295,9 +295,12 @@ const CartSidebar = ({ isOpen, onClose }) => {
                     <button
                       onClick={async () => {
                         try {
+                          console.log('🗑️ Removing item:', item.id);
                           await removeFromCart(item.id);
+                          console.log('✅ Item removed successfully');
                         } catch (err) {
-                          console.error('Failed to remove:', err);
+                          console.error('❌ Failed to remove item:', err);
+                          alert('Failed to remove item. Please try again.');
                         }
                       }}
                       style={{

@@ -11,8 +11,27 @@ const Cart = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log('🛒 Cart Page - Current Cart State:', cart);
+    console.log('🛒 Cart Items:', cart?.items);
+    console.log('🛒 Cart Items Length:', cart?.items?.length);
+    
+    // Check localStorage before refetch
+    const localStorageCart = localStorage.getItem('vcloud_cart');
+    console.log('📦 localStorage cart (RAW):', localStorageCart);
+    if (localStorageCart) {
+      console.log('📦 localStorage cart (PARSED):', JSON.parse(localStorageCart));
+    }
+    
+    console.log('🔄 Calling refetch()...');
     refetch(); // Refresh cart data on page load
   }, []);
+
+  // Debug: Watch cart changes
+  useEffect(() => {
+    console.log('🔄 Cart Data Updated:', cart);
+    console.log('📦 Items Count:', cart?.items?.length);
+    console.log('💰 Total:', cart?.total);
+  }, [cart]);
 
   const handleUpdateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;

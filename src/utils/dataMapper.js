@@ -17,12 +17,36 @@ export const mapProduct = (externalProduct) => {
   // Extract brand name (it's nested as brand.title)
   const brandName = externalProduct.brand?.title || externalProduct.brand || 'Unknown';
   
-  // Build image URL from mainImage
-  // Your API provides: "mainImage": "icecat_HS8D6PE_main_1759430466447.jpg"
-  // Backend serves from: http://localhost:5000/uploads/
-  const imageUrl = externalProduct.mainImage 
-    ? `http://localhost:5000/uploads/products/${externalProduct.mainImage}`
-    : '/src/assets/imgs/page/homepage1/imgsp1.png'; // Fallback if no image
+  // Build image URL - Priority: Galleries (working URLs) > images > mainImage (backend)
+  let imageUrl = '/src/assets/imgs/page/homepage1/imgsp1.png'; // Default fallback
+  
+  // 🎯 PRIORITY 1: Use galleries pic500x500 (direct Icecat URLs - always work!)
+  if (externalProduct.galleries && Array.isArray(externalProduct.galleries) && externalProduct.galleries.length > 0) {
+    const firstGallery = externalProduct.galleries[0];
+    imageUrl = firstGallery.pic500x500 || firstGallery.highPic || firstGallery.originalUrl || imageUrl;
+  }
+  // 🎯 PRIORITY 2: Use images array (manually uploaded products)
+  else if (externalProduct.images && Array.isArray(externalProduct.images) && externalProduct.images.length > 0) {
+    const firstImage = externalProduct.images[0];
+    const imgUrl = firstImage.url || firstImage;
+    imageUrl = `http://localhost:5000/uploads/${imgUrl}`;
+  }
+  // 🎯 PRIORITY 3: Fallback to mainImage from backend
+  else if (externalProduct.mainImage) {
+    // Try without /products/ folder first (manual uploads)
+    imageUrl = `http://localhost:5000/uploads/${externalProduct.mainImage}`;
+  }
+  
+  // 🔍 Debug log (only for products with images array - manually created)
+  if (externalProduct.images && externalProduct.images.length > 0) {
+    console.log('📦 Data Mapper (Manual Product):', {
+      productId: externalProduct.id,
+      mainImage: externalProduct.mainImage,
+      hasGalleries: externalProduct.galleries?.length > 0,
+      hasImages: externalProduct.images?.length > 0,
+      constructedImageUrl: imageUrl
+    });
+  }
   
   // Parse price (it's a string like "0.00")
   const productPrice = parseFloat(externalProduct.price) || 0;

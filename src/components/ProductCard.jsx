@@ -8,6 +8,34 @@ const ProductCard = ({ product }) => {
   // ✅ Check if user is logged in (reactive to auth changes)
   const { isLoggedIn } = useAuth();
 
+  // ✅ Handle mainImage from API (normalize image path)
+  const productImage = product.image || product.mainImage;
+  
+  // ✅ Construct proper image URL
+  const getImageUrl = (img) => {
+    if (!img) {
+      return '/src/assets/imgs/page/product/img-gallery-1.jpg';
+    }
+    
+    // If it's already a full URL, use it directly
+    if (img.startsWith('http://') || img.startsWith('https://')) {
+      return img;
+    }
+    
+    // If it starts with /uploads, prepend backend URL
+    if (img.startsWith('/uploads/')) {
+      return `http://localhost:5000${img}`;
+    }
+    
+    // If it's just a filename, add full backend path
+    if (!img.startsWith('/') && !img.startsWith('src/')) {
+      return `http://localhost:5000/uploads/products/${img}`;
+    }
+    
+    // Otherwise return as is
+    return img;
+  };
+
   return (
     <div 
       className="card-grid-style-3"
@@ -50,8 +78,9 @@ const ProductCard = ({ product }) => {
       <div className="image-box">
         <Link to={`/product/${product.id}`}>
           <img 
-            src={product.image} 
-            alt={product.name}
+            src={getImageUrl(productImage)} 
+            alt={product.name || product.title}
+            onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
           />
         </Link>
       </div>
@@ -59,11 +88,11 @@ const ProductCard = ({ product }) => {
       {/* Product Info */}
       <div className="info-right">
         {/* Brand */}
-        <div className="font-xs color-gray-500">{typeof product.brand === 'object' ? product.brand.title : product.brand}</div>
+        <div className="font-xs color-gray-500">{typeof product.brand === 'object' && product.brand !== null ? product.brand.title : product.brand}</div>
         
         {/* Product Name */}
         <h3 className="font-sm color-gray-1000">
-          <Link to={`/product/${product.id}`}>{product.name}</Link>
+          <Link to={`/product/${product.id}`}>{product.name || product.title}</Link>
         </h3>
 
         

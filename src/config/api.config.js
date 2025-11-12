@@ -27,11 +27,12 @@ export const API_ENDPOINTS = {
   
   // Cart
   cart: {
-    get: '/cart',
-    add: '/cart/add',
-    update: (id) => `/cart/${id}`,
-    remove: (id) => `/cart/${id}`,
-    clear: '/cart/clear',
+    get: '/carts',
+    add: '/carts/add',
+    update: (cartId) => `/carts/${cartId}/items`,      // PUT /:cartId/items
+    remove: (cartId) => `/carts/${cartId}/items`,      // DELETE /:cartId/items
+    clear: (cartId) => `/carts/${cartId}/clear`,       // DELETE /:cartId/clear
+    merge: '/carts/merge',
   },
   
   // Orders
