@@ -29,7 +29,7 @@ const MarketplaceProductDetail = () => {
     badges: ['Deployed on AWS', 'Free Trial', 'AWS Free Tier'],
     shortDescription: 'Secure your employees, contractors, and partners - wherever they are. Covers every part of the Identity lifecycle, from governance, to access, to privileged controls.',
     videoThumbnail: '/src/assets/imgs/page/homepage1/imgsp1.png',
-    overview: 'Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business.',
+    overview: 'Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business,Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business,Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business.',
     highlights: [
       'Turn Identity into a business advantage: Empower your people, protect your organization, and accelerate your business with an Identity-first security solution built for todays dynamic workforce.',
       'Build the tech ecosystem of your choice: Never again worry about building or maintaining your SSO integrations. Okta takes care of that with the largest network of over 7000 pre-built cloud and on-prem apps available, so you can build the tech ecosystem you need, and set up access immediately.',
@@ -41,6 +41,52 @@ const MarketplaceProductDetail = () => {
       { name: 'Software as a Service (SaaS)', url: '/marketplace' },
       { name: 'Okta Platform', url: '#' }
     ]
+  };
+
+  // Update document title when product loads
+  useEffect(() => {
+    if (product) {
+      document.title = `${product.name} - AI Marketplace - VCloud Tech`;
+    }
+  }, [product]);
+
+  // Scroll Spy: Update active tab based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = tabs.map(tab => ({
+        id: tab.toLowerCase().replace(' ', '-'),
+        element: document.getElementById(tab.toLowerCase().replace(' ', '-'))
+      }));
+
+      const scrollPosition = window.scrollY + 200; // Offset for better detection
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section.element && section.element.offsetTop <= scrollPosition) {
+          setActiveTab(section.id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Handle tab click - scroll to section
+  const handleTabClick = (tab) => {
+    const sectionId = tab.toLowerCase().replace(' ', '-');
+    const element = document.getElementById(sectionId);
+    
+    if (element) {
+      const offsetTop = element.offsetTop - 100; // Offset for header
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+    
+    setActiveTab(sectionId);
   };
 
   const tabs = [
@@ -117,24 +163,13 @@ const MarketplaceProductDetail = () => {
                   <h1 style={{
                     fontSize: isMobile ? '22px' : '30px',
                     fontWeight: '700',
-                    color: '#1F2937',
-                    margin: '0 0 10px 0',
-                    fontFamily: 'DM Sans, sans-serif',
+                    color: '#16191f',
+                    margin: '0 0 16px 0',
+                    fontFamily: 'inherit',
                     lineHeight: '1.2'
                   }}>
                     {product.name}
                   </h1>
-
-                  {/* Seller */}
-                  <div style={{ marginBottom: '14px' }}>
-                    <span style={{
-                      fontSize: '15px',
-                      color: '#6B7280',
-                      fontFamily: 'DM Sans, sans-serif'
-                    }}>
-                      by {product.seller}
-                    </span>
-                  </div>
 
                   {/* Badges - Soft Colors */}
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
@@ -146,7 +181,7 @@ const MarketplaceProductDetail = () => {
                       fontSize: '13px',
                       color: '#991B1B',
                       fontWeight: '600',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       ☁️ Deployed on AWS
                     </span>
@@ -158,7 +193,7 @@ const MarketplaceProductDetail = () => {
                       fontSize: '13px',
                       color: '#166534',
                       fontWeight: '600',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       🎁 Free Trial
                     </span>
@@ -170,7 +205,7 @@ const MarketplaceProductDetail = () => {
                       fontSize: '13px',
                       color: '#854D0E',
                       fontWeight: '600',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       ⚡ AWS Free Tier
                     </span>
@@ -180,10 +215,10 @@ const MarketplaceProductDetail = () => {
                   <p style={{
                     fontSize: '15px',
                     fontWeight: '400',
-                    color: '#4B5563',
+                    color: '#16191f',
                     lineHeight: '1.7',
                     margin: '0 0 14px 0',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     {product.shortDescription}
                   </p>
@@ -196,15 +231,15 @@ const MarketplaceProductDetail = () => {
                     <span style={{
                       fontSize: '16px',
                       fontWeight: '700',
-                      color: '#1F2937',
-                      fontFamily: 'DM Sans, sans-serif'
+                      color: '#16191f',
+                      fontFamily: 'inherit'
                     }}>
                       {product.rating}
                     </span>
                     <span style={{
                       fontSize: '14px',
-                      color: '#6B7280',
-                      fontFamily: 'DM Sans, sans-serif'
+                      color: '#16191f',
+                      fontFamily: 'inherit'
                     }}>
                       ({product.awsReviews + product.externalReviews} reviews)
                     </span>
@@ -224,12 +259,12 @@ const MarketplaceProductDetail = () => {
                   padding: '14px 28px',
                   backgroundColor: '#111A45',
                   border: 'none',
-                  borderRadius: '8px',
+                  borderRadius: '25px',
                   fontSize: '15px',
                   fontWeight: '600',
                   color: 'white',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'all 0.3s ease',
                   boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)'
                 }}
@@ -251,12 +286,12 @@ const MarketplaceProductDetail = () => {
                   padding: '14px 28px',
                   backgroundColor: 'white',
                   border: '2px solid #111A45',
-                  borderRadius: '8px',
+                  borderRadius: '25px',
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: '#111A45',
+                  color: '#16191f',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
@@ -266,7 +301,7 @@ const MarketplaceProductDetail = () => {
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = 'white';
-                  e.target.style.color = '#111A45';
+                  e.target.style.color = '#16191f';
                   e.target.style.transform = 'translateY(0)';
                 }}
                 >
@@ -277,22 +312,22 @@ const MarketplaceProductDetail = () => {
                   padding: '14px 28px',
                   backgroundColor: 'white',
                   border: '2px solid #6B7280',
-                  borderRadius: '8px',
+                  borderRadius: '25px',
                   fontSize: '15px',
                   fontWeight: '600',
-                  color: '#6B7280',
+                  color: '#16191f',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'all 0.3s ease'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#111A45';
-                  e.target.style.color = '#111A45';
+                  e.target.style.color = '#16191f';
                   e.target.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.borderColor = '#6B7280';
-                  e.target.style.color = '#6B7280';
+                  e.target.style.color = '#16191f';
                   e.target.style.transform = 'translateY(0)';
                 }}
                 >
@@ -303,8 +338,11 @@ const MarketplaceProductDetail = () => {
           </div>
         </div>
 
-        {/* Tabs Navigation - Button/Pills Style */}
+        {/* Tabs Navigation - Button/Pills Style - STICKY */}
         <div style={{
+          position: 'sticky',
+          top: '70px',
+          zIndex: 100,
           backgroundColor: '#F9FAFB',
           borderRadius: '12px',
           padding: '12px',
@@ -323,17 +361,17 @@ const MarketplaceProductDetail = () => {
               return (
                 <button
                   key={index}
-                  onClick={() => setActiveTab(tab.toLowerCase().replace(' ', '-'))}
+                  onClick={() => handleTabClick(tab)}
                   style={{
                     padding: '12px 24px',
                     border: 'none',
                     backgroundColor: isActive ? '#111A45' : 'white',
-                    color: isActive ? 'white' : '#6B7280',
-                    borderRadius: '8px',
+                    color: isActive ? 'white' : '#16191f',
+                    borderRadius: '25px',
                     cursor: 'pointer',
                     fontSize: '15px',
                     fontWeight: '600',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     whiteSpace: 'nowrap',
                     transition: 'all 0.3s ease',
                     boxShadow: isActive ? '0 4px 12px rgba(17, 26, 69, 0.3)' : '0 1px 3px rgba(0,0,0,0.08)',
@@ -342,7 +380,7 @@ const MarketplaceProductDetail = () => {
                   onMouseEnter={(e) => {
                     if (!isActive) {
                       e.target.style.backgroundColor = '#E5E7EB';
-                      e.target.style.color = '#1F2937';
+                      e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(-2px)';
                       e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                     }
@@ -350,7 +388,7 @@ const MarketplaceProductDetail = () => {
                   onMouseLeave={(e) => {
                     if (!isActive) {
                       e.target.style.backgroundColor = 'white';
-                      e.target.style.color = '#6B7280';
+                      e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(0)';
                       e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
                     }
@@ -379,7 +417,7 @@ const MarketplaceProductDetail = () => {
           </div>
         </div>
 
-        {/* Tab Content Container */}
+        {/* Tab Content Container - All Sections Visible for Scroll */}
         <div style={{
           backgroundColor: 'white',
           borderRadius: '12px',
@@ -387,14 +425,14 @@ const MarketplaceProductDetail = () => {
           boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
           border: '1px solid #E5E7EB'
         }}>
-          {activeTab === 'overview' && (
-            <div>
+          {/* Overview Section */}
+          <div id="overview" style={{ scrollMarginTop: '120px' }}>
               <h2 style={{
                 fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
-                color: '#0F1111',
+                color: '#16191f',
                 marginBottom: '20px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 Overview
               </h2>
@@ -472,17 +510,17 @@ const MarketplaceProductDetail = () => {
                       fontSize: isMobile ? '18px' : '28px',
                       fontWeight: '700',
                       textShadow: '0 3px 6px rgba(0,0,0,0.6)',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       What is Okta?
                     </div>
                   </div>
                   <p style={{
                     fontSize: '14px',
-                    color: '#565959',
+                    color: '#16191f',
                     marginBottom: '0',
-                    fontFamily: 'DM Sans, sans-serif',
-                    fontWeight: '500',
+                    fontFamily: 'inherit',
+                    fontWeight: '400',
                     fontStyle: 'italic'
                   }}>
                     Product video
@@ -503,9 +541,9 @@ const MarketplaceProductDetail = () => {
                   <h3 style={{
                     fontSize: '20px',
                     fontWeight: '700',
-                    color: '#1F2937',
+                    color: '#16191f',
                     marginBottom: '20px',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     ✨ Key Highlights
                   </h3>
@@ -517,12 +555,12 @@ const MarketplaceProductDetail = () => {
                     {product.highlights.map((highlight, index) => (
                       <li key={index} style={{
                         fontSize: '15px',
-                        color: '#4B5563',
+                        color: '#16191f',
                         lineHeight: '1.7',
                         marginBottom: '15px',
                         paddingLeft: '25px',
                         position: 'relative',
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         <span style={{
                           position: 'absolute',
@@ -554,9 +592,9 @@ const MarketplaceProductDetail = () => {
                   <h3 style={{
                     fontSize: '20px',
                     fontWeight: '700',
-                    color: '#1F2937',
+                    color: '#16191f',
                     marginBottom: '20px',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     paddingBottom: '10px',
                     borderBottom: '2px solid #E5E7EB'
                   }}>
@@ -569,8 +607,8 @@ const MarketplaceProductDetail = () => {
                     <div>
                       <div style={{
                         fontSize: '14px',
-                        color: '#6B7280',
-                        fontFamily: 'DM Sans, sans-serif',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
                         fontWeight: '600',
                         marginBottom: '8px'
                       }}>
@@ -578,8 +616,8 @@ const MarketplaceProductDetail = () => {
                       </div>
                       <div style={{
                         fontSize: '15px',
-                        color: '#111A45',
-                        fontFamily: 'DM Sans, sans-serif',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
                         fontWeight: '600'
                       }}>
                         {product.seller}
@@ -590,10 +628,10 @@ const MarketplaceProductDetail = () => {
                     <div>
                       <div style={{
                         fontSize: '13px',
-                        color: '#565959',
+                        color: '#16191f',
                         marginBottom: '6px',
-                        fontFamily: 'DM Sans, sans-serif',
-                        fontWeight: '500'
+                        fontFamily: 'inherit',
+                        fontWeight: '400'
                       }}>
                         Categories
                       </div>
@@ -606,8 +644,8 @@ const MarketplaceProductDetail = () => {
                               fontSize: '14px',
                               color: '#007185',
                               textDecoration: 'none',
-                              fontFamily: 'DM Sans, sans-serif',
-                              fontWeight: '500',
+                              fontFamily: 'inherit',
+                              fontWeight: '400',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '4px',
@@ -636,19 +674,19 @@ const MarketplaceProductDetail = () => {
                     <div>
                       <div style={{
                         fontSize: '13px',
-                        color: '#565959',
-                        fontFamily: 'DM Sans, sans-serif',
-                        fontWeight: '500',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        fontWeight: '400',
                         marginBottom: '6px'
                       }}>
                         Delivery method
                       </div>
                       <span style={{
                         fontSize: '14px',
-                        color: '#0F1111',
-                        fontFamily: 'DM Sans, sans-serif',
-                        fontWeight: '500',
-                        borderBottom: '1px dotted #565959',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        fontWeight: '400',
+                        borderBottom: '1px dotted #16191f',
                         display: 'inline-block'
                       }}>
                         Software as a Service (SaaS)
@@ -659,19 +697,19 @@ const MarketplaceProductDetail = () => {
                     <div>
                       <div style={{
                         fontSize: '13px',
-                        color: '#565959',
-                        fontFamily: 'DM Sans, sans-serif',
-                        fontWeight: '500',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        fontWeight: '400',
                         marginBottom: '6px'
                       }}>
                         Deployed on AWS
                       </div>
                       <span style={{
                         fontSize: '14px',
-                        color: '#0F1111',
-                        fontFamily: 'DM Sans, sans-serif',
-                        fontWeight: '500',
-                        borderBottom: '1px dotted #565959',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        fontWeight: '400',
+                        borderBottom: '1px dotted #16191f',
                         display: 'inline-block'
                       }}>
                         Yes
@@ -696,9 +734,9 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     fontSize: '15px',
-                    color: '#4B5563',
+                    color: '#16191f',
                     lineHeight: '1.8',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     maxHeight: isDescriptionExpanded ? 'none' : '120px',
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease'
@@ -718,11 +756,11 @@ const MarketplaceProductDetail = () => {
                         style={{
                           background: 'transparent',
                           border: '2px solid #111A45',
-                          color: '#111A45',
+                          color: '#16191f',
                           fontSize: '14px',
                           fontWeight: '600',
                           cursor: 'pointer',
-                          fontFamily: 'DM Sans, sans-serif',
+                          fontFamily: 'inherit',
                           padding: '10px 24px',
                           borderRadius: '8px',
                           transition: 'all 0.3s ease'
@@ -733,7 +771,7 @@ const MarketplaceProductDetail = () => {
                         }}
                         onMouseLeave={(e) => {
                           e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = '#111A45';
+                          e.target.style.color = '#16191f';
                         }}
                       >
                         {isDescriptionExpanded ? 'Show less ▲' : 'Show more ▼'}
@@ -744,16 +782,15 @@ const MarketplaceProductDetail = () => {
               </div>
             </div>
           </div>
-          )}
 
-          {activeTab === 'features' && (
-            <div>
+          {/* Features Section */}
+          <div id="features" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
-                color: '#1F2937',
+                color: '#16191f',
                 marginBottom: '30px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 ⚡ Features and Programs
               </h2>
@@ -805,9 +842,9 @@ const MarketplaceProductDetail = () => {
                       <h3 style={{
                         fontSize: '20px',
                         fontWeight: '700',
-                        color: '#1F2937',
+                        color: '#16191f',
                         margin: 0,
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         Trust Center
                       </h3>
@@ -816,10 +853,10 @@ const MarketplaceProductDetail = () => {
                     {/* Description */}
                     <p style={{
                       fontSize: '15px',
-                      color: '#4B5563',
+                      color: '#16191f',
                       lineHeight: '1.7',
                       marginBottom: '24px',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       flex: 1
                     }}>
                       Access real-time vendor security and compliance information through their Trust Center powered by Drata. Review certifications and security standards before purchase.
@@ -835,7 +872,7 @@ const MarketplaceProductDetail = () => {
                       fontWeight: '600',
                       color: 'white',
                       cursor: 'pointer',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       transition: 'all 0.3s ease',
                       boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)'
                     }}
@@ -900,9 +937,9 @@ const MarketplaceProductDetail = () => {
                       <h3 style={{
                         fontSize: '20px',
                         fontWeight: '700',
-                        color: '#1F2937',
+                        color: '#16191f',
                         margin: 0,
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         Buyer Guide
                       </h3>
@@ -911,10 +948,10 @@ const MarketplaceProductDetail = () => {
                     {/* Description */}
                     <p style={{
                       fontSize: '15px',
-                      color: '#4B5563',
+                      color: '#16191f',
                       lineHeight: '1.7',
                       marginBottom: '20px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       Gain valuable insights from real users who purchased this product, powered by PeerSpot.
                     </p>
@@ -984,9 +1021,9 @@ const MarketplaceProductDetail = () => {
                       borderRadius: '10px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: '#111A45',
+                      color: '#16191f',
                       cursor: 'pointer',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
@@ -996,7 +1033,7 @@ const MarketplaceProductDetail = () => {
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.backgroundColor = 'white';
-                      e.target.style.color = '#111A45';
+                      e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(0)';
                     }}
                     >
@@ -1050,9 +1087,9 @@ const MarketplaceProductDetail = () => {
                       <h3 style={{
                         fontSize: '20px',
                         fontWeight: '700',
-                        color: '#1F2937',
+                        color: '#16191f',
                         margin: 0,
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         Financing Options
                       </h3>
@@ -1061,10 +1098,10 @@ const MarketplaceProductDetail = () => {
                     {/* Description */}
                     <p style={{
                       fontSize: '15px',
-                      color: '#4B5563',
+                      color: '#16191f',
                       lineHeight: '1.7',
                       marginBottom: '20px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       AWS Marketplace now accepts line of credit payments through the PNC Vendor Finance program. This program is available to select AWS customers in the US, excluding NV, NC, ND, TN, & VT.
                     </p>
@@ -1084,13 +1121,13 @@ const MarketplaceProductDetail = () => {
                       <div style={{
                         fontSize: '20px',
                         fontWeight: '700',
-                        color: '#111A45',
+                        color: '#16191f',
                         fontFamily: 'Arial, sans-serif',
                         letterSpacing: '1.5px',
                         textAlign: 'center'
                       }}>
                         PNC<br/>
-                        <span style={{ fontSize: '14px', color: '#6B7280' }}>VENDOR FINANCE</span>
+                        <span style={{ fontSize: '14px', color: '#16191f' }}>VENDOR FINANCE</span>
                       </div>
                     </div>
 
@@ -1102,19 +1139,19 @@ const MarketplaceProductDetail = () => {
                       borderRadius: '10px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: '#6B7280',
+                      color: '#16191f',
                       cursor: 'pointer',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.target.style.borderColor = '#111A45';
-                      e.target.style.color = '#111A45';
+                      e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(-2px)';
                     }}
                     onMouseLeave={(e) => {
                       e.target.style.borderColor = '#6B7280';
-                      e.target.style.color = '#6B7280';
+                      e.target.style.color = '#16191f';
                       e.target.style.transform = 'translateY(0)';
                     }}
                     >
@@ -1124,16 +1161,15 @@ const MarketplaceProductDetail = () => {
                 </div>
               </div>
             </div>
-          )}
 
-          {activeTab === 'pricing' && (
-            <div>
+          {/* Pricing Section */}
+          <div id="pricing" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
-                color: '#0F1111',
+                color: '#16191f',
                 marginBottom: '30px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 Pricing
               </h2>
@@ -1155,17 +1191,17 @@ const MarketplaceProductDetail = () => {
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     marginBottom: '8px',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Free trial
                   </h3>
                   <p style={{
                     fontSize: '14px',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Try this product free according to the free trial terms set by the vendor.
                   </p>
@@ -1179,7 +1215,7 @@ const MarketplaceProductDetail = () => {
                   fontWeight: '600',
                   color: '#007185',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'background-color 0.2s',
                   whiteSpace: 'nowrap'
                 }}
@@ -1210,9 +1246,9 @@ const MarketplaceProductDetail = () => {
                       <h3 style={{
                         fontSize: '20px',
                         fontWeight: '600',
-                        color: '#0F1111',
+                        color: '#16191f',
                         margin: 0,
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         Okta Platform
                       </h3>
@@ -1220,7 +1256,7 @@ const MarketplaceProductDetail = () => {
                         fontSize: '13px',
                         color: '#007185',
                         textDecoration: 'none',
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         Info
                       </a>
@@ -1228,20 +1264,20 @@ const MarketplaceProductDetail = () => {
 
                     <p style={{
                       fontSize: '14px',
-                      color: '#0F1111',
+                      color: '#16191f',
                       lineHeight: '1.6',
                       marginBottom: '12px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.
                     </p>
 
                     <p style={{
                       fontSize: '14px',
-                      color: '#0F1111',
+                      color: '#16191f',
                       lineHeight: '1.6',
                       margin: 0,
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       Additional AWS infrastructure costs may apply. Use the{' '}
                       <a href="#" style={{
@@ -1272,7 +1308,7 @@ const MarketplaceProductDetail = () => {
                     fontWeight: '600',
                     color: '#007185',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     transition: 'background-color 0.2s',
                     whiteSpace: 'nowrap',
                     marginLeft: '20px'
@@ -1305,16 +1341,16 @@ const MarketplaceProductDetail = () => {
                         borderBottom: index === 0 ? '3px solid #007185' : '3px solid transparent',
                         cursor: 'pointer',
                         fontSize: '14px',
-                        fontWeight: '500',
+                        fontWeight: '400',
                         color: index === 0 ? '#007185' : '#0F1111',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'inherit',
                         transition: 'all 0.2s'
                       }}
                       onMouseEnter={(e) => {
                         if (index !== 0) e.target.style.color = '#007185';
                       }}
                       onMouseLeave={(e) => {
-                        if (index !== 0) e.target.style.color = '#0F1111';
+                        if (index !== 0) e.target.style.color = '#16191f';
                       }}
                     >
                       {option.duration}
@@ -1341,9 +1377,9 @@ const MarketplaceProductDetail = () => {
                   <h4 style={{
                     fontSize: '16px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     12-month contract (2)
                   </h4>
@@ -1351,7 +1387,7 @@ const MarketplaceProductDetail = () => {
                     fontSize: '13px',
                     color: '#007185',
                     textDecoration: 'none',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Info
                   </a>
@@ -1372,8 +1408,8 @@ const MarketplaceProductDetail = () => {
                     borderBottom: '1px solid #D5D9D9',
                     fontWeight: '600',
                     fontSize: isMobile ? '12px' : '14px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
                     minWidth: isMobile ? '470px' : 'auto'
                   }}>
                     <div>Dimension</div>
@@ -1402,14 +1438,14 @@ const MarketplaceProductDetail = () => {
                         padding: isMobile ? '12px' : '16px',
                         borderBottom: index < 1 ? '1px solid #D5D9D9' : 'none',
                         fontSize: isMobile ? '12px' : '14px',
-                        color: '#0F1111',
-                        fontFamily: 'DM Sans, sans-serif',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
                         backgroundColor: 'white',
                         minWidth: isMobile ? '470px' : 'auto'
                       }}
                     >
-                      <div style={{ fontWeight: '500' }}>{row.dimension}</div>
-                      <div style={{ color: '#565959' }}>{row.description}</div>
+                      <div style={{ fontWeight: '400' }}>{row.dimension}</div>
+                      <div style={{ color: '#16191f' }}>{row.description}</div>
                       <div style={{ fontWeight: '600' }}>{row.cost}</div>
                     </div>
                   ))}
@@ -1427,18 +1463,18 @@ const MarketplaceProductDetail = () => {
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: '600',
-                  color: '#0F1111',
+                  color: '#16191f',
                   marginBottom: '12px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Vendor refund policy
                 </h3>
                 <p style={{
                   fontSize: '14px',
-                  color: '#0F1111',
+                  color: '#16191f',
                   lineHeight: '1.6',
                   margin: 0,
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   All orders are non-cancellable and all fees and other amounts that you pay are non-refundable. If you have purchased a multi-year subscription, you agree to pay the annual fees due for each year of the multi-year subscription term.
                 </p>
@@ -1458,17 +1494,17 @@ const MarketplaceProductDetail = () => {
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     marginBottom: '8px',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Custom pricing options
                   </h3>
                   <p style={{
                     fontSize: '14px',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Request a private offer to receive a custom quote.
                   </p>
@@ -1482,7 +1518,7 @@ const MarketplaceProductDetail = () => {
                   fontWeight: '600',
                   color: '#007185',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'background-color 0.2s',
                   whiteSpace: 'nowrap',
                   marginLeft: '20px'
@@ -1494,16 +1530,15 @@ const MarketplaceProductDetail = () => {
                 </button>
               </div>
             </div>
-          )}
 
-          {activeTab === 'legal' && (
-            <div>
+          {/* Legal Section */}
+          <div id="legal" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: '24px',
                 fontWeight: '600',
-                color: '#0F1111',
+                color: '#16191f',
                 marginBottom: '30px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 Legal
               </h2>
@@ -1519,18 +1554,18 @@ const MarketplaceProductDetail = () => {
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: '600',
-                  color: '#0F1111',
+                  color: '#16191f',
                   marginBottom: '12px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Vendor terms and conditions
                 </h3>
                 <p style={{
                   fontSize: '14px',
-                  color: '#0F1111',
+                  color: '#16191f',
                   lineHeight: '1.6',
                   margin: 0,
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Upon subscribing to this product, you must acknowledge and agree to the terms and conditions outlined in the vendor's{' '}
                   <a href="#" style={{
@@ -1562,27 +1597,26 @@ const MarketplaceProductDetail = () => {
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: '600',
-                  color: '#0F1111',
+                  color: '#16191f',
                   marginBottom: '12px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Content disclaimer
                 </h3>
                 <p style={{
                   fontSize: '14px',
-                  color: '#0F1111',
+                  color: '#16191f',
                   lineHeight: '1.6',
                   margin: 0,
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Vendors are responsible for their product descriptions and other product content. AWS does not warrant that vendors' product descriptions or other product content are accurate, complete, reliable, current, or error-free.
                 </p>
               </div>
             </div>
-          )}
 
-          {activeTab === 'usage' && (
-            <div>
+          {/* Usage Section */}
+          <div id="usage" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               {/* Header with Request Demo Button */}
               <div style={{
                 display: 'flex',
@@ -1594,9 +1628,9 @@ const MarketplaceProductDetail = () => {
                   <h2 style={{
                     fontSize: '24px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Usage information
                   </h2>
@@ -1604,7 +1638,7 @@ const MarketplaceProductDetail = () => {
                     fontSize: '13px',
                     color: '#007185',
                     textDecoration: 'none',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Info
                   </a>
@@ -1619,7 +1653,7 @@ const MarketplaceProductDetail = () => {
                   fontWeight: '600',
                   color: '#007185',
                   cursor: 'pointer',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   transition: 'background-color 0.2s',
                   display: 'flex',
                   alignItems: 'center',
@@ -1643,9 +1677,9 @@ const MarketplaceProductDetail = () => {
                 <h3 style={{
                   fontSize: '18px',
                   fontWeight: '600',
-                  color: '#0F1111',
+                  color: '#16191f',
                   marginBottom: '16px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Delivery details
                 </h3>
@@ -1653,34 +1687,33 @@ const MarketplaceProductDetail = () => {
                 <h4 style={{
                   fontSize: '16px',
                   fontWeight: '600',
-                  color: '#0F1111',
+                  color: '#16191f',
                   marginBottom: '12px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   Software as a Service (SaaS)
                 </h4>
 
                 <p style={{
                   fontSize: '14px',
-                  color: '#0F1111',
+                  color: '#16191f',
                   lineHeight: '1.6',
                   margin: 0,
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}>
                   SaaS delivers cloud-based software applications directly to customers over the internet. You can access these applications through a subscription model. You will pay recurring monthly usage fees through your AWS bill, while AWS handles deployment and infrastructure management, ensuring scalability, reliability, and seamless integration with other AWS services.
                 </p>
               </div>
             </div>
-          )}
 
-          {activeTab === 'resources' && (
-            <div>
+          {/* Resources Section */}
+          <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: '24px',
                 fontWeight: '600',
-                color: '#0F1111',
+                color: '#16191f',
                 marginBottom: '30px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 Resources
               </h2>
@@ -1700,9 +1733,9 @@ const MarketplaceProductDetail = () => {
                   <h3 style={{
                     fontSize: '18px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Vendor resources
                   </h3>
@@ -1725,7 +1758,7 @@ const MarketplaceProductDetail = () => {
                       fontSize: '14px',
                       fontWeight: '600',
                       color: '#007185',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}
                   >
                     Links
@@ -1744,13 +1777,13 @@ const MarketplaceProductDetail = () => {
                       borderBottom: '3px solid transparent',
                       cursor: 'pointer',
                       fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#0F1111',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontWeight: '400',
+                      color: '#16191f',
+                      fontFamily: 'inherit',
                       transition: 'color 0.2s'
                     }}
                     onMouseEnter={(e) => e.target.style.color = '#007185'}
-                    onMouseLeave={(e) => e.target.style.color = '#0F1111'}
+                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
                   >
                     Videos
                   </button>
@@ -1766,7 +1799,7 @@ const MarketplaceProductDetail = () => {
                         fontSize: '14px',
                         color: '#007185',
                         textDecoration: 'none',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'inherit',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px'
@@ -1793,7 +1826,7 @@ const MarketplaceProductDetail = () => {
                         fontSize: '14px',
                         color: '#007185',
                         textDecoration: 'none',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'inherit',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px'
@@ -1814,16 +1847,15 @@ const MarketplaceProductDetail = () => {
                 </div>
               </div>
             </div>
-          )}
 
-          {activeTab === 'support' && (
-            <div>
+          {/* Support Section */}
+          <div id="support" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: '24px',
                 fontWeight: '600',
-                color: '#0F1111',
+                color: '#16191f',
                 marginBottom: '30px',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}>
                 Support
               </h2>
@@ -1843,28 +1875,28 @@ const MarketplaceProductDetail = () => {
                     <h3 style={{
                       fontSize: '18px',
                       fontWeight: '600',
-                      color: '#0F1111',
+                      color: '#16191f',
                       marginBottom: '16px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       Vendor support
                     </h3>
 
                     <p style={{
                       fontSize: '14px',
-                      color: '#0F1111',
+                      color: '#16191f',
                       lineHeight: '1.6',
                       marginBottom: '16px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       Through our expert teams and robust digital resources, we ensure you can always access urgent and proactive support, whenever and however you need it, anywhere in the world. Access the Okta Community to get help, engage with us and your peers, submit product requests, and access the key resources you need to drive success. We offer support packages that are aligned to your requirements to give you the power of choice.
                     </p>
 
                     <div style={{
                       fontSize: '14px',
-                      color: '#0F1111',
+                      color: '#16191f',
                       lineHeight: '1.6',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       <p style={{ marginBottom: '12px' }}>
                         For additional information please visit{' '}
@@ -1935,19 +1967,19 @@ const MarketplaceProductDetail = () => {
                     <h3 style={{
                       fontSize: '18px',
                       fontWeight: '600',
-                      color: '#0F1111',
+                      color: '#16191f',
                       marginBottom: '16px',
-                      fontFamily: 'DM Sans, sans-serif'
+                      fontFamily: 'inherit'
                     }}>
                       AWS infrastructure support
                     </h3>
 
                     <p style={{
                       fontSize: '14px',
-                      color: '#0F1111',
+                      color: '#16191f',
                       lineHeight: '1.6',
                       marginBottom: '20px',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       flex: 1
                     }}>
                       AWS Support is a one-on-one, fast-response support channel that is staffed 24x7x365 with experienced and technical support engineers. The service helps customers of all sizes and technical abilities to successfully utilize the products and features provided by Amazon Web Services.
@@ -1962,7 +1994,7 @@ const MarketplaceProductDetail = () => {
                       fontWeight: '600',
                       color: '#007185',
                       cursor: 'pointer',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       transition: 'background-color 0.2s',
                       display: 'flex',
                       alignItems: 'center',
@@ -1980,10 +2012,9 @@ const MarketplaceProductDetail = () => {
                 </div>
               </div>
             </div>
-          )}
 
-          {activeTab === 'product-comparison' && (
-            <div>
+          {/* Product Comparison Section */}
+          <div id="product-comparison" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               {/* Header with Buttons */}
               <div style={{
                 display: 'flex',
@@ -1997,17 +2028,17 @@ const MarketplaceProductDetail = () => {
                   <h2 style={{
                     fontSize: '24px',
                     fontWeight: '600',
-                    color: '#0F1111',
+                    color: '#16191f',
                     margin: '0 0 4px 0',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Product comparison
                   </h2>
                   <p style={{
                     fontSize: '13px',
-                    color: '#565959',
+                    color: '#16191f',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Updated weekly
                   </p>
@@ -2020,10 +2051,10 @@ const MarketplaceProductDetail = () => {
                     border: '1px solid #D5D9D9',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    fontWeight: '500',
-                    color: '#0F1111',
+                    fontWeight: '400',
+                    color: '#16191f',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     transition: 'background-color 0.2s'
                   }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#F7F8F8'}
@@ -2038,10 +2069,10 @@ const MarketplaceProductDetail = () => {
                     border: '1px solid #D5D9D9',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    fontWeight: '500',
-                    color: '#0F1111',
+                    fontWeight: '400',
+                    color: '#16191f',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'inherit',
                     transition: 'background-color 0.2s'
                   }}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#F7F8F8'}
@@ -2093,15 +2124,15 @@ const MarketplaceProductDetail = () => {
                         <div style={{
                           fontSize: '14px',
                           fontWeight: '600',
-                          color: '#0F1111',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           Okta Platform
                         </div>
                         <div style={{
                           fontSize: '12px',
-                          color: '#565959',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           by Okta, Inc.
                         </div>
@@ -2133,15 +2164,15 @@ const MarketplaceProductDetail = () => {
                         <div style={{
                           fontSize: '14px',
                           fontWeight: '600',
-                          color: '#0F1111',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           OneLogin Workforce Identity
                         </div>
                         <div style={{
                           fontSize: '12px',
-                          color: '#565959',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           by OneLogin
                         </div>
@@ -2173,15 +2204,15 @@ const MarketplaceProductDetail = () => {
                         <div style={{
                           fontSize: '14px',
                           fontWeight: '600',
-                          color: '#0F1111',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           CyberArk Workforce Identity
                         </div>
                         <div style={{
                           fontSize: '12px',
-                          color: '#565959',
-                          fontFamily: 'DM Sans, sans-serif'
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                         }}>
                           by CyberArk
                         </div>
@@ -2202,39 +2233,39 @@ const MarketplaceProductDetail = () => {
                     backgroundColor: '#F7F8F8',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Accolades
                   </div>
                   <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
                     <div style={{
                       fontSize: '13px',
-                      color: '#0F1111',
-                      fontFamily: 'DM Sans, sans-serif'
+                      color: '#16191f',
+                      fontFamily: 'inherit'
                     }}>
                       <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 10</div>
-                      <div style={{ color: '#565959' }}>in Infrastructure as Code, Application Development, Security</div>
+                      <div style={{ color: '#16191f' }}>in Infrastructure as Code, Application Development, Security</div>
                     </div>
                   </div>
                   <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
                     <div style={{
                       fontSize: '13px',
-                      color: '#0F1111',
-                      fontFamily: 'DM Sans, sans-serif'
+                      color: '#16191f',
+                      fontFamily: 'inherit'
                     }}>
                       <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 100</div>
-                      <div style={{ color: '#565959' }}>in Applications</div>
+                      <div style={{ color: '#16191f' }}>in Applications</div>
                     </div>
                   </div>
                   <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
                     <div style={{
                       fontSize: '13px',
-                      color: '#0F1111',
-                      fontFamily: 'DM Sans, sans-serif'
+                      color: '#16191f',
+                      fontFamily: 'inherit'
                     }}>
                       <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 100</div>
-                      <div style={{ color: '#565959' }}>in Security</div>
+                      <div style={{ color: '#16191f' }}>in Security</div>
                     </div>
                   </div>
                 </div>
@@ -2251,8 +2282,8 @@ const MarketplaceProductDetail = () => {
                     padding: '20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Customer reviews
                   </div>
@@ -2270,13 +2301,13 @@ const MarketplaceProductDetail = () => {
                   <div style={{ padding: '12px 20px' }}>
                     <div style={{
                       fontSize: '12px',
-                      color: '#565959',
-                      fontFamily: 'DM Sans, sans-serif',
+                      color: '#16191f',
+                      fontFamily: 'inherit',
                       marginBottom: '8px'
                     }}>
                       Sentiment is AI generated from actual customer reviews on G2 and G2.
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#565959' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#16191f' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <span style={{ width: '12px', height: '12px', backgroundColor: '#4CAF50', borderRadius: '2px', display: 'inline-block' }}></span>
                         Positive review
@@ -2303,16 +2334,16 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Reviews
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>500 reviews</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>8 reviews</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>108 reviews</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>500 reviews</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>8 reviews</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>108 reviews</div>
                 </div>
 
                 {/* Functionality */}
@@ -2324,27 +2355,27 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Functionality
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '85%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '80%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '82%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
@@ -2360,27 +2391,27 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Ease of use
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '78%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '75%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '80%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
@@ -2396,15 +2427,15 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Customer service
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Mixed</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
                       <div style={{ width: '45%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                       <div style={{ width: '35%', height: '100%', backgroundColor: '#FFC107' }}></div>
@@ -2412,7 +2443,7 @@ const MarketplaceProductDetail = () => {
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Mixed</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
                       <div style={{ width: '40%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                       <div style={{ width: '40%', height: '100%', backgroundColor: '#FFC107' }}></div>
@@ -2420,7 +2451,7 @@ const MarketplaceProductDetail = () => {
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Positive</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
                       <div style={{ width: '77%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                     </div>
@@ -2436,15 +2467,15 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Cost effectiveness
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Negative</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Negative</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
                       <div style={{ width: '25%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                       <div style={{ width: '25%', height: '100%', backgroundColor: '#FFC107' }}></div>
@@ -2452,10 +2483,10 @@ const MarketplaceProductDetail = () => {
                     </div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', color: '#565959', fontFamily: 'DM Sans, sans-serif' }}>Insufficient data</div>
+                    <div style={{ fontSize: '13px', color: '#16191f', fontFamily: 'inherit' }}>Insufficient data</div>
                   </div>
                   <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'DM Sans, sans-serif' }}>Mixed</div>
+                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
                     <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
                       <div style={{ width: '40%', height: '100%', backgroundColor: '#4CAF50' }}></div>
                       <div style={{ width: '35%', height: '100%', backgroundColor: '#FFC107' }}></div>
@@ -2476,14 +2507,14 @@ const MarketplaceProductDetail = () => {
                     padding: '20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Overview
                     <div style={{
                       fontSize: '11px',
                       fontWeight: '400',
-                      color: '#565959',
+                      color: '#16191f',
                       marginTop: '4px'
                     }}>
                       AI generated from product descriptions
@@ -2501,20 +2532,20 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Identity Management
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     Unified identity security platform with comprehensive user lifecycle management across applications and devices.
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     —
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     —
                   </div>
                 </div>
@@ -2528,20 +2559,20 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Authentication Mechanism
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     Adaptive multi-factor authentication with intelligent, phishing-resistant capabilities.
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     —
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#0F1111', lineHeight: '1.5', fontFamily: 'DM Sans, sans-serif' }}>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
                     —
                   </div>
                 </div>
@@ -2560,8 +2591,8 @@ const MarketplaceProductDetail = () => {
                     padding: '20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Contract
                   </div>
@@ -2575,16 +2606,16 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '500',
+                    fontWeight: '400',
                     fontSize: '13px',
-                    color: '#0F1111',
-                    fontFamily: 'DM Sans, sans-serif'
+                    color: '#16191f',
+                    fontFamily: 'inherit'
                   }}>
                     Standard contract
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>No</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>No</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>No</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
+                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
                 </div>
               </div>
 
@@ -2594,7 +2625,7 @@ const MarketplaceProductDetail = () => {
                   fontSize: '14px',
                   color: '#007185',
                   textDecoration: 'none',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'inherit'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.color = '#C7511F';
@@ -2609,7 +2640,6 @@ const MarketplaceProductDetail = () => {
                 </a>
               </div>
             </div>
-          )}
 
           {/* Add more tab content as needed */}
         </div>

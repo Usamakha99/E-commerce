@@ -21,6 +21,14 @@ const Marketplace = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Update document title based on selected category
+  useEffect(() => {
+    const title = selectedCategory 
+      ? `${selectedCategory} - AI Marketplace - VCloud Tech`
+      : 'AI Marketplace - VCloud Tech';
+    document.title = title;
+  }, [selectedCategory]);
+
   // Mock data for categories
   const categories = [
     { name: 'Software Development', count: 602 },

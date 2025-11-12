@@ -52,6 +52,14 @@ const ProductDetail = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id, product]);
 
+  // Update document title when product changes
+  useEffect(() => {
+    if (product) {
+      const productName = product.name || product.title || 'Product';
+      document.title = `${productName} - VCloud Tech`;
+    }
+  }, [product]);
+
   // Debug: Check bulletsPoint data
   useEffect(() => {
     if (product) {
@@ -581,7 +589,8 @@ const ProductDetail = () => {
                           disabled={cartLoading || product.stock === 0}
                           style={{
                             opacity: (cartLoading || product.stock === 0) ? 0.6 : 1,
-                            cursor: (cartLoading || product.stock === 0) ? 'not-allowed' : 'pointer'
+                            cursor: (cartLoading || product.stock === 0) ? 'not-allowed' : 'pointer',
+                            borderRadius: '25px'
                           }}
                         >
                           {cartLoading ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}

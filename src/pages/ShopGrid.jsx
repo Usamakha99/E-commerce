@@ -36,6 +36,21 @@ const ShopGrid = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
+  // Update document title based on search/category
+  useEffect(() => {
+    let title = 'Shop';
+    
+    if (searchQuery) {
+      title = `Search: ${searchQuery} - VCloud Tech`;
+    } else if (selectedCategoryName) {
+      title = `${selectedCategoryName} - Shop - VCloud Tech`;
+    } else {
+      title = 'Shop - VCloud Tech';
+    }
+    
+    document.title = title;
+  }, [searchQuery, selectedCategoryName]);
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
