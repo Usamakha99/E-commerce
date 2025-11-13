@@ -54,8 +54,8 @@ const MarketplaceProductDetail = () => {
   useEffect(() => {
     const handleScroll = () => {
       const sections = tabs.map(tab => ({
-        id: tab.toLowerCase().replace(' ', '-'),
-        element: document.getElementById(tab.toLowerCase().replace(' ', '-'))
+        id: tab.toLowerCase().replace(/\s+/g, '-'),
+        element: document.getElementById(tab.toLowerCase().replace(/\s+/g, '-'))
       }));
 
       const scrollPosition = window.scrollY + 200; // Offset for better detection
@@ -75,7 +75,7 @@ const MarketplaceProductDetail = () => {
 
   // Handle tab click - scroll to section
   const handleTabClick = (tab) => {
-    const sectionId = tab.toLowerCase().replace(' ', '-');
+    const sectionId = tab.toLowerCase().replace(/\s+/g, '-');
     const element = document.getElementById(sectionId);
     
     if (element) {
@@ -95,7 +95,7 @@ const MarketplaceProductDetail = () => {
     'Resources',
     'Support',
     'Product comparison',
-    'Pricing'
+    'How to buy'
   ];
 
   const renderStars = (rating) => {
@@ -170,7 +170,7 @@ const MarketplaceProductDetail = () => {
                     </h1>
 
                   {/* Badges - Soft Colors */}
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                  {/* <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
                     <span style={{
                       padding: '6px 14px',
                       backgroundColor: '#FEF3F2',
@@ -207,7 +207,7 @@ const MarketplaceProductDetail = () => {
                     }}>
                       ⚡ AWS Free Tier
                     </span>
-                  </div>
+                  </div> */}
 
                   {/* Description */}
                   <p style={{
@@ -355,7 +355,7 @@ const MarketplaceProductDetail = () => {
             flexWrap: isMobile ? 'nowrap' : 'wrap'
           }}>
             {tabs.map((tab, index) => {
-              const isActive = activeTab === tab.toLowerCase().replace(' ', '-');
+              const isActive = activeTab === tab.toLowerCase().replace(/\s+/g, '-');
               return (
                 <button
                   key={index}
@@ -2046,7 +2046,7 @@ const MarketplaceProductDetail = () => {
             </div>
 
           {/* Pricing Section */}
-          <div id="pricing" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          <div id="how-to-buy" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
               <h2 style={{
                 fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
@@ -2203,53 +2203,6 @@ const MarketplaceProductDetail = () => {
                   </button>
                 </div>
 
-                {/* Contract Duration Tabs */}
-                <div style={{
-                  display: 'flex',
-                  gap: '0',
-                  borderBottom: '1px solid #D5D9D9',
-                  marginBottom: '20px'
-                }}>
-                  {[
-                    { duration: '12-month contract', discount: '' },
-                    { duration: '24-month contract', discount: 'save up to 2%' },
-                    { duration: '36-month contract', discount: 'save up to 4%' }
-                  ].map((option, index) => (
-                    <button
-                      key={index}
-                      style={{
-                        padding: '12px 20px',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        borderBottom: index === 0 ? '3px solid #007185' : '3px solid transparent',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: '400',
-                        color: index === 0 ? '#007185' : '#16191f',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (index !== 0) e.target.style.color = '#007185';
-                      }}
-                      onMouseLeave={(e) => {
-                        if (index !== 0) e.target.style.color = '#16191f';
-                      }}
-                    >
-                      {option.duration}
-                      {option.discount && (
-                        <span style={{
-                          marginLeft: '6px',
-                          color: '#067D62',
-                          fontWeight: '600'
-                        }}>
-                          - {option.discount}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-
                 {/* Pricing Table Header */}
                 <div style={{
                   display: 'flex',
@@ -2295,7 +2248,7 @@ const MarketplaceProductDetail = () => {
                     fontFamily: 'inherit',
                     minWidth: isMobile ? '470px' : 'auto'
                   }}>
-                    <div>Dimension</div>
+                    <div>Where to buy</div>
                     <div>Description</div>
                     <div>Cost/12 months</div>
                   </div>
@@ -2303,14 +2256,19 @@ const MarketplaceProductDetail = () => {
                   {/* Table Rows */}
                   {[
                     {
-                      dimension: 'Starter - 100 users',
+                      whereToBuy: 'Buy on PIMS',
                       description: 'Starting your Identity journey? Put a strong foundation in place.',
-                      cost: '$7,200.00'
+                      cost: 'Request a quote'
                     },
                     {
-                      dimension: 'Essentials - 1,000 users',
+                      whereToBuy: 'Buy on AWS',
                       description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: '$204,000.00'
+                      cost: 'Request a quote'
+                    },
+                    {
+                      whereToBuy: 'Buy on microsoft azure',
+                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
+                      cost: 'Request a quote'
                     }
                   ].map((row, index) => (
                     <div
@@ -2319,7 +2277,7 @@ const MarketplaceProductDetail = () => {
                         display: 'grid',
                         gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
                         padding: isMobile ? '12px' : '16px',
-                        borderBottom: index < 1 ? '1px solid #D5D9D9' : 'none',
+                        borderBottom: index < 2 ? '1px solid #D5D9D9' : 'none',
                         fontSize: isMobile ? '12px' : '14px',
                         color: '#16191f',
                         fontFamily: 'inherit',
@@ -2327,9 +2285,37 @@ const MarketplaceProductDetail = () => {
                         minWidth: isMobile ? '470px' : 'auto'
                       }}
                     >
-                      <div style={{ fontWeight: '400' }}>{row.dimension}</div>
+                      <div style={{ fontWeight: '400' }}>{row.whereToBuy}</div>
                       <div style={{ color: '#16191f' }}>{row.description}</div>
-                      <div style={{ fontWeight: '600' }}>{row.cost}</div>
+                      <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
+                        {row.cost === 'Request a quote' ? (
+                          <button
+                            style={{
+                              padding: '8px 16px',
+                              backgroundColor: 'white',
+                              border: '1px solid #007185',
+                              borderRadius: '25px',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              color: '#007185',
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                              transition: 'all 0.2s',
+                              whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = '#F0F8FF';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'white';
+                            }}
+                          >
+                            Request a quote
+                          </button>
+                        ) : (
+                          row.cost
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -2396,7 +2382,7 @@ const MarketplaceProductDetail = () => {
                   padding: '10px 24px',
                   backgroundColor: 'white',
                   border: '1px solid #007185',
-                  borderRadius: '8px',
+                  borderRadius: '25px',
                   fontSize: '14px',
                   fontWeight: '600',
                   color: '#007185',

@@ -45,7 +45,7 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
           </Routes>
           
-          {/* <Footer /> */}
+          <Footer />
         </div>
       </CartProvider>
     </Router>
