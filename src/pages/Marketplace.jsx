@@ -515,16 +515,6 @@ const Marketplace = () => {
                         {product.name}
                       </Link>
 
-                      {/* Provider */}
-                      <p style={{
-                        fontSize: '13px',
-                        color: '#565959',
-                        margin: '0 0 8px 0',
-                        fontFamily: 'DM Sans, sans-serif'
-                      }}>
-                        By {product.provider}
-                      </p>
-
                       {/* Reviews */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                         {product.rating > 0 && (

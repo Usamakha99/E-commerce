@@ -528,19 +528,18 @@ const MarketplaceProductDetail = () => {
               {/* Highlights Column */}
               <div className="col-lg-6" style={{ marginBottom: isMobile ? '20px' : '0' }}>
                 <div style={{
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '16px',
-                  padding: '25px',
-                  backgroundColor: '#F9FAFB',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  padding: '24px',
+                  backgroundColor: 'white',
                   height: '100%',
                   overflow: 'hidden'
                 }}>
                   <h3 style={{
-                    fontSize: '20px',
-                    fontWeight: '700',
+                    fontSize: '18px',
+                    fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '20px',
+                    marginBottom: '16px',
                     fontFamily: 'inherit'
                   }}>
                     ✨ Key Highlights
@@ -579,22 +578,19 @@ const MarketplaceProductDetail = () => {
               {/* Details Column */}
               <div className="col-lg-6">
                 <div style={{
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '16px',
-                  padding: '25px',
-                  backgroundColor: '#F9FAFB',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  padding: '24px',
+                  backgroundColor: 'white',
                   height: '100%',
                   overflow: 'hidden'
                 }}>
                   <h3 style={{
-                    fontSize: '20px',
-                    fontWeight: '700',
+                    fontSize: '18px',
+                    fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '20px',
-                    fontFamily: 'inherit',
-                    paddingBottom: '10px',
-                    borderBottom: '2px solid #E5E7EB'
+                    marginBottom: '16px',
+                    fontFamily: 'inherit'
                   }}>
                     Details
                   </h3>
@@ -722,11 +718,10 @@ const MarketplaceProductDetail = () => {
             <div className="row mt-4">
               <div className="col-12">
                 <div style={{
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '16px',
-                  padding: isMobile ? '20px' : '25px',
-                  backgroundColor: '#F9FAFB',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  padding: '24px',
+                  backgroundColor: 'white',
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
@@ -827,64 +822,31 @@ const MarketplaceProductDetail = () => {
                 {/* Trust Center Card */}
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '16px',
-                    padding: '28px',
+                    border: '1px solid #D5D9D9',
+                    borderRadius: '8px',
+                    padding: '24px',
                     height: '100%',
-                    backgroundColor: '#F9FAFB',
+                    backgroundColor: 'white',
                     display: 'flex',
-                    flexDirection: 'column',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)';
+                    flexDirection: 'column'
                   }}
                   >
-                    {/* Title with Icon */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '14px',
-                      marginBottom: '18px'
-                    }}>
-                      <div style={{
-                        width: '50px',
-                        height: '50px',
-                        backgroundColor: '#E8F5E9',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '24px',
-                        boxShadow: '0 2px 8px rgba(76, 175, 80, 0.2)'
-                      }}>
-                        🛡️
-                      </div>
-                      <h3 style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: '#16191f',
-                        margin: 0,
-                        fontFamily: 'inherit'
-                      }}>
-                        Trust Center
-                      </h3>
-                    </div>
-
-                    {/* Description */}
-                    <p style={{
-                      fontSize: '15px',
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: '600',
                       color: '#16191f',
-                      lineHeight: '1.7',
-                      marginBottom: '24px',
-                      fontFamily: 'inherit',
-                      flex: 1
+                      marginBottom: '16px',
+                      fontFamily: 'inherit'
+                    }}>
+                      Trust Center
+                    </h3>
+
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#16191f',
+                      lineHeight: '1.6',
+                      marginBottom: '16px',
+                      fontFamily: 'inherit'
                     }}>
                       Access real-time vendor security and compliance information through their Trust Center powered by Drata. Review certifications and security standards before purchase.
                     </p>
@@ -894,7 +856,7 @@ const MarketplaceProductDetail = () => {
                       padding: '12px 24px',
                       backgroundColor: '#111A45',
                       border: 'none',
-                      borderRadius: '10px',
+                      borderRadius: '25px',
                       fontSize: '14px',
                       fontWeight: '600',
                       color: 'white',
@@ -922,55 +884,24 @@ const MarketplaceProductDetail = () => {
                 {/* Buyer Guide Card */}
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '16px',
-                    padding: '28px',
+                    border: '1px solid #D5D9D9',
+                    borderRadius: '8px',
+                    padding: '24px',
                     height: '100%',
-                    backgroundColor: '#F9FAFB',
+                    backgroundColor: 'white',
                     display: 'flex',
-                    flexDirection: 'column',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)';
+                    flexDirection: 'column'
                   }}
                   >
-                    {/* Title with Icon */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '14px',
-                      marginBottom: '18px'
-                    }}>
-                      <div style={{
-                        width: '50px',
-                        height: '50px',
-                        backgroundColor: '#FEF3F2',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '24px',
-                        boxShadow: '0 2px 8px rgba(223, 32, 32, 0.2)'
-                      }}>
-                        📚
-                      </div>
                     <h3 style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: '#16191f',
-                        margin: 0,
-                        fontFamily: 'inherit'
-                      }}>
-                        Buyer Guide
+                      fontSize: '18px',
+                      fontWeight: '600',
+                      color: '#16191f',
+                      marginBottom: '16px',
+                      fontFamily: 'inherit'
+                    }}>
+                      Buyer Guide
                     </h3>
-                    </div>
 
                     {/* Description */}
                     <p style={{
@@ -1045,7 +976,7 @@ const MarketplaceProductDetail = () => {
                       padding: '12px 24px',
                       backgroundColor: 'white',
                       border: '2px solid #111A45',
-                      borderRadius: '10px',
+                      borderRadius: '25px',
                       fontSize: '14px',
                       fontWeight: '600',
                       color: '#16191f',
@@ -1072,23 +1003,13 @@ const MarketplaceProductDetail = () => {
                 {/* Financing Card */}
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '16px',
-                    padding: '28px',
+                    border: '1px solid #D5D9D9',
+                    borderRadius: '8px',
+                    padding: '24px',
                     height: '100%',
-                    backgroundColor: '#F9FAFB',
+                    backgroundColor: 'white',
                     display: 'flex',
-                    flexDirection: 'column',
-                    boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)';
+                    flexDirection: 'column'
                   }}
                   >
                     {/* Title with Icon */}
@@ -1163,7 +1084,7 @@ const MarketplaceProductDetail = () => {
                       padding: '12px 24px',
                       backgroundColor: 'white',
                       border: '2px solid #6B7280',
-                      borderRadius: '10px',
+                      borderRadius: '25px',
                       fontSize: '14px',
                       fontWeight: '600',
                       color: '#16191f',
@@ -1472,7 +1393,7 @@ const MarketplaceProductDetail = () => {
                       padding: '10px 24px',
                       backgroundColor: 'white',
                       border: '1px solid #007185',
-                      borderRadius: '8px',
+                      borderRadius: '25px',
                       fontSize: '14px',
                       fontWeight: '600',
                       color: '#007185',
@@ -2172,7 +2093,7 @@ const MarketplaceProductDetail = () => {
                   padding: '10px 24px',
                   backgroundColor: 'white',
                   border: '1px solid #007185',
-                  borderRadius: '8px',
+                  borderRadius: '25px',
                   fontSize: '14px',
                   fontWeight: '600',
                   color: '#007185',
@@ -2265,7 +2186,7 @@ const MarketplaceProductDetail = () => {
                     padding: '10px 24px',
                     backgroundColor: 'white',
                     border: '1px solid #007185',
-                    borderRadius: '8px',
+                    borderRadius: '25px',
                     fontSize: '14px',
                     fontWeight: '600',
                     color: '#007185',
