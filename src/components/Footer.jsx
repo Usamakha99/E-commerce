@@ -14,8 +14,8 @@ const Footer = () => {
 
   return (
     <footer style={{
-      backgroundColor: '#F9FAFB',
-      borderTop: '1px solid #D5D9D9',
+      backgroundColor: 'rgb(17, 26, 69)',
+      borderTop: '1px solid rgba(255, 255, 255, 0.1)',
       marginTop: '60px',
       paddingTop: '60px'
     }}>
@@ -28,121 +28,276 @@ const Footer = () => {
         <div className="row" style={{ margin: 0 }}>
           {/* Column 1: About */}
           <div className="col-lg-3 col-md-6 mb-4" style={{ marginBottom: isMobile ? '40px' : '0' }}>
-            <Link to="/" style={{ textDecoration: 'none', display: 'block', marginBottom: '20px' }}>
+            <Link to="/" style={{ 
+              textDecoration: 'none', 
+              display: 'inline-block', 
+              marginBottom: '16px',
+              lineHeight: 0
+            }}>
               <img 
                 alt="V Cloud" 
                 src="/src/assets/V Cloud Logo final-01.svg" 
-                style={{ width: '180px', height: 'auto', maxWidth: '100%' }} 
+                style={{ 
+                  width: '180px', 
+                  height: 'auto', 
+                  maxWidth: '100%',
+                  display: 'block',
+                  filter: 'brightness(0) saturate(0%) invert(1)',
+                  WebkitFilter: 'brightness(0) saturate(0%) invert(1)',
+                  opacity: 1,
+                  visibility: 'visible'
+                }}
               />
             </Link>
-            <p style={{
-              fontSize: '14px',
-              color: '#16191f',
-              lineHeight: '1.6',
-              marginBottom: '20px',
-              fontFamily: 'inherit'
-            }}>
-              Your trusted e-commerce platform for quality products and services. Shop with confidence and enjoy a seamless shopping experience.
-            </p>
+            
+            {/* Contact Information */}
+            <div style={{ marginBottom: '24px' }}>
+              {/* Address */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'flex-start', 
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  minWidth: '20px',
+                  marginTop: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="rgba(255, 255, 255, 0.9)" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="1"/>
+                  </svg>
+                </div>
+                <p style={{
+                  fontSize: '14px',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  lineHeight: '1.7',
+                  margin: 0,
+                  fontFamily: '"Space Grotesk", sans-serif'
+                }}>
+                  609 Deep Valley Drive Suite 200,<br />
+                  Rolling Hills Estates, CA 90274
+                </p>
+              </div>
+              
+              {/* Phone */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'flex-start', 
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  minWidth: '20px',
+                  marginTop: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="rgba(255, 255, 255, 0.9)"/>
+                  </svg>
+                </div>
+                <div>
+                  <p style={{
+                    fontSize: '14px',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    margin: 0,
+                    marginBottom: '4px',
+                    fontFamily: '"Space Grotesk", sans-serif',
+                    fontWeight: '600'
+                  }}>
+                    Talk to an Expert
+                  </p>
+                  <a 
+                    href="tel:+18334825683"
+                    style={{
+                      fontSize: '14px',
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      textDecoration: 'none',
+                      fontFamily: '"Space Grotesk", sans-serif',
+                      transition: 'color 0.2s',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
+                  >
+                    (833) 482-5683
+                  </a>
+                </div>
+              </div>
+              
+              {/* Email */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'flex-start', 
+                gap: '12px'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  minWidth: '20px',
+                  marginTop: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="rgba(255, 255, 255, 0.9)"/>
+                  </svg>
+                </div>
+                <div>
+                  <p style={{
+                    fontSize: '14px',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    margin: 0,
+                    marginBottom: '4px',
+                    fontFamily: '"Space Grotesk", sans-serif',
+                    fontWeight: '600'
+                  }}>
+                    Have any Question
+                  </p>
+                  <a 
+                    href="mailto:info@vcloudtech.com"
+                    style={{
+                      fontSize: '14px',
+                      color: 'rgba(255, 255, 255, 0.9)',
+                      textDecoration: 'none',
+                      fontFamily: '"Space Grotesk", sans-serif',
+                      transition: 'color 0.2s',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
+                  >
+                    info@vcloudtech.com
+                  </a>
+                </div>
+              </div>
+            </div>
             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+              {/* Facebook */}
               <a href="#" style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#E5E7EB',
+                backgroundColor: '#1877F2',
+                border: '1px solid #1877F2',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
-                color: '#16191f',
-                transition: 'all 0.2s',
+                color: 'white',
+                transition: 'all 0.3s ease',
                 fontSize: '16px'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#007185';
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#E5E7EB';
-                e.target.style.color = '#16191f';
+                e.currentTarget.style.backgroundColor = '#1877F2';
+                e.currentTarget.style.borderColor = '#1877F2';
+                e.currentTarget.style.color = 'white';
               }}
               >
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
               </a>
+              {/* Instagram */}
               <a href="#" style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#E5E7EB',
+                background: 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)',
+                border: '1px solid transparent',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
-                color: '#16191f',
-                transition: 'all 0.2s',
-                fontSize: '16px'
+                color: 'white',
+                transition: 'all 0.3s ease',
+                fontSize: '16px',
+                position: 'relative',
+                overflow: 'hidden'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#007185';
-                e.target.style.color = 'white';
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#E5E7EB';
-                e.target.style.color = '#16191f';
+                e.currentTarget.style.background = 'linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)';
+                e.currentTarget.style.borderColor = 'transparent';
+                e.currentTarget.style.color = 'white';
               }}
               >
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
               </a>
+              {/* X (Twitter) */}
               <a href="#" style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#E5E7EB',
+                backgroundColor: '#000000',
+                border: '1px solid #000000',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
-                color: '#16191f',
-                transition: 'all 0.2s',
+                color: 'white',
+                transition: 'all 0.3s ease',
                 fontSize: '16px'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#007185';
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#E5E7EB';
-                e.target.style.color = '#16191f';
+                e.currentTarget.style.backgroundColor = '#000000';
+                e.currentTarget.style.borderColor = '#000000';
+                e.currentTarget.style.color = 'white';
               }}
               >
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13.717 10.836L20.894 3h-1.828l-6.171 7.137L7.552 3H3l7.543 8.79L3 21h1.828l6.496-7.52L17.552 21H22l-8.283-10.164zm-1.643 1.9l-.728-.85L5.306 4.1h2.514l4.901 5.728.728.85 6.088 7.115h-2.514l-5.127-5.987z"/>
                 </svg>
               </a>
+              {/* LinkedIn */}
               <a href="#" style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '50%',
-                backgroundColor: '#E5E7EB',
+                backgroundColor: '#0077B5',
+                border: '1px solid #0077B5',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
-                color: '#16191f',
-                transition: 'all 0.2s',
+                color: 'white',
+                transition: 'all 0.3s ease',
                 fontSize: '16px'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#007185';
-                e.target.style.color = 'white';
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#E5E7EB';
-                e.target.style.color = '#16191f';
+                e.currentTarget.style.backgroundColor = '#0077B5';
+                e.currentTarget.style.borderColor = '#0077B5';
+                e.currentTarget.style.color = 'white';
               }}
               >
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
@@ -157,9 +312,9 @@ const Footer = () => {
             <h4 style={{
               fontSize: '16px',
               fontWeight: '600',
-              color: '#16191f',
+              color: 'white',
               marginBottom: '20px',
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: '"Space Grotesk", sans-serif'
             }}>
               Get to Know Us
             </h4>
@@ -180,13 +335,13 @@ const Footer = () => {
                     to={item.href}
                     style={{
                       fontSize: '14px',
-                      color: '#16191f',
+                      color: 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
-                      fontFamily: 'inherit',
+                      fontFamily: '"Space Grotesk", sans-serif',
                       transition: 'color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.color = '#007185'}
-                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
                   >
                     {item.label}
                   </Link>
@@ -200,9 +355,9 @@ const Footer = () => {
             <h4 style={{
               fontSize: '16px',
               fontWeight: '600',
-              color: '#16191f',
+              color: 'white',
               marginBottom: '20px',
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: '"Space Grotesk", sans-serif'
             }}>
               Shop
             </h4>
@@ -223,13 +378,13 @@ const Footer = () => {
                     to={item.href}
                     style={{
                       fontSize: '14px',
-                      color: '#16191f',
+                      color: 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
-                      fontFamily: 'inherit',
+                      fontFamily: '"Space Grotesk", sans-serif',
                       transition: 'color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.color = '#007185'}
-                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
                   >
                     {item.label}
                   </Link>
@@ -243,9 +398,9 @@ const Footer = () => {
             <h4 style={{
               fontSize: '16px',
               fontWeight: '600',
-              color: '#16191f',
+              color: 'white',
               marginBottom: '20px',
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: '"Space Grotesk", sans-serif'
             }}>
               Customer Service
             </h4>
@@ -267,13 +422,13 @@ const Footer = () => {
                     to={item.href}
                     style={{
                       fontSize: '14px',
-                      color: '#16191f',
+                      color: 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
-                      fontFamily: 'inherit',
+                      fontFamily: '"Space Grotesk", sans-serif',
                       transition: 'color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.color = '#007185'}
-                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
                   >
                     {item.label}
                   </Link>
@@ -287,9 +442,9 @@ const Footer = () => {
             <h4 style={{
               fontSize: '16px',
               fontWeight: '600',
-              color: '#16191f',
+              color: 'white',
               marginBottom: '20px',
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: '"Space Grotesk", sans-serif'
             }}>
               Legal
             </h4>
@@ -310,125 +465,43 @@ const Footer = () => {
                     to={item.href}
                     style={{
                       fontSize: '14px',
-                      color: '#16191f',
+                      color: 'rgba(255, 255, 255, 0.8)',
                       textDecoration: 'none',
-                      fontFamily: 'inherit',
+                      fontFamily: '"Space Grotesk", sans-serif',
                       transition: 'color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.color = '#007185'}
-                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
+                    onMouseEnter={(e) => e.target.style.color = 'white'}
+                    onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.8)'}
                   >
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            
-            {/* Contact Info */}
-            <div style={{
-              paddingTop: '20px',
-              borderTop: '1px solid #D5D9D9'
-            }}>
-              <p style={{
-                fontSize: '13px',
-                color: '#565959',
-                marginBottom: '8px',
-                fontFamily: 'inherit'
-              }}>
-                <strong style={{ color: '#16191f' }}>Email:</strong> contact@vcloudtech.com
-              </p>
-              <p style={{
-                fontSize: '13px',
-                color: '#565959',
-                marginBottom: '8px',
-                fontFamily: 'inherit'
-              }}>
-                <strong style={{ color: '#16191f' }}>Phone:</strong> (+01) 123-456-789
-              </p>
-              <p style={{
-                fontSize: '13px',
-                color: '#565959',
-                margin: 0,
-                fontFamily: 'inherit'
-              }}>
-                <strong style={{ color: '#16191f' }}>Hours:</strong> 8:00 - 17:00, Mon - Sat
-              </p>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Footer Bottom */}
       <div style={{
-        borderTop: '1px solid #D5D9D9',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
         padding: isMobile ? '24px 20px' : '24px 40px',
-        backgroundColor: '#F9FAFB'
+        backgroundColor: 'rgb(17, 26, 69)'
       }}>
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
           display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'space-between',
-          alignItems: isMobile ? 'center' : 'center',
-          gap: isMobile ? '16px' : '0',
-          textAlign: isMobile ? 'center' : 'left'
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center'
         }}>
           <div style={{
             fontSize: '14px',
-            color: '#565959',
-            fontFamily: 'inherit'
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontFamily: '"Space Grotesk", sans-serif'
           }}>
-            Copyright © {new Date().getFullYear()} VCloud Tech. All rights reserved.
-          </div>
-          <div style={{
-            display: 'flex',
-            gap: isMobile ? '16px' : '24px',
-            flexWrap: 'wrap',
-            justifyContent: isMobile ? 'center' : 'flex-end'
-          }}>
-            <Link 
-              to="/terms"
-              style={{
-                fontSize: '14px',
-                color: '#565959',
-                textDecoration: 'none',
-                fontFamily: 'inherit',
-                transition: 'color 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#007185'}
-              onMouseLeave={(e) => e.target.style.color = '#565959'}
-            >
-              Conditions of Use
-            </Link>
-            <Link 
-              to="/terms"
-              style={{
-                fontSize: '14px',
-                color: '#565959',
-                textDecoration: 'none',
-                fontFamily: 'inherit',
-                transition: 'color 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#007185'}
-              onMouseLeave={(e) => e.target.style.color = '#565959'}
-            >
-              Privacy Notice
-            </Link>
-            <Link 
-              to="/careers"
-              style={{
-                fontSize: '14px',
-                color: '#565959',
-                textDecoration: 'none',
-                fontFamily: 'inherit',
-                transition: 'color 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.color = '#007185'}
-              onMouseLeave={(e) => e.target.style.color = '#565959'}
-            >
-              Interest-Based Ads
-            </Link>
+            All rights reserved ©️ {new Date().getFullYear()}
           </div>
         </div>
       </div>

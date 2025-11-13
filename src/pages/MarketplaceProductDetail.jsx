@@ -222,7 +222,7 @@ const MarketplaceProductDetail = () => {
                   </p>
 
                   {/* Rating */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {/* <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ display: 'flex', gap: '3px' }}>
                       {renderStars(product.rating)}
                     </div>
@@ -241,7 +241,7 @@ const MarketplaceProductDetail = () => {
                     }}>
                       ({product.awsReviews + product.externalReviews} reviews)
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -999,116 +999,8 @@ const MarketplaceProductDetail = () => {
                     </button>
                   </div>
                 </div>
-
-                {/* Financing Card */}
-                <div className="col-lg-6 mb-4">
-                  <div style={{
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    padding: '24px',
-                    height: '100%',
-                    backgroundColor: 'white',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                  >
-                    {/* Title with Icon */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '14px',
-                      marginBottom: '18px'
-                    }}>
-                      <div style={{
-                        width: '50px',
-                        height: '50px',
-                        backgroundColor: '#FEF9C3',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '24px',
-                        boxShadow: '0 2px 8px rgba(234, 179, 8, 0.2)'
-                      }}>
-                        💳
-                      </div>
-                    <h3 style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: '#16191f',
-                        margin: 0,
-                        fontFamily: 'inherit'
-                      }}>
-                        Financing Options
-                    </h3>
-                    </div>
-
-                    {/* Description */}
-                    <p style={{
-                      fontSize: '15px',
-                      color: '#16191f',
-                      lineHeight: '1.7',
-                      marginBottom: '20px',
-                      fontFamily: 'inherit'
-                    }}>
-                      AWS Marketplace now accepts line of credit payments through the PNC Vendor Finance program. This program is available to select AWS customers in the US, excluding NV, NC, ND, TN, & VT.
-                    </p>
-
-                    {/* PNC Logo */}
-                    <div style={{
-                      marginBottom: '24px',
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '24px',
-                      backgroundColor: 'white',
-                      borderRadius: '12px',
-                      border: '1px solid #E5E7EB'
-                    }}>
-                      <div style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: '#16191f',
-                        fontFamily: 'Arial, sans-serif',
-                        letterSpacing: '1.5px',
-                        textAlign: 'center'
-                      }}>
-                        PNC<br/>
-                        <span style={{ fontSize: '14px', color: '#16191f' }}>VENDOR FINANCE</span>
-                      </div>
-                    </div>
-
-                    {/* Button */}
-                    <button style={{
-                      padding: '12px 24px',
-                      backgroundColor: 'white',
-                      border: '2px solid #6B7280',
-                      borderRadius: '25px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#16191f',
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                      e.target.style.borderColor = '#111A45';
-                      e.target.style.color = '#16191f';
-                      e.target.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseLeave={(e) => {
-                      e.target.style.borderColor = '#6B7280';
-                      e.target.style.color = '#16191f';
-                      e.target.style.transform = 'translateY(0)';
-                    }}
-                    >
-                      View Financing Details →
-                  </button>
-                </div>
-                </div>
-                </div>
-                  </div>
+              </div>
+            </div>
 
           {/* Resources Section */}
           <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
