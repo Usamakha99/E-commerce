@@ -117,18 +117,6 @@ const Marketplace = () => {
     }
   };
 
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 0; i < 5; i++) {
-      stars.push(
-        <span key={i} style={{ color: i < rating ? '#FFB800' : '#ddd', fontSize: '16px' }}>
-          ★
-        </span>
-      );
-    }
-    return stars;
-  };
-
   return (
     <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
       <div className="container-fluid" style={{ padding: isMobile ? '15px' : '20px 40px' }}>
@@ -514,53 +502,6 @@ const Marketplace = () => {
                       >
                         {product.name}
                       </Link>
-
-                      {/* Reviews */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                        {product.rating > 0 && (
-                          <div style={{ display: 'flex', gap: '2px' }}>
-                            {renderStars(product.rating)}
-                          </div>
-                        )}
-                        <div style={{
-                          fontSize: '13px',
-                          color: '#007185',
-                          fontFamily: 'DM Sans, sans-serif'
-                        }}>
-                          {product.awsReviews > 0 && (
-                            <a href="#" style={{ color: '#007185', textDecoration: 'none' }}>
-                              {product.awsReviews} AWS review{product.awsReviews > 1 ? 's' : ''}
-                            </a>
-                          )}
-                          {product.awsReviews > 0 && product.externalReviews > 0 && ' | '}
-                          {product.externalReviews > 0 && (
-                            <a href="#" style={{ color: '#007185', textDecoration: 'none' }}>
-                              {product.externalReviews} external review{product.externalReviews > 1 ? 's' : ''}
-                            </a>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Free Trial Badge */}
-                      {product.freeTrial && (
-                        <div style={{ marginBottom: '10px' }}>
-                          <span style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            padding: '4px 10px',
-                            backgroundColor: '#E8F5E9',
-                            color: '#2E7D32',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            borderRadius: '4px',
-                            fontFamily: 'DM Sans, sans-serif'
-                          }}>
-                            <span>🌿</span>
-                            Free Trial
-                          </span>
-                        </div>
-                      )}
 
                       {/* Description */}
                       <p style={{
