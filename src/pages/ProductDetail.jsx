@@ -51,10 +51,10 @@ const ProductDetail = () => {
     image: apiProduct.image || apiProduct.mainImage
   } : fallbackProduct;
 
-  // Scroll to top when component mounts or product changes
+  // Scroll to top when component mounts or product ID changes (not on every product update)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id, product]);
+  }, [id]); // Only scroll when navigating to a different product
 
   // Update document title when product changes
   useEffect(() => {
