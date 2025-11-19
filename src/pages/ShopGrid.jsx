@@ -541,7 +541,7 @@ const ShopGrid = () => {
                               </span>
                             </div>
 
-                            <div className="mb-2">
+                            <div style={{ marginTop: '16px', marginBottom: '8px' }}>
                               {isLoggedIn ? (
                                 // ✅ Show Price for Logged In Users
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -582,25 +582,14 @@ const ShopGrid = () => {
                               )}
                             </div>
 
-                            <div className="d-flex justify-content-between align-items-center">
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`compare-${product.id}`}
-                                  style={{ marginTop: '2px' }}
-                                  onClick={(e) => e.stopPropagation()}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`compare-${product.id}`}
-                                  style={{ fontSize: '11px', color: '#666', marginLeft: '5px' }}
-                                >
-                                  Compare
-                                </label>
-                              </div>
-                              <span style={{ fontSize: '11px', color: '#666' }}>
-                                In Stock: {Math.floor(Math.random() * 5000) + 100}
+                            <div className="d-flex justify-content-center align-items-center mt-2">
+                              <span style={{ 
+                                fontSize: '11px', 
+                                color: '#6B7280',
+                                fontWeight: '400',
+                                fontFamily: 'DM Sans, sans-serif'
+                              }}>
+                                In Stock
                               </span>
                             </div>
                           </div>
