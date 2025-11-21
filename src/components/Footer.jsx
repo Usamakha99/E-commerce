@@ -18,7 +18,8 @@ const Footer = () => {
       backgroundColor: 'rgb(17, 26, 69)',
       borderTop: '1px solid rgba(255, 255, 255, 0.1)',
       marginTop: '10px',
-      paddingTop: '20px'
+      paddingTop: '20px',
+      marginBottom: '0'
     }}>
       {/* Main Footer Content */}
       <div style={{
@@ -504,7 +505,8 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div style={{
         borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        padding: isMobile ? '24px 20px' : '24px 40px',
+        padding: isMobile ? '10px 20px' : '10px 40px',
+        paddingBottom: isMobile ? '10px' : '10px',
         backgroundColor: 'rgb(17, 26, 69)'
       }}>
         <div style={{
