@@ -489,10 +489,11 @@ const Marketplace = () => {
                           textDecoration: 'none',
                           fontFamily: 'DM Sans, sans-serif',
                           display: 'block',
-                          marginBottom: '4px'
+                          marginBottom: '4px',
+                          transition: 'color 0.3s ease'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.color = '#C7511F';
+                          e.target.style.color = '#df2020';
                           e.target.style.textDecoration = 'underline';
                         }}
                         onMouseLeave={(e) => {
