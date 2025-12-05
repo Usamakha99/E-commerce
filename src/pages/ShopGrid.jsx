@@ -465,8 +465,7 @@ const ShopGrid = () => {
 
                 {!loading && products && products.map((product, index) => (
                   <React.Fragment key={product.id}>
-                    {index > 0 && index % 3 === 0 && <div className="w-100 mt-20"></div>}
-                    <div className={viewType === 'list' ? 'col-12 mb-20' : 'col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12'}>
+                    <div className={viewType === 'list' ? 'col-12 mb-20' : 'col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 mb-20'}>
                       <div className="product-card" style={{
                         border: '1px solid #b0b0b0',
                         borderRadius: '0',
