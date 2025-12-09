@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import ApiStatus from '../components/ApiStatus';
 import { useProducts } from '../hooks/useProducts';
 import { productService } from '../services/product.service';
+import { productTagsService } from '../services/productTags.service';
 import { useAuth } from '../hooks/useAuth';
 
 const ShopGrid = () => {
@@ -19,6 +20,9 @@ const ShopGrid = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [productTags, setProductTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [productTagsMap, setProductTagsMap] = useState({}); // Map productId -> tags
   
   // ✅ Check if user is logged in (reactive to auth changes)
   const { isLoggedIn } = useAuth();
@@ -63,6 +67,43 @@ const ShopGrid = () => {
       }
     };
     fetchCategories();
+  }, []);
+
+  // Fetch product tags and build product-tag mapping
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await productTagsService.getAllTags({ isActive: true });
+        setProductTags(tags);
+        
+        // Build a map of product IDs to their tags
+        // Handle different API response structures
+        const tagsMap = {};
+        
+        tags.forEach(tag => {
+          // Check if tag has products array (could be product IDs or product objects)
+          if (tag.products && Array.isArray(tag.products)) {
+            tag.products.forEach(product => {
+              // Handle both product ID (number) and product object with id
+              const productId = typeof product === 'number' ? product : (product?.id || product?.productId);
+              if (productId) {
+                if (!tagsMap[productId]) {
+                  tagsMap[productId] = [];
+                }
+                tagsMap[productId].push(tag);
+              }
+            });
+          }
+        });
+        
+        setProductTagsMap(tagsMap);
+      } catch (error) {
+        console.error('Error fetching product tags:', error);
+        setProductTags([]);
+        setProductTagsMap({});
+      }
+    };
+    fetchTags();
   }, []);
 
   // Handle URL parameters for category filtering and search
@@ -122,6 +163,14 @@ const ShopGrid = () => {
       if (!selectedBrands.includes(productBrand)) return false;
     }
 
+    // Filter by tags - only apply if tags are selected
+    if (selectedTags.length > 0) {
+      const productTags = productTagsMap[product.id] || [];
+      const productTagIds = productTags.map(tag => tag.id);
+      const hasSelectedTag = selectedTags.some(tagId => productTagIds.includes(tagId));
+      if (!hasSelectedTag) return false;
+    }
+
     // If we reach here, the product matches all applied filters
     return true;
   }).sort((a, b) => {
@@ -177,6 +226,12 @@ const ShopGrid = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedBrands]);
 
+  // Reset to page 1 when tag filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedTags]);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -225,15 +280,27 @@ const ShopGrid = () => {
     setCurrentPage(1); // Reset to page 1 when category changes
   };
 
+  // Handler for tag filter changes
+  const handleTagFilter = (tagId) => {
+    setSelectedTags(prev => {
+      if (prev.includes(tagId)) {
+        return prev.filter(id => id !== tagId);
+      } else {
+        return [...prev, tagId];
+      }
+    });
+  };
+
   // Handler to clear all filters
   const handleClearFilters = () => {
     setSelectedCategory(null);
     setSelectedBrands([]);
+    setSelectedTags([]);
     setCurrentPage(1);
   };
 
   // Check if any filters are active
-  const hasActiveFilters = selectedCategory !== null || selectedBrands.length > 0;
+  const hasActiveFilters = selectedCategory !== null || selectedBrands.length > 0 || selectedTags.length > 0;
 
 
   // Generate page numbers for pagination
@@ -479,7 +546,37 @@ const ShopGrid = () => {
                         transition: 'box-shadow 0.3s ease'
                       }}>
                         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                          <div className="text-center mb-2">
+                          <div className="text-center mb-2" style={{ position: 'relative' }}>
+                            {/* Product Tags Badges */}
+                            {productTagsMap[product.id] && productTagsMap[product.id].length > 0 && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '8px',
+                                left: '8px',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: '4px',
+                                zIndex: 10
+                              }}>
+                                {productTagsMap[product.id].slice(0, 2).map((tag) => (
+                                  <span
+                                    key={tag.id}
+                                    style={{
+                                      backgroundColor: tag.color || '#df2020',
+                                      color: '#fff',
+                                      fontSize: '10px',
+                                      fontWeight: '600',
+                                      padding: '3px 8px',
+                                      borderRadius: '12px',
+                                      display: 'inline-block',
+                                      fontFamily: 'DM Sans, sans-serif'
+                                    }}
+                                  >
+                                    {tag.name}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                             <img
                               src={product.image}
                               alt={product.name}
@@ -648,6 +745,9 @@ const ShopGrid = () => {
               selectedBrands={selectedBrands}
               onCategoryFilter={handleCategoryFilter}
               selectedCategory={selectedCategory}
+              onTagFilter={handleTagFilter}
+              selectedTags={selectedTags}
+              productTags={productTags}
             />
           </div>
         </div>

@@ -72,6 +72,16 @@ export const API_ENDPOINTS = {
     confirm: (id) => `/payments/confirm/${id}`,
     status: (id) => `/payments/status/${id}`,
   },
+  
+  // Product Tags
+  productTags: {
+    getAll: '/producttags',
+    getById: (id) => `/producttags/${id}`,
+    create: '/producttags',
+    update: (id) => `/producttags/${id}`,
+    delete: (id) => `/producttags/${id}`,
+    addProducts: (id) => `/producttags/${id}/products`,
+  },
 };
 
 export default API_CONFIG;

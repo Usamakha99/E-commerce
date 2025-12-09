@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { productService } from '../services/product.service';
 
-const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null }) => {
+const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, selectedTags = [], productTags = [] }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [brands, setBrands] = useState([]);
   const [loadingBrands, setLoadingBrands] = useState(false);
@@ -101,11 +101,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
   // Categories are now fetched from API and stored in state
 
 
-  const productTags = [
-    "Games", "Electronics", "Video", "Cellphone", "Indoor", "VGA Card",
-    "USB", "Lightning", "Camera", "Window", "Air Vent", "Bedroom",
-    "Laptop", "Dashboard", "Keyboard"
-  ];
+  // productTags are now passed as props from ShopGrid
 
   return (
     <div className="col-lg-3 order-last order-lg-first">
@@ -398,48 +394,57 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
 
 
       {/* Product Tags */}
-      <div className="box-slider-item">
-        <div className="head pb-10 border-brand-2">
-          <h5 className="  " style={{color: '#000', fontSize: '16px'}}>Product Tags</h5>
-        </div>
-        <div className="content-slider mb-50">
-          {productTags.map((tag, index) => (
-            <a
-              key={index}
-              className="btn btn-border mr-5"
-              href="/shop"
-              style={{
-                borderRadius: '20px',
-                padding: '6px 14px',
-                lineHeight: '1',
-                display: 'inline-block',
-                color: '#000',
-                border: '1px solid #000',
-                backgroundColor: 'transparent',
-                marginBottom: '6px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f0f0f0';
-                e.currentTarget.style.color = '#000';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#000';
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                // Add click effect
-                e.currentTarget.style.backgroundColor = '#e0e0e0';
-                setTimeout(() => {
+      {productTags.length > 0 && (
+        <div className="box-slider-item" style={{marginBottom: '20px'}}>
+         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px'}}>
+            <h5 className="" style={{color: '#000', fontSize: '16px', fontWeight: 'bold', borderBottom: '3px solid #df2020', paddingBottom: '8px', display: 'inline-block'}}>Product Tags</h5>
+            </div>
+          {/* Active Tag Filter Display */}
+          {selectedTags.length > 0 && (
+            <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+              <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter{selectedTags.length > 1 ? 's' : ''}:</span>
+              <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
+                {productTags.filter(tag => selectedTags.includes(tag.id)).map(tag => tag.name).join(', ')}
+              </span>
+            </div>
+          )}
+          <div className="content-slider mb-50">
+            {productTags.map((tag) => (
+              <a
+                key={tag.id}
+                className="btn btn-border mr-5"
+                href="/shop"
+                style={{
+                  borderRadius: '20px',
+                  padding: '6px 14px',
+                  lineHeight: '1',
+                  display: 'inline-block',
+                  color: '#000',
+                  border: '1px solid #000',
+                  backgroundColor: 'transparent',
+                  marginBottom: '6px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f0f0f0';
+                  e.currentTarget.style.color = '#000';
+                }}
+                onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'transparent';
-                }, 150);
-              }}
-            >
-              {tag}
-            </a>
-          ))}
+                  e.currentTarget.style.color = '#000';
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onTagFilter) {
+                    onTagFilter(tag.id);
+                  }
+                }}
+              >
+                {tag.name}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Banner */}
       {/* <div className="banner-right h-500 text-center mb-30">
