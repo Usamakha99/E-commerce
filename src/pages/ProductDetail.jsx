@@ -13,11 +13,11 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [showInquiryModal, setShowInquiryModal] = useState(false);
   const { id } = useParams();
-  
+
   // Fetch product from API
   const { product: apiProduct, loading, error } = useProduct(id, !!id); // Only fetch if id exists
   const { addToCart, loading: cartLoading } = useCart();
-  
+
   // ✅ Check if user is logged in (reactive to auth changes)
   const { isLoggedIn } = useAuth();
 
@@ -103,7 +103,7 @@ const ProductDetail = () => {
           <title>{apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech</title>
           <meta name="description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
           <meta name="keywords" content={`${apiProduct.name || apiProduct.title || ''}, ${typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || ''}, ${typeof apiProduct.category === 'object' && apiProduct.category !== null ? apiProduct.category.title : apiProduct.category || ''}, ${typeof apiProduct.subCategory === 'object' && apiProduct.subCategory !== null ? apiProduct.subCategory.title : apiProduct.subCategory || ''}, electronics, technology, V Cloud Tech`} />
-          
+
           {/* Open Graph Meta Tags for Social Media */}
           <meta property="og:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
           <meta property="og:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
@@ -111,28 +111,28 @@ const ProductDetail = () => {
           <meta property="og:url" content={`${window.location.origin}/product/${apiProduct.id}`} />
           <meta property="og:type" content="product" />
           <meta property="og:site_name" content="V Cloud Tech" />
-          
+
           {/* Product Specific Meta Tags */}
           <meta property="product:price:amount" content={apiProduct.price || '0'} />
           <meta property="product:price:currency" content="USD" />
           <meta property="product:availability" content={apiProduct.stock > 0 ? 'in stock' : 'out of stock'} />
           <meta property="product:brand" content={typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || ''} />
           <meta property="product:category" content={typeof apiProduct.category === 'object' && apiProduct.category !== null ? apiProduct.category.title : apiProduct.category || ''} />
-          
+
           {/* Twitter Card Meta Tags */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
           <meta name="twitter:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online.`} />
           <meta name="twitter:image" content={apiProduct.image || '/src/assets/V Cloud Logo final-01.svg'} />
-          
+
           {/* Additional SEO Meta Tags */}
           <meta name="robots" content="index, follow" />
           <meta name="author" content="V Cloud Tech" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          
+
           {/* Canonical URL */}
           <link rel="canonical" href={`${window.location.origin}/product/${apiProduct.id}`} />
-          
+
           {/* JSON-LD Structured Data for Google */}
           <script type="application/ld+json">
             {JSON.stringify({
@@ -165,373 +165,373 @@ const ProductDetail = () => {
       )}
 
       <main className="main" style={{ paddingTop: '60px' }}>
-      {loading && (
-        <div className="container text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3">Loading product...</p>
-        </div>
-      )}
-
-      {error && !loading && (
-        <div className="container">
-          <div className="alert alert-warning mt-4" role="alert">
-            <strong>Note:</strong> Using demo data. Connect to your backend API to load real product details.
-            <br />
-            <small>Error: {error}</small>
-          </div>
-        </div>
-      )}
-<div className='mt-35'></div>
-      {!loading && (
-        <>
-     
-
-      {/* Product Detail Section */}
-      <section className="section-box shop-template">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <h3 className="color-brand-3 mb-5 mw-80" style={{ fontWeight: '500', fontSize: '2em' }}>{product.name || product.title}</h3>
-              <div className="row">
-                    <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile" style={{ fontSize: '.9em', margin: '.15em 0 .5em', fontFamily: 'DM Sans, sans-serif', color: '#000' }}>
-                      <div className="d-inline-block">
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Brand:</span>
-                        <a href="/vendor" style={{ fontFamily: 'DM Sans, sans-serif', color: '#000', textDecoration: 'none' }}> {typeof product.brand === 'object' && product.brand !== null ? product.brand?.title : product.brand || 'N/A'}</a>
-                      </div>
-
-                      <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
-
-                      <div className="sku-product d-inline-block">
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>SKU:</span>
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.sku || 'N/A'}</span>
-                      </div>
-
-                      {product.upc && (
-                        <>
-                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
-                          <div className="upc-product d-inline-block">
-                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>UPC:</span>
-                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.upc}</span>
-                          </div>
-                        </>
-                      )}
-
-                      {product.category && (
-                        <>
-                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
-                          <div className="d-inline-block">
-                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Category: </span>
-                            <a 
-                              href={`/shop?category=${typeof product.category === 'object' && product.category !== null ? product.category.id : product.category}`}
-                              style={{ 
-                                fontFamily: 'DM Sans, sans-serif',
-                                color: '#000',
-                                textDecoration: 'none', 
-                                cursor: 'pointer',
-                                transition: 'color 0.3s ease'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.setProperty('color', '#df2020', 'important');
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.setProperty('color', '#000', 'important');
-                              }}
-                            > 
-                              {typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}
-                            </a>
-                          </div>
-                        </>
-                      )}
-
-                      {product.subCategory && (
-                        <>
-                          <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
-                          <div className="d-inline-block">
-                            <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Sub Category: </span>
-                            <a 
-                              href={`/shop?category =${typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.id : product.subCategory}`}
-                              style={{ 
-                                fontFamily: 'DM Sans, sans-serif',
-                                color: '#000',
-                                textDecoration: 'none', 
-                                cursor: 'pointer',
-                                transition: 'color 0.3s ease'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.setProperty('color', '#df2020', 'important');
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.setProperty('color', '#000', 'important');
-                              }}
-                            > 
-                              {typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}
-                            </a>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                  </div>
-                  <div className="border-bottom pt-20 mb-30"></div>
+        {loading && (
+          <div className="container text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
+            <p className="mt-3">Loading product...</p>
+          </div>
+        )}
 
-                {/* Product Image Gallery - Clean Design */}
-            <div className="col-lg-5">
-                  <div style={{
-                    backgroundColor: '#fff',
-                    padding: '20px',
-                    borderRadius: '8px'
-                  }}>
-                    {/* Main Product Image */}
-                    <div style={{
-                      textAlign: 'center',
-                      marginBottom: '20px',
-                      position: 'relative'
-                    }}>
-                      {product.discount > 0 && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '10px',
-                          left: '10px',
-                          backgroundColor: '#ff4444',
-                          color: 'white',
-                          padding: '5px 10px',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                          fontWeight: 'bold',
-                          zIndex: 10
-                        }}>
-                          -{product.discount}%
+        {error && !loading && (
+          <div className="container">
+            <div className="alert alert-warning mt-4" role="alert">
+              <strong>Note:</strong> Using demo data. Connect to your backend API to load real product details.
+              <br />
+              <small>Error: {error}</small>
+            </div>
+          </div>
+        )}
+        <div className='mt-35'></div>
+        {!loading && (
+          <>
+
+
+            {/* Product Detail Section */}
+            <section className="section-box shop-template">
+              <div className="container">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <h3 className="color-brand-3 mb-5 mw-80" style={{ fontWeight: '500', fontSize: '2em' }}>{product.name || product.title}</h3>
+                    <div className="row">
+                      <div className="col-xl-12 col-lg-12 col-md-12 text-center text-sm-start mb-mobile" style={{ fontSize: '.9em', margin: '.15em 0 .5em', fontFamily: 'DM Sans, sans-serif', color: '#000' }}>
+                        <div className="d-inline-block">
+                          <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Brand:</span>
+                          <a href="/vendor" style={{ fontFamily: 'DM Sans, sans-serif', color: '#000', textDecoration: 'none' }}> {typeof product.brand === 'object' && product.brand !== null ? product.brand?.title : product.brand || 'N/A'}</a>
+                        </div>
+
+                        <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
+
+                        <div className="sku-product d-inline-block">
+                          <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>SKU:</span>
+                          <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.sku || 'N/A'}</span>
+                        </div>
+
+                        {product.upc && (
+                          <>
+                            <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
+                            <div className="upc-product d-inline-block">
+                              <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>UPC:</span>
+                              <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}> {product.upc}</span>
+                            </div>
+                          </>
+                        )}
+
+                        {product.category && (
+                          <>
+                            <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
+                            <div className="d-inline-block">
+                              <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Category: </span>
+                              <Link
+                                to={`/shop?category=${typeof product.category === 'object' && product.category !== null ? product.category.id : product.category}`}
+                                style={{
+                                  fontFamily: 'DM Sans, sans-serif',
+                                  color: '#000',
+                                  textDecoration: 'none',
+                                  cursor: 'pointer',
+                                  transition: 'color 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.setProperty('color', '#df2020', 'important');
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.setProperty('color', '#000', 'important');
+                                }}
+                              >
+                                {typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}
+                              </Link>
+                            </div>
+                          </>
+                        )}
+
+                        {product.subCategory && (
+                          <>
+                            <span className="d-inline-block" style={{ margin: '0 6px', color: '#666' }}>|</span>
+                            <div className="d-inline-block">
+                              <span style={{ fontFamily: 'DM Sans, sans-serif', color: '#000' }}>Sub Category: </span>
+                              <Link
+                                to={`/shop?category=${typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.id : product.subCategory}`}
+                                style={{
+                                  fontFamily: 'DM Sans, sans-serif',
+                                  color: '#000',
+                                  textDecoration: 'none',
+                                  cursor: 'pointer',
+                                  transition: 'color 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.setProperty('color', '#df2020', 'important');
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.setProperty('color', '#000', 'important');
+                                }}
+                              >
+                                {typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}
+                              </Link>
+                            </div>
+                          </>
+                        )}
+                      </div>
+
                     </div>
-                      )}
+                    <div className="border-bottom pt-20 mb-30"></div>
+                  </div>
 
-                      {/* Previous Arrow Button */}
-                      {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
-                        <button
-                          onClick={() => {
-                            const allImages = [
-                              product.image,
-                              ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
-                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
-                                const imgUrl = img.url || img.imageUrl || img;
-                                return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
-                              }) : [])
-                            ].filter(Boolean);
-                            const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
-                            const prevIndex = currentIndex > 0 ? currentIndex - 1 : allImages.length - 1;
-                            setSelectedImage(prevIndex === 0 ? null : allImages[prevIndex]);
-                          }}
-                          style={{
+                  {/* Product Image Gallery - Clean Design */}
+                  <div className="col-lg-5">
+                    <div style={{
+                      backgroundColor: '#fff',
+                      padding: '20px',
+                      borderRadius: '8px'
+                    }}>
+                      {/* Main Product Image */}
+                      <div style={{
+                        textAlign: 'center',
+                        marginBottom: '20px',
+                        position: 'relative'
+                      }}>
+                        {product.discount > 0 && (
+                          <div style={{
                             position: 'absolute',
+                            top: '10px',
                             left: '10px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            backgroundColor: '#ff4444',
                             color: 'white',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '40px',
-                            height: '40px',
-                            cursor: 'pointer',
-                            fontSize: '24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 20,
-                            transition: 'background-color 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
-                        >
-                          ‹
-                        </button>
-                      )}
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            zIndex: 10
+                          }}>
+                            -{product.discount}%
+                          </div>
+                        )}
 
-                      <img
-                        src={
-                          selectedImage || 
-                          (() => {
-                            // Handle different image path formats
-                            if (!product.image) return '/src/assets/imgs/page/product/img-gallery-1.jpg';
-                            
-                            const img = product.image;
-                            // If it's already a full URL (http/https)
-                            if (img.startsWith('http://') || img.startsWith('https://')) return img;
-                            // If it starts with /uploads (from backend)
-                            if (img.startsWith('/uploads/')) return `http://localhost:5000${img}`;
-                            // If it's just a filename
-                            if (!img.startsWith('/') && !img.startsWith('src/')) return `http://localhost:5000/uploads/products/${img}`;
-                            // Otherwise return as is
-                            return img;
-                          })()
-                        }
-                        alt={product.name || 'product image'}
-                        style={{
-                          maxWidth: '100%',
-                          maxHeight: '500px',
-                          objectFit: 'contain',
-                          borderRadius: '4px'
-                        }}
-                        onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
-                      />
+                        {/* Previous Arrow Button */}
+                        {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
+                          <button
+                            onClick={() => {
+                              const allImages = [
+                                product.image,
+                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                                ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
+                                  const imgUrl = img.url || img.imageUrl || img;
+                                  return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                                }) : [])
+                              ].filter(Boolean);
+                              const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
+                              const prevIndex = currentIndex > 0 ? currentIndex - 1 : allImages.length - 1;
+                              setSelectedImage(prevIndex === 0 ? null : allImages[prevIndex]);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              left: '10px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '40px',
+                              height: '40px',
+                              cursor: 'pointer',
+                              fontSize: '24px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              zIndex: 20,
+                              transition: 'background-color 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
+                          >
+                            ‹
+                          </button>
+                        )}
 
-                      {/* Next Arrow Button */}
-                      {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
-                        <button
-                          onClick={() => {
-                            const allImages = [
-                              product.image,
-                              ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
-                              ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
-                                const imgUrl = img.url || img.imageUrl || img;
-                                return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
-                              }) : [])
-                            ].filter(Boolean);
-                            const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
-                            const nextIndex = currentIndex < allImages.length - 1 ? currentIndex + 1 : 0;
-                            setSelectedImage(nextIndex === 0 ? null : allImages[nextIndex]);
-                          }}
+                        <img
+                          src={
+                            selectedImage ||
+                            (() => {
+                              // Handle different image path formats
+                              if (!product.image) return '/src/assets/imgs/page/product/img-gallery-1.jpg';
+
+                              const img = product.image;
+                              // If it's already a full URL (http/https)
+                              if (img.startsWith('http://') || img.startsWith('https://')) return img;
+                              // If it starts with /uploads (from backend)
+                              if (img.startsWith('/uploads/')) return `http://localhost:5000${img}`;
+                              // If it's just a filename
+                              if (!img.startsWith('/') && !img.startsWith('src/')) return `http://localhost:5000/uploads/products/${img}`;
+                              // Otherwise return as is
+                              return img;
+                            })()
+                          }
+                          alt={product.name || 'product image'}
                           style={{
-                            position: 'absolute',
-                            right: '10px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            backgroundColor: 'rgba(0,0,0,0.5)',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '40px',
-                            height: '40px',
-                            cursor: 'pointer',
-                            fontSize: '24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            zIndex: 20,
-                            transition: 'background-color 0.3s ease'
+                            maxWidth: '100%',
+                            maxHeight: '500px',
+                            objectFit: 'contain',
+                            borderRadius: '4px'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
+                          onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
+                        />
+
+                        {/* Next Arrow Button */}
+                        {((product.galleries && product.galleries.length > 0) || (product.images && product.images.length > 0)) && (
+                          <button
+                            onClick={() => {
+                              const allImages = [
+                                product.image,
+                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                                ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
+                                  const imgUrl = img.url || img.imageUrl || img;
+                                  return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                                }) : [])
+                              ].filter(Boolean);
+                              const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
+                              const nextIndex = currentIndex < allImages.length - 1 ? currentIndex + 1 : 0;
+                              setSelectedImage(nextIndex === 0 ? null : allImages[nextIndex]);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              right: '10px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '50%',
+                              width: '40px',
+                              height: '40px',
+                              cursor: 'pointer',
+                              fontSize: '24px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              zIndex: 20,
+                              transition: 'background-color 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.8)'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(0,0,0,0.5)'}
+                          >
+                            ›
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Thumbnail Images */}
+                      <div style={{
+                        display: 'flex',
+                        gap: '10px',
+                        justifyContent: 'center',
+                        flexWrap: 'wrap'
+                      }}>
+                        {/* Main Image Thumbnail */}
+                        <div
+                          onClick={() => setSelectedImage(null)}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            border: selectedImage === null ? '2px solid #df2020' : '1px solid #ddd',
+                            borderRadius: '6px',
+                            overflow: 'hidden',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease'
+                          }}
                         >
-                          ›
-                        </button>
-                      )}
+                          <img
+                            src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
+                            alt="Main image"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                        </div>
+
+                        {/* Gallery Images */}
+                        {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 4).map((gallery, index) => {
+                          const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => setSelectedImage(imageUrl)}
+                              style={{
+                                width: '60px',
+                                height: '60px',
+                                border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
+                                borderRadius: '6px',
+                                overflow: 'hidden',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              <img
+                                src={imageUrl}
+                                alt={`Gallery ${index + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
+                                onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
+                              />
+                            </div>
+                          );
+                        })}
+
+                        {/* Fallback Images */}
+                        {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 4).map((img, index) => {
+                          // Handle image URL - for manual uploads use /uploads/ without /products/
+                          const imgUrl = img.url || img.imageUrl || img;
+                          const imageUrl = typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '/src/assets/imgs/page/product/img-gallery-1.jpg';
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => setSelectedImage(imageUrl)}
+                              style={{
+                                width: '60px',
+                                height: '60px',
+                                border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
+                                borderRadius: '6px',
+                                overflow: 'hidden',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                              }}
+                            >
+                              <img
+                                src={imageUrl}
+                                alt={`Image ${index + 1}`}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
+                                onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                   </div>
 
-                    {/* Thumbnail Images */}
-                    <div style={{
-                      display: 'flex',
-                      gap: '10px',
-                      justifyContent: 'center',
-                      flexWrap: 'wrap'
-                    }}>
-                      {/* Main Image Thumbnail */}
-                      <div
-                        onClick={() => setSelectedImage(null)}
-                        style={{
-                          width: '60px',
-                          height: '60px',
-                          border: selectedImage === null ? '2px solid #df2020' : '1px solid #ddd',
-                          borderRadius: '6px',
-                          overflow: 'hidden',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease'
-                        }}
-                      >
-                        <img
-                          src={product.image || '/src/assets/imgs/page/product/img-gallery-1.jpg'}
-                          alt="Main image"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover'
-                          }}
-                        />
-                      </div>
-
-                      {/* Gallery Images */}
-                      {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 4).map((gallery, index) => {
-                        const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
-                        return (
-                          <div
-                            key={index}
-                            onClick={() => setSelectedImage(imageUrl)}
-                            style={{
-                              width: '60px',
-                              height: '60px',
-                              border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
-                              borderRadius: '6px',
-                              overflow: 'hidden',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease'
-                            }}
-                          >
-                            <img
-                              src={imageUrl}
-                              alt={`Gallery ${index + 1}`}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                              onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
-                            />
-                    </div>
-                        );
-                      })}
-
-                      {/* Fallback Images */}
-                      {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 4).map((img, index) => {
-                        // Handle image URL - for manual uploads use /uploads/ without /products/
-                        const imgUrl = img.url || img.imageUrl || img;
-                        const imageUrl = typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '/src/assets/imgs/page/product/img-gallery-1.jpg';
-                        return (
-                          <div
-                            key={index}
-                            onClick={() => setSelectedImage(imageUrl)}
-                            style={{
-                              width: '60px',
-                              height: '60px',
-                              border: selectedImage === imageUrl ? '2px solid #df2020' : '1px solid #ddd',
-                              borderRadius: '6px',
-                              overflow: 'hidden',
-                              cursor: 'pointer',
-                              transition: 'all 0.3s ease'
-                            }}
-                          >
-                            <img
-                              src={imageUrl}
-                              alt={`Image ${index + 1}`}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                              }}
-                              onError={(e) => { e.target.src = '/src/assets/imgs/page/product/img-gallery-1.jpg' }}
-                            />
-                      </div>
-                        );
-                      })}
-                    </div>
-                      </div>
-
-            </div>
-
-            {/* Product Info */}
-            <div className="col-lg-7">
-              <div className="row">
-                <div className="col-lg-7 col-md-7 mb-30">
-                  {/* <div className="box-product-price">
+                  {/* Product Info */}
+                  <div className="col-lg-7">
+                    <div className="row">
+                      <div className="col-lg-7 col-md-7 mb-30">
+                        {/* <div className="box-product-price">
                         <h3 className="color-brand-3 price-main d-inline-block mr-10">${product.price?.toFixed(2) || '0.00'}</h3>
                         {product.originalPrice && product.originalPrice !== product.price && (
                           <span className="color-gray-500 price-line font-xl line-througt">${product.originalPrice.toFixed(2)}</span>
                     )}
                   </div> */}
 
-                      {/* Stock Status */}
-                      {/* {product.stock !== undefined && (
+                        {/* Stock Status */}
+                        {/* {product.stock !== undefined && (
                   <div className="box-progress-product mt-15 mb-20">
                           <span className={`font-sm ${product.stock > 0 ? 'color-success' : 'color-danger'}`}>
                             {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
@@ -539,232 +539,232 @@ const ProductDetail = () => {
                     </div>
                       )} */}
 
-                      {/* Bullet Points from API - Display right below price */}
-                      {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
-                        (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim()) ||
-                        (product.features && product.features.length > 0)) && (
-                          <div className="product-description color-gray-900 mb-30" style={{ marginTop: '30px', marginLeft: '80px' }}>
-                            <h6 className="color-brand-3 mb-15">Key Features:</h6>
-                            <ul style={{ listStyle: 'none', padding: 0 }}>
-                              {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
-                                // If bulletsPoint is an array
-                                product.bulletsPoint.map((bullet, index) => (
-                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
-                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
-                                    </svg>
-                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet}</span>
-                                  </li>
-                                ))
-                              ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
-                                // If bulletsPoint is a comma-separated string
-                                product.bulletsPoint.split(',').map((bullet, index) => (
-                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
-                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
-                                    </svg>
-                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet.trim()}</span>
-                                  </li>
-                                ))
-                              ) : product.features && product.features.length > 0 ? (
-                                // Fallback to features array
-                                product.features.map((feature, index) => (
-                                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
-                                      <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981"/>
-                                    </svg>
-                                    <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{feature}</span>
-                                  </li>
-                                ))
-                              ) : null}
-                        </ul>
-                      </div>
-                        )}
+                        {/* Bullet Points from API - Display right below price */}
+                        {((Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0) ||
+                          (typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim()) ||
+                          (product.features && product.features.length > 0)) && (
+                            <div className="product-description color-gray-900 mb-30" style={{ marginTop: '30px', marginLeft: '80px' }}>
+                              <h6 className="color-brand-3 mb-15">Key Features:</h6>
+                              <ul style={{ listStyle: 'none', padding: 0 }}>
+                                {Array.isArray(product.bulletsPoint) && product.bulletsPoint.length > 0 ? (
+                                  // If bulletsPoint is an array
+                                  product.bulletsPoint.map((bullet, index) => (
+                                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                        <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981" />
+                                      </svg>
+                                      <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet}</span>
+                                    </li>
+                                  ))
+                                ) : typeof product.bulletsPoint === 'string' && product.bulletsPoint.trim() ? (
+                                  // If bulletsPoint is a comma-separated string
+                                  product.bulletsPoint.split(',').map((bullet, index) => (
+                                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                        <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981" />
+                                      </svg>
+                                      <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{bullet.trim()}</span>
+                                    </li>
+                                  ))
+                                ) : product.features && product.features.length > 0 ? (
+                                  // Fallback to features array
+                                  product.features.map((feature, index) => (
+                                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px', marginTop: '4px', flexShrink: 0 }}>
+                                        <path d="M 20.292969 5.2929688 L 9 16.585938 L 4.7070312 12.292969 L 3.2929688 13.707031 L 9 19.414062 L 21.707031 6.7070312 L 20.292969 5.2929688 z" fill="#10b981" />
+                                      </svg>
+                                      <span style={{ fontWeight: '500', lineHeight: '1.5', color: '#000', fontSize: '12px', fontFamily: 'DM Sans, sans-serif' }}>{feature}</span>
+                                    </li>
+                                  ))
+                                ) : null}
+                              </ul>
+                            </div>
+                          )}
 
-                      {/* Short Description */}
-                      {/* {product.shortDescp && (
+                        {/* Short Description */}
+                        {/* {product.shortDescp && (
                     <div className="mb-20">
                       <p className="font-sm color-gray-900">{product.shortDescp}</p>
                       </div>
                   )} */}
 
 
-                  <div className="buy-product mt-25">
-                    <div className="font-sm text-quantity mb-10">Quantity</div>
-                    <div className="box-quantity">
-                      <div className="input-quantity">
-                        <input 
-                          type="number" 
-                          value={quantity} 
-                          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                          min="1"
-                        />
-                        <span 
-                          className="minus-cart" 
-                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          style={{ cursor: 'pointer' }}
-                        ></span>
-                        <span 
-                          className="plus-cart" 
-                          onClick={() => setQuantity(quantity + 1)}
-                          style={{ cursor: 'pointer' }}
-                        ></span>
+                        <div className="buy-product mt-25">
+                          <div className="font-sm text-quantity mb-10">Quantity</div>
+                          <div className="box-quantity">
+                            <div className="input-quantity">
+                              <input
+                                type="number"
+                                value={quantity}
+                                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                min="1"
+                              />
+                              <span
+                                className="minus-cart"
+                                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                style={{ cursor: 'pointer' }}
+                              ></span>
+                              <span
+                                className="plus-cart"
+                                onClick={() => setQuantity(quantity + 1)}
+                                style={{ cursor: 'pointer' }}
+                              ></span>
+                            </div>
+                            <div className="button-buy button-buy-full">
+                              <button
+                                className="btn btn-buy"
+                                onClick={handleAddToCart}
+                                disabled={cartLoading || product.stock === 0}
+                                style={{
+                                  opacity: (cartLoading || product.stock === 0) ? 0.6 : 1,
+                                  cursor: (cartLoading || product.stock === 0) ? 'not-allowed' : 'pointer',
+                                  borderRadius: '25px'
+                                }}
+                              >
+                                {cartLoading ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="button-buy button-buy-full">
-                        <button 
-                          className="btn btn-buy" 
-                          onClick={handleAddToCart}
-                          disabled={cartLoading || product.stock === 0}
-                          style={{
-                            opacity: (cartLoading || product.stock === 0) ? 0.6 : 1,
-                            cursor: (cartLoading || product.stock === 0) ? 'not-allowed' : 'pointer',
-                            borderRadius: '25px'
-                          }}
-                        >
-                          {cartLoading ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                        </button>
+                      <div className="col-lg-5 col-md-5">
+                        <div className="pl-30 pl-mb-0">
+                          {/* Right Side Pricing & Contact Section */}
+                          <div className="pricing-contact-section mb-30">
+                            {/* Pricing Box - Shows Price or Sign In Message */}
+                            <div className="pricing-box" style={{
+                              backgroundColor: 'white',
+                              border: '1px solid #ccc',
+                              borderRadius: '0px',
+                              padding: '20px',
+                              marginBottom: '20px',
+                              textAlign: 'center'
+                            }}>
+                              <div style={{ textAlign: 'center' }}>
+                                {isLoggedIn ? (
+                                  // ✅ Show Price for Logged In Users
+                                  <>
+                                    <div style={{
+                                      fontSize: '28px',
+                                      fontWeight: 'bold',
+                                      color: '#111A45',
+                                      marginBottom: '10px'
+                                    }}>
+                                      ${product.price?.toFixed(2) || '0.00'}
+                                    </div>
+                                    {product.originalPrice && product.originalPrice !== product.price && (
+                                      <div style={{
+                                        fontSize: '16px',
+                                        color: '#999',
+                                        textDecoration: 'line-through',
+                                        marginBottom: '12px'
+                                      }}>
+                                        ${product.originalPrice.toFixed(2)}
+                                      </div>
+                                    )}
+                                    {product.discount > 0 && (
+                                      <div style={{
+                                        display: 'inline-block',
+                                        backgroundColor: '#ff4444',
+                                        color: 'white',
+                                        padding: '4px 12px',
+                                        borderRadius: '4px',
+                                        fontSize: '12px',
+                                        fontWeight: 'bold',
+                                        marginBottom: '12px'
+                                      }}>
+                                        Save {product.discount}%
+                                      </div>
+                                    )}
+                                  </>
+                                ) : (
+                                  // ❌ Show Sign In Message for Guests
+                                  <Link to="/login" style={{
+                                    fontSize: '14px',
+                                    color: '#111A45',
+                                    textDecoration: 'underline',
+                                    fontWeight: 'bold'
+                                  }}>Sign In to see pricing</Link>
+                                )}
+
+                                {/* Stock Status */}
+                                <div style={{
+                                  marginTop: '12px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}>
+                                  <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="23 4 23 10 17 10"></polyline>
+                                      <polyline points="1 20 1 14 7 14"></polyline>
+                                      <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                  </span>
+                                  <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
+                                    {product.stock === 0 ? 'Out of Stock' : `In Stock${product.stock ? `: ${product.stock}` : ''}`}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Contact Sales Team box */}
+                            <div className="contact-box" style={{
+                              backgroundColor: 'white',
+                              border: '1px solid #ccc',
+                              borderRadius: '0px',
+                              padding: '20px',
+                              marginBottom: '20px',
+                              textAlign: 'center'
+                            }}>
+                              <p style={{
+                                fontSize: '14px',
+                                color: '#000',
+                                marginBottom: '12px',
+                                lineHeight: '1.3',
+                                fontWeight: '600',
+                                textAlign: 'center'
+                              }}>
+                                Questions regarding this product, volume pricing, or shipping options?
+                              </p>
+                              <button
+                                onClick={() => setShowInquiryModal(true)}
+                                style={{
+                                  backgroundColor: '#df2020',
+                                  color: 'white',
+                                  border: 'none',
+                                  borderRadius: '25px',
+                                  padding: '8px 16px',
+                                  width: 'auto',
+                                  fontSize: '12px',
+                                  fontWeight: '500',
+                                  cursor: 'pointer',
+                                  display: 'block',
+                                  margin: '0 auto'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor = '#c41a1a';
+                                  e.target.style.textDecoration = 'underline';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor = '#df2020';
+                                  e.target.style.textDecoration = 'none';
+                                }}
+                              >
+                                Contact our sales team
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-5 col-md-5">
-                  <div className="pl-30 pl-mb-0">
-                        {/* Right Side Pricing & Contact Section */}
-                        <div className="pricing-contact-section mb-30">
-                          {/* Pricing Box - Shows Price or Sign In Message */}
-                          <div className="pricing-box" style={{
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            borderRadius: '0px',
-                            padding: '20px',
-                            marginBottom: '20px',
-                            textAlign: 'center'
-                          }}>
-                            <div style={{ textAlign: 'center' }}>
-                              {isLoggedIn ? (
-                                // ✅ Show Price for Logged In Users
-                                <>
-                                  <div style={{ 
-                                    fontSize: '28px', 
-                                    fontWeight: 'bold', 
-                                    color: '#111A45',
-                                    marginBottom: '10px'
-                                  }}>
-                                    ${product.price?.toFixed(2) || '0.00'}
-                                  </div>
-                                  {product.originalPrice && product.originalPrice !== product.price && (
-                                    <div style={{ 
-                                      fontSize: '16px', 
-                                      color: '#999', 
-                                      textDecoration: 'line-through',
-                                      marginBottom: '12px'
-                                    }}>
-                                      ${product.originalPrice.toFixed(2)}
-                                    </div>
-                                  )}
-                                  {product.discount > 0 && (
-                                    <div style={{
-                                      display: 'inline-block',
-                                      backgroundColor: '#ff4444',
-                                      color: 'white',
-                                      padding: '4px 12px',
-                                      borderRadius: '4px',
-                                      fontSize: '12px',
-                                      fontWeight: 'bold',
-                                      marginBottom: '12px'
-                                    }}>
-                                      Save {product.discount}%
-                                    </div>
-                                  )}
-                                </>
-                              ) : (
-                                // ❌ Show Sign In Message for Guests
-                                <Link to="/login" style={{
-                                  fontSize: '14px',
-                                  color: '#111A45',
-                                  textDecoration: 'underline',
-                                  fontWeight: 'bold'
-                                }}>Sign In to see pricing</Link>
-                              )}
-                              
-                              {/* Stock Status */}
-                              <div style={{
-                                marginTop: '12px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                              }}>
-                                <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
-                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="23 4 23 10 17 10"></polyline>
-                                    <polyline points="1 20 1 14 7 14"></polyline>
-                                    <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                                  </svg>
-                                </span>
-                                <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
-                                  {product.stock === 0 ? 'Out of Stock' : `In Stock${product.stock ? `: ${product.stock}` : ''}`}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                {/* <div className="border-bottom pt-30 mb-40"></div> */}
 
-                          {/* Contact Sales Team box */}
-                          <div className="contact-box" style={{
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            borderRadius: '0px',
-                            padding: '20px',
-                            marginBottom: '20px',
-                            textAlign: 'center'
-                          }}>
-                            <p style={{
-                              fontSize: '14px',
-                              color: '#000',
-                              marginBottom: '12px',
-                              lineHeight: '1.3',
-                              fontWeight: '600',
-                              textAlign: 'center'
-                            }}>
-                              Questions regarding this product, volume pricing, or shipping options?
-                            </p>
-                            <button 
-                              onClick={() => setShowInquiryModal(true)}
-                              style={{
-                                backgroundColor: '#df2020',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '25px',
-                                padding: '8px 16px',
-                                width: 'auto',
-                                fontSize: '12px',
-                                fontWeight: '500',
-                                cursor: 'pointer',
-                                display: 'block',
-                                margin: '0 auto'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#c41a1a';
-                                e.target.style.textDecoration = 'underline';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#df2020';
-                                e.target.style.textDecoration = 'none';
-                              }}
-                            >
-                              Contact our sales team
-                            </button>
-                        </div>
-                        </div>
-
-                      </div>
-                        </div>
-              </div>
-            </div>
-          </div>
-          {/* <div className="border-bottom pt-30 mb-40"></div> */}
-
-          {/* Frequently Bought Together */}
-              {/* <h4 className="color-brand-3 mb-20">Frequently Bought Together</h4>
+                {/* Frequently Bought Together */}
+                {/* <h4 className="color-brand-3 mb-20">Frequently Bought Together</h4>
           <div className="box-bought-together">
             <div className="box-product-bought box-product-bought-2">
               <div className="product-bought">
@@ -802,218 +802,218 @@ const ProductDetail = () => {
             <span className="font-md color-brand-3">Apple iMac 24" All-In-One Computer, Apple M1, 8GB RAM, 512GB SSD, macOS Big Sur, Green, MGPJ3LL/A - $1,599.00</span>
             <span className="checkmark"></span>
           </label> */}
-        </div>
-      </section>
+              </div>
+            </section>
 
-      {/* Product Tabs */}
-      <section className="section-box shop-template">
-        <div className="container">
-          <div className="pt-30 mb-10">
-            <ul className="nav nav-tabs nav-tabs-product" role="tablist">
-              <li>
-                <a 
-                  className={activeTab === 'description' ? 'active' : ''} 
-                  href="#tab-description" 
-                      onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
-                  role="tab"
-                  style={{ 
-                    color: '#000', 
-                    fontSize: '14px',
-                    borderBottom: activeTab === 'description' ? '3px solid #df2020' : 'none',
-                    padding: '8px 12px',
-                    paddingBottom: '8px',
-                    opacity: activeTab === 'description' ? '1' : '0.6',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                      <span style={{ marginRight: '8px' }}>📝</span>Description
-                </a>
-              </li>
-              <li>
-                <a 
-                  className={activeTab === 'specification' ? 'active' : ''} 
-                  href="#tab-specification" 
-                      onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
-                  role="tab"
-                  style={{ 
-                    color: '#000', 
-                    fontSize: '14px',
-                    borderBottom: activeTab === 'specification' ? '3px solid #df2020' : 'none',
-                    padding: '8px 12px',
-                    paddingBottom: '8px',
-                    opacity: activeTab === 'specification' ? '1' : '0.6',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                      <span style={{ marginRight: '8px' }}>⚙️</span>Specification
-                </a>
-              </li>
-              <li>
-                <a 
-                  className={activeTab === 'additional' ? 'active' : ''} 
-                  href="#tab-additional" 
-                      onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
-                  role="tab"
-                  style={{ 
-                    color: '#000', 
-                    fontSize: '14px',
-                    borderBottom: activeTab === 'additional' ? '3px solid #df2020' : 'none',
-                    padding: '8px 12px',
-                    paddingBottom: '8px',
-                    opacity: activeTab === 'additional' ? '1' : '0.6',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
-                      <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
-                </a>
-              </li>
-            </ul>
-            <div className="tab-content">
-              {activeTab === 'description' && (
-                <div className="tab-pane fade active show" id="tab-description" role="tabpanel">
-                  <div className="display-text-short">
-                        {/* Long Description from API */}
-                        {product.longDescp && (
-                          <div className="mb-15">
-                            <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
-                            {/* <p className="font-md ">{product.longDescp}</p> */}
-                  </div>
-                        )}
+            {/* Product Tabs */}
+            <section className="section-box shop-template">
+              <div className="container">
+                <div className="pt-30 mb-10">
+                  <ul className="nav nav-tabs nav-tabs-product" role="tablist">
+                    <li>
+                      <a
+                        className={activeTab === 'description' ? 'active' : ''}
+                        href="#tab-description"
+                        onClick={(e) => { e.preventDefault(); setActiveTab('description'); }}
+                        role="tab"
+                        style={{
+                          color: '#000',
+                          fontSize: '14px',
+                          borderBottom: activeTab === 'description' ? '3px solid #df2020' : 'none',
+                          padding: '8px 12px',
+                          paddingBottom: '8px',
+                          opacity: activeTab === 'description' ? '1' : '0.6',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <span style={{ marginRight: '8px' }}>📝</span>Description
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className={activeTab === 'specification' ? 'active' : ''}
+                        href="#tab-specification"
+                        onClick={(e) => { e.preventDefault(); setActiveTab('specification'); }}
+                        role="tab"
+                        style={{
+                          color: '#000',
+                          fontSize: '14px',
+                          borderBottom: activeTab === 'specification' ? '3px solid #df2020' : 'none',
+                          padding: '8px 12px',
+                          paddingBottom: '8px',
+                          opacity: activeTab === 'specification' ? '1' : '0.6',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <span style={{ marginRight: '8px' }}>⚙️</span>Specification
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className={activeTab === 'additional' ? 'active' : ''}
+                        href="#tab-additional"
+                        onClick={(e) => { e.preventDefault(); setActiveTab('additional'); }}
+                        role="tab"
+                        style={{
+                          color: '#000',
+                          fontSize: '14px',
+                          borderBottom: activeTab === 'additional' ? '3px solid #df2020' : 'none',
+                          padding: '8px 12px',
+                          paddingBottom: '8px',
+                          opacity: activeTab === 'additional' ? '1' : '0.6',
+                          transition: 'all 0.3s ease'
+                        }}
+                      >
+                        <span style={{ marginRight: '8px' }}>ℹ️</span>Additional information
+                      </a>
+                    </li>
+                  </ul>
+                  <div className="tab-content">
+                    {activeTab === 'description' && (
+                      <div className="tab-pane fade active show" id="tab-description" role="tabpanel">
+                        <div className="display-text-short">
+                          {/* Long Description from API */}
+                          {product.longDescp && (
+                            <div className="mb-15">
+                              <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
+                              {/* <p className="font-md ">{product.longDescp}</p> */}
+                            </div>
+                          )}
 
-                        {/* Short Description if no long description */}
-                        {!product.longDescp && product.shortDescp && (
-                          <div className="mb-15">
-                            <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
-                            <p className="font-md " style={{ color: '#000' }}>{product.shortDescp}</p>
-                          </div>
-                        )}
-                        {/* Meta Description */}
-                        {product.metaDescp && product.metaDescp !== product.shortDescp && (
-                          <div className="mb-30">
-                            <p className="font-sm 0" style={{ color: '#000' }}>{product.metaDescp}</p>
-                          </div>
-                        )}
+                          {/* Short Description if no long description */}
+                          {!product.longDescp && product.shortDescp && (
+                            <div className="mb-15">
+                              <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
+                              <p className="font-md " style={{ color: '#000' }}>{product.shortDescp}</p>
+                            </div>
+                          )}
+                          {/* Meta Description */}
+                          {product.metaDescp && product.metaDescp !== product.shortDescp && (
+                            <div className="mb-30">
+                              <p className="font-sm 0" style={{ color: '#000' }}>{product.metaDescp}</p>
+                            </div>
+                          )}
 
-                        {/* Fallback if no description */}
-                        {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
-                          <p className="font-md 0" style={{ color: '#000' }}>No description available for this product.</p>
-                        )}
-                  </div>
-                </div>
-              )}
-              
-              {activeTab === 'specification' && (
-                <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
-                      <h5 className="mb-25" style={{ color: '#000',fontSize: '14px' }}>Product Specification</h5>
-                  <div className="table-responsive">
-                    <table className="table table-striped">
-                      <tbody>
-                            {product.sku && (
-                        <tr>
-                                <td className="font-sm-bold ">SKU</td>
-                                <td className="font-sm ">{product.sku}</td>
-                        </tr>
-                            )}
-                            {product.brand && (
-                        <tr>
-                                <td className="font-sm-bold ">Brand</td>
-                                <td className="font-sm ">{typeof product.brand === 'object' && product.brand !== null ? product.brand.title : product.brand}</td>
-                        </tr>
-                            )}
-                            {product.mfr && (
-                        <tr>
-                                <td className="font-sm-bold ">Manufacturer</td>
-                                <td className="font-sm ">{product.mfr}</td>
-                        </tr>
-                            )}
-                            {product.techPartNo && (
-                        <tr>
-                                <td className="font-sm-bold ">Part Number</td>
-                                <td className="font-sm ">{product.techPartNo}</td>
-                        </tr>
-                            )}
-                            {product.upcCode && (
-                        <tr>
-                                <td className="font-sm-bold ">UPC Code</td>
-                                <td className="font-sm ">{product.upcCode}</td>
-                        </tr>
-                            )}
-                            {product.category && (
-                        <tr>
-                                <td className="font-sm-bold ">Category</td>
-                                <td className="font-sm ">{typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}</td>
-                        </tr>
-                            )}
-                            {product.subCategory && (
-                        <tr>
-                                <td className="font-sm-bold ">Sub Category</td>
-                                <td className="font-sm ">{typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}</td>
-                        </tr>
-                            )}
-                            {product.endOfLifeDate && (
-                              <tr>
-                                <td className="font-sm-bold ">End of Life Date</td>
-                                <td className="font-sm ">{product.endOfLifeDate}</td>
-                              </tr>
-                            )}
-                            {/* Fallback message */}
-                            {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
-                              <tr>
-                                <td colSpan="2" className="text-center font-sm ">
-                                  No specifications available for this product.
-                                </td>
-                              </tr>
-                            )}
-                      </tbody>
-                    </table>
-                  </div>
-
-                      {/* Multimedia URL Link */}
-                      {product.multimediaUrl && (
-                        <div className="mt-30">
-                          <h6 className="mb-15" style={{ color: '#000' }}>Additional Resources</h6>
-                          <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
-                            View Multimedia Content
-                          </a>
+                          {/* Fallback if no description */}
+                          {!product.longDescp && !product.shortDescp && !product.bulletsPoint && (
+                            <p className="font-md 0" style={{ color: '#000' }}>No description available for this product.</p>
+                          )}
                         </div>
-                      )}
-                </div>
-              )}
+                      </div>
+                    )}
 
-              {activeTab === 'additional' && (
-                <div className="tab-pane fade active show" id="tab-additional" role="tabpanel">
-                  <h5 className="mb-15" style={{ color: '#000',fontSize: '14px' }}>Additional information</h5>
-                  <div className="table-responsive">
-                    <table className="table table-striped">
-                      <tbody>
-                        <tr>
-                          <td>Weight</td>
-                          <td><p>0.240 kg</p></td>
-                        </tr>
-                        <tr>
-                          <td>Dimensions</td>
-                          <td><p>0.74 x 7.64 x 16.08 cm</p></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {activeTab === 'specification' && (
+                      <div className="tab-pane fade active show" id="tab-specification" role="tabpanel">
+                        <h5 className="mb-25" style={{ color: '#000', fontSize: '14px' }}>Product Specification</h5>
+                        <div className="table-responsive">
+                          <table className="table table-striped">
+                            <tbody>
+                              {product.sku && (
+                                <tr>
+                                  <td className="font-sm-bold ">SKU</td>
+                                  <td className="font-sm ">{product.sku}</td>
+                                </tr>
+                              )}
+                              {product.brand && (
+                                <tr>
+                                  <td className="font-sm-bold ">Brand</td>
+                                  <td className="font-sm ">{typeof product.brand === 'object' && product.brand !== null ? product.brand.title : product.brand}</td>
+                                </tr>
+                              )}
+                              {product.mfr && (
+                                <tr>
+                                  <td className="font-sm-bold ">Manufacturer</td>
+                                  <td className="font-sm ">{product.mfr}</td>
+                                </tr>
+                              )}
+                              {product.techPartNo && (
+                                <tr>
+                                  <td className="font-sm-bold ">Part Number</td>
+                                  <td className="font-sm ">{product.techPartNo}</td>
+                                </tr>
+                              )}
+                              {product.upcCode && (
+                                <tr>
+                                  <td className="font-sm-bold ">UPC Code</td>
+                                  <td className="font-sm ">{product.upcCode}</td>
+                                </tr>
+                              )}
+                              {product.category && (
+                                <tr>
+                                  <td className="font-sm-bold ">Category</td>
+                                  <td className="font-sm ">{typeof product.category === 'object' && product.category !== null ? product.category.title : product.category}</td>
+                                </tr>
+                              )}
+                              {product.subCategory && (
+                                <tr>
+                                  <td className="font-sm-bold ">Sub Category</td>
+                                  <td className="font-sm ">{typeof product.subCategory === 'object' && product.subCategory !== null ? product.subCategory.title : product.subCategory}</td>
+                                </tr>
+                              )}
+                              {product.endOfLifeDate && (
+                                <tr>
+                                  <td className="font-sm-bold ">End of Life Date</td>
+                                  <td className="font-sm ">{product.endOfLifeDate}</td>
+                                </tr>
+                              )}
+                              {/* Fallback message */}
+                              {!product.sku && !product.brand && !product.mfr && !product.techPartNo && (
+                                <tr>
+                                  <td colSpan="2" className="text-center font-sm ">
+                                    No specifications available for this product.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Multimedia URL Link */}
+                        {product.multimediaUrl && (
+                          <div className="mt-30">
+                            <h6 className="mb-15" style={{ color: '#000' }}>Additional Resources</h6>
+                            <a href={product.multimediaUrl} target="_blank" rel="noopener noreferrer" className="btn btn-border font-sm">
+                              View Multimedia Content
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {activeTab === 'additional' && (
+                      <div className="tab-pane fade active show" id="tab-additional" role="tabpanel">
+                        <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Additional information</h5>
+                        <div className="table-responsive">
+                          <table className="table table-striped">
+                            <tbody>
+                              <tr>
+                                <td>Weight</td>
+                                <td><p>0.240 kg</p></td>
+                              </tr>
+                              <tr>
+                                <td>Dimensions</td>
+                                <td><p>0.74 x 7.64 x 16.08 cm</p></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+
                   </div>
                 </div>
-              )}
+              </div>
+            </section>
+          </>
+        )}
 
-            </div>
-          </div>
-        </div>
-      </section>
-        </>
-      )}
-
-      {/* Product Inquiry Modal */}
-      <ProductInquiryModal 
-        isOpen={showInquiryModal}
-        onClose={() => setShowInquiryModal(false)}
-        productName={product.name}
-      />
-    </main>
+        {/* Product Inquiry Modal */}
+        <ProductInquiryModal
+          isOpen={showInquiryModal}
+          onClose={() => setShowInquiryModal(false)}
+          productName={product.name}
+        />
+      </main>
     </>
   );
 };

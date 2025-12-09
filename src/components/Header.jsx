@@ -12,7 +12,6 @@ const Header = () => {
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [showShopDropdown, setShowShopDropdown] = useState(false);
   const [showVendorsDropdown, setShowVendorsDropdown] = useState(false);
   const [showAboutDropdown, setShowAboutDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -236,98 +235,16 @@ const Header = () => {
 
               {/* Navigation - Desktop Only */}
               <nav style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', gap: '30px' }}>
-              {/* Shop Dropdown */}
-              <div 
-                style={{ position: 'relative' }}
-                onMouseEnter={() => {
-                  clearTimeout(dropdownTimeouts.shop);
-                  setShowShopDropdown(true);
-                }}
-                onMouseLeave={() => {
-                  const timeout = setTimeout(() => {
-                    setShowShopDropdown(false);
-                  }, 200);
-                  setDropdownTimeouts(prev => ({ ...prev, shop: timeout }));
-                }}
-              >
-                <Link to="/shop" style={{
-                  color: '#111A45',
-                  textDecoration: 'none',
-                  fontSize: '16px',
-                  fontFamily: 'Space Grotesk, sans-serif',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  fontWeight: '600'
-                }}>
-                  Shop
-                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L5 5L9 1" stroke="#111A45" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </Link>
-                {showShopDropdown && (
-                  <div 
-                    onMouseEnter={() => clearTimeout(dropdownTimeouts.shop)}
-                    style={{
-                      position: 'absolute',
-                      top: 'calc(100% + 8px)',
-                      left: '0',
-                      backgroundColor: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      boxShadow: '0 8px 32px rgba(17, 26, 69, 0.12)',
-                      padding: '12px 0',
-                      minWidth: '320px',
-                      zIndex: 1000,
-                      marginTop: '4px'
-                    }}
-                  >
-                    {loadingCategories ? (
-                      <div style={{ padding: '12px 20px', color: '#666', fontSize: '14px' }}>Loading categories...</div>
-                    ) : categories.length > 0 ? (
-                      categories.slice(0, 8).map((category, index) => (
-                        <div key={category.id || index} style={{ position: 'relative' }}>
-                          <Link 
-                            to={`/shop?category=${category.id}`}
-                            style={{ 
-                              display: 'block', 
-                              padding: '12px 20px', 
-                              color: '#111A45', 
-                              textDecoration: 'none', 
-                              fontSize: '14px',
-                              fontFamily: 'Space Grotesk, sans-serif',
-                              fontWeight: '500',
-                              transition: 'all 0.2s ease',
-                              borderBottom: index < categories.slice(0, 8).length - 1 ? '1px solid #f0f0f0' : 'none'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = '#f8f9fa';
-                              e.target.style.color = '#111A45';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.backgroundColor = 'transparent';
-                              e.target.style.color = '#111A45';
-                            }}
-                          >
-                            {category.name || category.title}
-                            <span style={{ 
-                              float: 'right', 
-                              fontSize: '12px', 
-                              color: '#888',
-                              marginLeft: '10px',
-                              fontWeight: '400'
-                            }}>
-                              ({category.productCount || category.count || 0})
-                            </span>
-                          </Link>
-                        </div>
-                      ))
-                    ) : (
-                      <div style={{ padding: '12px 20px', color: '#666', fontSize: '14px' }}>No categories found</div>
-                    )}
-                  </div>
-                )}
-              </div>
+              {/* Shop - No Dropdown */}
+              <Link to="/shop" style={{
+                color: '#111A45',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontFamily: 'Space Grotesk, sans-serif',
+                fontWeight: '600'
+              }}>
+                Shop
+              </Link>
 
               {/* Marketplace - No Dropdown */}
               <Link to="/marketplace" style={{
