@@ -2148,19 +2148,19 @@ const MarketplaceProductDetail = () => {
                   {/* Table Rows */}
                   {[
                     {
-                      whereToBuy: 'Buy on PIMS',
+                      whereToBuy: 'Buy on-PREM',
                       description: 'Starting your Identity journey? Put a strong foundation in place.',
-                      cost: 'Request a quote'
+                      cost: 'Request a Quote'
                     },
                     {
                       whereToBuy: 'Buy on AWS',
                       description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: 'Request a quote'
+                      cost: 'Request Private Offer'
                     },
                     {
-                      whereToBuy: 'Buy on microsoft azure',
+                      whereToBuy: 'Buy on Microsoft Azure',
                       description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: 'Request a quote'
+                      cost: 'Request Pricing'
                     }
                   ].map((row, index) => (
                     <div
@@ -2180,29 +2180,83 @@ const MarketplaceProductDetail = () => {
                       <div style={{ fontWeight: '400' }}>{row.whereToBuy}</div>
                       <div style={{ color: '#16191f' }}>{row.description}</div>
                       <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
-                        {row.cost === 'Request a quote' ? (
+                        {row.cost === 'Request a Quote' ? (
                           <button
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #007185',
+                              border: '1px solid #16191f',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#007185',
+                              color: '#16191f',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
                               transition: 'all 0.2s',
                               whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = '#F0F8FF';
+                              e.target.style.backgroundColor = '#f0f0f0';
+                              e.target.style.borderColor = '#16191f';
                             }}
                             onMouseLeave={(e) => {
                               e.target.style.backgroundColor = 'white';
+                              e.target.style.borderColor = '#16191f';
                             }}
                           >
-                            Request a quote
+                            Request a Quote
+                          </button>
+                        ) : row.cost === 'Request Private Offer' ? (
+                          <button
+                            style={{
+                              padding: '8px 16px',
+                              backgroundColor: 'white',
+                              border: '1px solid #16191f',
+                              borderRadius: '25px',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              color: '#16191f',
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                              transition: 'all 0.2s',
+                              whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = '#f0f0f0';
+                              e.target.style.borderColor = '#16191f';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'white';
+                              e.target.style.borderColor = '#16191f';
+                            }}
+                          >
+                            Request Private Offer
+                          </button>
+                        ) : row.cost === 'Request Pricing' ? (
+                          <button
+                            style={{
+                              padding: '8px 16px',
+                              backgroundColor: 'white',
+                              border: '1px solid #16191f',
+                              borderRadius: '25px',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              color: '#16191f',
+                              cursor: 'pointer',
+                              fontFamily: 'inherit',
+                              transition: 'all 0.2s',
+                              whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = '#f0f0f0';
+                              e.target.style.borderColor = '#16191f';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = 'white';
+                              e.target.style.borderColor = '#16191f';
+                            }}
+                          >
+                            Request Pricing
                           </button>
                         ) : (
                           row.cost
@@ -2273,19 +2327,25 @@ const MarketplaceProductDetail = () => {
                 <button style={{
                   padding: '10px 24px',
                   backgroundColor: 'white',
-                  border: '1px solid #007185',
+                  border: '1px solid #16191f',
                   borderRadius: '25px',
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#007185',
+                  color: '#16191f',
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  transition: 'background-color 0.2s',
+                  transition: 'all 0.2s',
                   whiteSpace: 'nowrap',
                   marginLeft: '20px'
                 }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#f0f0f0';
+                  e.target.style.borderColor = '#16191f';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'white';
+                  e.target.style.borderColor = '#16191f';
+                }}
                 >
                   Request private offer
                 </button>
