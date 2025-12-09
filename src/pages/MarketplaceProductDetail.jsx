@@ -1340,43 +1340,6 @@ const MarketplaceProductDetail = () => {
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <button style={{
-                    padding: '8px 16px',
-                    backgroundColor: 'white',
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '400',
-                    color: '#16191f',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#F7F8F8'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  >
-                    Edit products
-                  </button>
-
-                  <button style={{
-                    padding: '8px 16px',
-                    backgroundColor: 'white',
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '400',
-                    color: '#16191f',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#F7F8F8'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                  >
-                    Download CSV
-                  </button>
-                </div>
               </div>
 
               {/* Comparison Table */}
@@ -2185,23 +2148,21 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #16191f',
+                              border: '1px solid #007185',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#16191f',
+                              color: '#007185',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
-                              transition: 'all 0.2s',
+                              transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = '#f0f0f0';
-                              e.target.style.borderColor = '#16191f';
+                              e.target.style.backgroundColor = '#F0F8FF';
                             }}
                             onMouseLeave={(e) => {
                               e.target.style.backgroundColor = 'white';
-                              e.target.style.borderColor = '#16191f';
                             }}
                           >
                             Request a Quote
@@ -2211,23 +2172,21 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #16191f',
+                              border: '1px solid #007185',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#16191f',
+                              color: '#007185',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
-                              transition: 'all 0.2s',
+                              transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = '#f0f0f0';
-                              e.target.style.borderColor = '#16191f';
+                              e.target.style.backgroundColor = '#F0F8FF';
                             }}
                             onMouseLeave={(e) => {
                               e.target.style.backgroundColor = 'white';
-                              e.target.style.borderColor = '#16191f';
                             }}
                           >
                             Request Private Offer
@@ -2237,23 +2196,21 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #16191f',
+                              border: '1px solid #007185',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#16191f',
+                              color: '#007185',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
-                              transition: 'all 0.2s',
+                              transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.backgroundColor = '#f0f0f0';
-                              e.target.style.borderColor = '#16191f';
+                              e.target.style.backgroundColor = '#F0F8FF';
                             }}
                             onMouseLeave={(e) => {
                               e.target.style.backgroundColor = 'white';
-                              e.target.style.borderColor = '#16191f';
                             }}
                           >
                             Request Pricing
@@ -2282,7 +2239,7 @@ const MarketplaceProductDetail = () => {
                   marginBottom: '12px',
                   fontFamily: 'inherit'
                 }}>
-                  Vendor refund policy
+                  Vendor Refund Policy
                 </h3>
                 <p style={{
                   fontSize: '14px',
@@ -2313,7 +2270,7 @@ const MarketplaceProductDetail = () => {
                     marginBottom: '8px',
                     fontFamily: 'inherit'
                   }}>
-                    Custom pricing options
+                    Custom Pricing Options
                   </h3>
                   <p style={{
                     fontSize: '14px',
@@ -2327,24 +2284,22 @@ const MarketplaceProductDetail = () => {
                 <button style={{
                   padding: '10px 24px',
                   backgroundColor: 'white',
-                  border: '1px solid #16191f',
+                  border: '1px solid #007185',
                   borderRadius: '25px',
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#16191f',
+                  color: '#007185',
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  transition: 'all 0.2s',
+                  transition: 'background-color 0.2s',
                   whiteSpace: 'nowrap',
                   marginLeft: '20px'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#f0f0f0';
-                  e.target.style.borderColor = '#16191f';
+                  e.target.style.backgroundColor = '#F0F8FF';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.backgroundColor = 'white';
-                  e.target.style.borderColor = '#16191f';
                 }}
                 >
                   Request private offer
