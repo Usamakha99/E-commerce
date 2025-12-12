@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { productService } from '../services/product.service';
 
-const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, selectedTags = [], productTags = [] }) => {
+const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, onClearAllTags, selectedTags = [], productTags = [] }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [brands, setBrands] = useState([]);
   const [loadingBrands, setLoadingBrands] = useState(false);
@@ -398,14 +398,97 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
         <div className="box-slider-item" style={{marginBottom: '20px'}}>
          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px'}}>
             <h5 className="" style={{color: '#000', fontSize: '16px', fontWeight: 'bold', borderBottom: '3px solid #df2020', paddingBottom: '8px', display: 'inline-block'}}>Product Tags</h5>
+            {selectedTags.length > 0 && (
+              <button
+                onClick={() => {
+                  if (onClearAllTags) {
+                    onClearAllTags();
+                  }
+                }}
+                title="Clear all tag filters"
+                style={{
+                  backgroundColor: '#df2020',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '24px',
+                  height: '24px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0',
+                  transition: 'background-color 0.3s ease',
+                  flexShrink: 0
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#c41a1a';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = '#df2020';
+                }}
+              >
+                ✕
+              </button>
+            )}
             </div>
           {/* Active Tag Filter Display */}
           {selectedTags.length > 0 && (
             <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
-              <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter{selectedTags.length > 1 ? 's' : ''}:</span>
-              <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
-                {productTags.filter(tag => selectedTags.includes(tag.id)).map(tag => tag.name).join(', ')}
-              </span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+                <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter{selectedTags.length > 1 ? 's' : ''}:</span>
+                {productTags.filter(tag => selectedTags.includes(tag.id)).map(tag => (
+                  <span 
+                    key={tag.id}
+                    style={{ 
+                      fontSize: '12px', 
+                      color: '#df2020', 
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '2px 6px',
+                      backgroundColor: '#fff',
+                      borderRadius: '4px',
+                      border: '1px solid #df2020'
+                    }}
+                  >
+                    {tag.name}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onTagFilter) {
+                          onTagFilter(tag.id);
+                        }
+                      }}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#df2020',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        padding: '0',
+                        marginLeft: '4px',
+                        lineHeight: '1',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#c41a1a';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = '#df2020';
+                      }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
           )}
           <div className="content-slider mb-50">

@@ -291,6 +291,12 @@ const ShopGrid = () => {
     });
   };
 
+  // Handler to clear all tags
+  const handleClearAllTags = () => {
+    setSelectedTags([]);
+    setCurrentPage(1);
+  };
+
   // Handler to clear all filters
   const handleClearFilters = () => {
     setSelectedCategory(null);
@@ -746,6 +752,7 @@ const ShopGrid = () => {
               onCategoryFilter={handleCategoryFilter}
               selectedCategory={selectedCategory}
               onTagFilter={handleTagFilter}
+              onClearAllTags={handleClearAllTags}
               selectedTags={selectedTags}
               productTags={productTags}
             />
