@@ -113,12 +113,12 @@ const ProductCard = ({ product }) => {
               to="/login"
               style={{
                 fontSize: '12px',
-                fontWeight: '600',
+                fontWeight: 'normal',
                 color: '#111A45',
-                textDecoration: 'underline'
+                textDecoration: 'none'
               }}
             >
-              Sign In to see pricing
+              <strong style={{ fontWeight: '900', fontFamily: 'DM Sans, sans-serif' }}>Sign In</strong> to see pricing
             </Link>
           )}
         </div>

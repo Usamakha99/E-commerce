@@ -689,19 +689,36 @@ const ProductDetail = () => {
 
                                 {/* Stock Status */}
                                 <div style={{
-                                  marginTop: '12px',
+                                  marginTop: '14px',
                                   display: 'flex',
                                   alignItems: 'center',
-                                  justifyContent: 'center'
+                                  justifyContent: 'center',
+                                  gap: '6px'
                                 }}>
-                                  <span style={{ fontSize: '12px', color: '#666', marginRight: '5px' }}>
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                      <polyline points="23 4 23 10 17 10"></polyline>
-                                      <polyline points="1 20 1 14 7 14"></polyline>
-                                      <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                                    </svg>
+                                  <span style={{ 
+                                    fontSize: '13px', 
+                                    color: product.stock === 0 ? '#999' : '#16A34A',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                  }}>
+                                    {product.stock === 0 ? (
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                      </svg>
+                                    ) : (
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                      </svg>
+                                    )}
                                   </span>
-                                  <span style={{ fontSize: '14px', color: '#000', fontWeight: '600' }}>
+                                  <span style={{ 
+                                    fontSize: '13px', 
+                                    color: product.stock === 0 ? '#999' : '#000', 
+                                    fontWeight: '400',
+                                    fontFamily: 'DM Sans, sans-serif'
+                                  }}>
                                     {product.stock === 0 ? 'Out of Stock' : `In Stock${product.stock ? `: ${product.stock}` : ''}`}
                                   </span>
                                 </div>
@@ -1012,6 +1029,7 @@ const ProductDetail = () => {
           isOpen={showInquiryModal}
           onClose={() => setShowInquiryModal(false)}
           productName={product.name}
+          productId={product.id}
         />
       </main>
     </>

@@ -82,6 +82,13 @@ export const API_ENDPOINTS = {
     delete: (id) => `/producttags/${id}`,
     addProducts: (id) => `/producttags/${id}/products`,
   },
+  
+  // Product Inquiries
+  productInquiries: {
+    create: '/productinquiries', // Try: '/product-inquiries' or '/inquiries' if 404
+    getAll: '/productinquiries',
+    getById: (id) => `/productinquiries/${id}`,
+  },
 };
 
 export default API_CONFIG;

@@ -257,7 +257,7 @@ const Header = () => {
                 fontFamily: 'Space Grotesk, sans-serif',
                 fontWeight: '600'
               }}>
-                AI Marketplace
+                AI Store 
               </Link>
 
               {/* Vendors Dropdown - COMMENTED OUT */}
