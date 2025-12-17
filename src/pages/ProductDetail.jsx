@@ -589,7 +589,7 @@ const ProductDetail = () => {
                   )} */}
 
 
-                        <div className="buy-product mt-25">
+                        {/* <div className="buy-product mt-25">
                           <div className="font-sm text-quantity mb-10">Quantity</div>
                           <div className="box-quantity">
                             <div className="input-quantity">
@@ -625,7 +625,7 @@ const ProductDetail = () => {
                               </button>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="col-lg-5 col-md-5">
                         <div className="pl-30 pl-mb-0">
