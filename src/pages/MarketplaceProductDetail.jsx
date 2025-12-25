@@ -808,9 +808,9 @@ const MarketplaceProductDetail = () => {
 
                   {/* Description */}
                   <p style={{
-                    fontSize: '15px',
+                    fontSize: '14px',
                     fontWeight: '400',
-                    color: '#16191f',
+                    color: '#000000',
                     lineHeight: '1.7',
                     margin: '0 0 14px 0',
                     fontFamily: 'inherit'
@@ -960,7 +960,7 @@ const MarketplaceProductDetail = () => {
                   style={{
                     padding: '12px 24px',
                     border: 'none',
-                    backgroundColor: isActive ? '#111A45' : 'white',
+                    backgroundColor: isActive ? '#df2020' : 'white',
                     color: isActive ? 'white' : '#16191f',
                     borderRadius: '25px',
                     cursor: 'pointer',
@@ -969,7 +969,7 @@ const MarketplaceProductDetail = () => {
                     fontFamily: 'inherit',
                     whiteSpace: 'nowrap',
                     transition: 'all 0.3s ease',
-                    boxShadow: isActive ? '0 4px 12px rgba(17, 26, 69, 0.3)' : '0 1px 3px rgba(0,0,0,0.08)',
+                    boxShadow: isActive ? '0 4px 12px rgba(223, 32, 32, 0.3)' : '0 1px 3px rgba(0,0,0,0.08)',
                     position: 'relative'
                   }}
                   onMouseEnter={(e) => {
@@ -1347,15 +1347,15 @@ const MarketplaceProductDetail = () => {
                   overflow: 'hidden'
                 }}>
                   <div style={{
-                    fontSize: '15px',
-                    color: '#16191f',
+                    fontSize: '14px',
+                    color: '#000000',
                     lineHeight: '1.8',
                     fontFamily: 'inherit',
                     maxHeight: isDescriptionExpanded ? 'none' : '120px',
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease'
                   }}>
-                    <p style={{ margin: 0 }}>{product.overview}</p>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#000000' }}>{product.overview}</p>
                   </div>
 
                   {/* See More/Less Button - Modern & Spicy */}
@@ -1368,56 +1368,75 @@ const MarketplaceProductDetail = () => {
                       <button
                         onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                         style={{
-                          background: isDescriptionExpanded 
-                            ? '#111A45'
-                            : 'rgba(17, 26, 69, 0.08)',
-                          border: '1px solid transparent',
-                          backgroundClip: 'padding-box',
-                          color: isDescriptionExpanded ? 'white' : '#111A45',
-                          fontSize: '13px',
+                          fontSize: '15px',
                           fontWeight: '600',
+                          color: '#007185',
+                          backgroundColor: 'transparent',
+                          border: '2px solid #007185',
+                          borderRadius: '25px',
+                          padding: '12px 28px',
                           cursor: 'pointer',
                           fontFamily: 'inherit',
-                          padding: '8px 20px',
-                          borderRadius: '20px',
-                          transition: 'all 0.3s ease',
-                          boxShadow: isDescriptionExpanded 
-                            ? '0 4px 15px rgba(17, 26, 69, 0.25)' 
-                            : '0 2px 8px rgba(0,0,0,0.06)',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '6px',
+                          justifyContent: 'center',
+                          gap: '10px',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          boxShadow: 'none',
+                          minWidth: '150px',
+                          whiteSpace: 'nowrap',
                           position: 'relative',
                           overflow: 'hidden'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 6px 20px rgba(17, 26, 69, 0.3)';
+                          e.currentTarget.style.backgroundColor = '#E6F4F7';
+                          e.currentTarget.style.color = '#007185';
+                          e.currentTarget.style.borderColor = '#007185';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 113, 133, 0.15)';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.transform = 'translateY(0)';
-                          if (isDescriptionExpanded) {
-                            e.target.style.boxShadow = '0 4px 15px rgba(17, 26, 69, 0.25)';
-                          } else {
-                            e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
-                          }
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#007185';
+                          e.currentTarget.style.borderColor = '#007185';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = 'none';
                         }}
                       >
-                        {isDescriptionExpanded ? (
-                          <>
-                            Show less
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </>
-                        ) : (
-                          <>
-                            Show more
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </>
-                        )}
+                        <span style={{ position: 'relative', zIndex: 1 }}>
+                          {isDescriptionExpanded ? 'Show less' : 'Show more'}
+                        </span>
+                        <svg 
+                          width="18" 
+                          height="18" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          xmlns="http://www.w3.org/2000/svg"
+                          style={{
+                            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            transform: isDescriptionExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                            position: 'relative',
+                            zIndex: 1
+                          }}
+                        >
+                          {isDescriptionExpanded ? (
+                            <path 
+                              d="M18 15L12 9L6 15" 
+                              stroke="currentColor" 
+                              strokeWidth="2.5" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                            />
+                          ) : (
+                            <path 
+                              d="M6 9L12 15L18 9" 
+                              stroke="currentColor" 
+                              strokeWidth="2.5" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                            />
+                          )}
+                        </svg>
                       </button>
                     </div>
                   )}
@@ -3030,33 +3049,42 @@ const MarketplaceProductDetail = () => {
                   style={{
                     fontSize: '15px',
                     fontWeight: '600',
-                    color: 'white',
-                    backgroundColor: '#111A45',
-                    border: 'none',
+                    color: '#007185',
+                    backgroundColor: 'transparent',
+                    border: '2px solid #007185',
                     borderRadius: '25px',
-                    padding: '12px 24px',
+                    padding: '12px 28px',
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '10px',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)',
-                    minWidth: '140px'
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: 'none',
+                    minWidth: '150px',
+                    whiteSpace: 'nowrap',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#1a2555';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.4)';
+                    e.currentTarget.style.backgroundColor = '#E6F4F7';
+                    e.currentTarget.style.color = '#007185';
+                    e.currentTarget.style.borderColor = '#007185';
                     e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 113, 133, 0.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#111A45';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#007185';
+                    e.currentTarget.style.borderColor = '#007185';
                     e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  <span>{isComparisonExpanded ? 'Show less' : 'Show more'}</span>
+                  <span style={{ position: 'relative', zIndex: 1 }}>
+                    {isComparisonExpanded ? 'Show less' : 'Show more'}
+                  </span>
                   <svg 
                     width="18" 
                     height="18" 
@@ -3064,8 +3092,10 @@ const MarketplaceProductDetail = () => {
                     fill="none" 
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
-                      transition: 'transform 0.3s ease',
-                      transform: isComparisonExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transform: isComparisonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      position: 'relative',
+                      zIndex: 1
                     }}
                   >
                     {isComparisonExpanded ? (
