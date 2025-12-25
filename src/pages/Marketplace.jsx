@@ -52,18 +52,54 @@ const Marketplace = () => {
           categoryId: categoryId,
         });
         
-        // Handle response structure - adjust based on your API response format
-        // API might return: { data: [...], total: 100 } or just [...]
-        if (Array.isArray(response)) {
-          setAgents(response);
-          setTotalAgents(response.length);
-        } else if (response.data && Array.isArray(response.data)) {
-          setAgents(response.data);
-          setTotalAgents(response.total || response.data.length);
-        } else {
-          setAgents([]);
-          setTotalAgents(0);
+        // Debug: Log API response structure
+        console.log('==========================================');
+        console.log('🔍 MARKETPLACE API RESPONSE:');
+        console.log('==========================================');
+        console.log('Full Response:', response);
+        console.log('Response Type:', typeof response);
+        console.log('Is Array:', Array.isArray(response));
+        console.log('Has success:', response?.success);
+        console.log('Has data:', !!response?.data);
+        console.log('Has pagination:', !!response?.pagination);
+        console.log('==========================================');
+        
+        // Handle API response structure according to documentation:
+        // Expected: { success: true, data: [...], pagination: {...} }
+        let agentsList = [];
+        let total = 0;
+        
+        if (response && typeof response === 'object') {
+          // Check for { success: true, data: [...], pagination: {...} } format
+          if (response.success === true && Array.isArray(response.data)) {
+            agentsList = response.data;
+            total = response.pagination?.total || response.pagination?.totalCount || response.data.length;
+            console.log('✅ Response format: { success: true, data: [...], pagination: {...} }');
+          } 
+          // Check for { data: [...], pagination: {...} } format
+          else if (Array.isArray(response.data) && response.pagination) {
+            agentsList = response.data;
+            total = response.pagination.total || response.pagination.totalCount || response.data.length;
+            console.log('✅ Response format: { data: [...], pagination: {...} }');
+          }
+          // Check for direct array response
+          else if (Array.isArray(response)) {
+            agentsList = response;
+            total = response.length;
+            console.log('✅ Response format: direct array');
+          }
+          // Check for { data: [...] } format
+          else if (Array.isArray(response.data)) {
+            agentsList = response.data;
+            total = response.total || response.count || response.data.length;
+            console.log('✅ Response format: { data: [...] }');
+          }
         }
+        
+        console.log(`✅ Extracted ${agentsList.length} agents, Total: ${total}`);
+        
+        setAgents(agentsList);
+        setTotalAgents(total);
       } catch (err) {
         console.error('Error fetching AI agents:', err);
         setError(err.message || 'Failed to fetch AI agents');

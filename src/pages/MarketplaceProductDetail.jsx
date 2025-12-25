@@ -36,18 +36,94 @@ const MarketplaceProductDetail = () => {
       setError(null);
       
       try {
+        // Make API call via service
+        // This calls: GET http://localhost:5000/api/aiagents/:id
+        console.log(`🔗 Calling API: GET http://localhost:5000/api/aiagents/${id}`);
         const response = await aiAgentService.getAgentById(id);
         
-        // Handle response structure - adjust based on your API response format
-        const agentData = response.data || response;
+        // ============================================
+        // 🔍 ACTUAL API RESPONSE - YE PEECHE SE AA RAHA HAI
+        // ============================================
+        console.log('==========================================');
+        console.log('📥 API RESPONSE (Pechey se aa raha hai):');
+        console.log('==========================================');
+        console.log('Full Response Object:', response);
+        console.log('Response Type:', typeof response);
+        console.log('Is Array:', Array.isArray(response));
+        console.log('Response Keys:', response ? Object.keys(response) : 'null');
+        console.log('');
+        console.log('Full JSON Response:');
+        console.log(JSON.stringify(response, null, 2));
+        console.log('');
         
-        // Debug: Log the API response to see what data is coming
-        console.log('📦 API Response:', agentData);
-        console.log('📦 Full Response:', response);
+        // Check response structure
+        if (response?.success !== undefined) {
+          console.log('✅ Has success property:', response.success);
+        }
+        if (response?.data) {
+          console.log('✅ Has data property');
+          console.log('   Data Type:', typeof response.data);
+          console.log('   Data Keys:', Object.keys(response.data));
+        }
+        if (response?.id || response?.name) {
+          console.log('✅ Response is direct agent object');
+          console.log('   ID:', response.id);
+          console.log('   Name:', response.name);
+        }
+        console.log('==========================================\n');
+        
+        // Extract agent data from API response
+        // Handle different response formats: { success: true, data: {...} } or direct object
+        let agentData = null;
+        
+        if (response && typeof response === 'object') {
+          // Format 1: { success: true, data: {...} }
+          if (response.success === true && response.data && typeof response.data === 'object') {
+            agentData = response.data;
+            console.log('✅ Using Format: { success: true, data: {...} }');
+          } 
+          // Format 2: { data: {...} }
+          else if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
+            agentData = response.data;
+            console.log('✅ Using Format: { data: {...} }');
+          } 
+          // Format 3: Direct agent object { id, name, ... }
+          else if (response.id || response.name) {
+            agentData = response;
+            console.log('✅ Using Format: Direct agent object');
+          }
+        }
+        
+        if (!agentData) {
+          console.error('❌ Could not extract agent data from response');
+          throw new Error('No agent data received from API');
+        }
+        
+        // Log extracted agent data
+        console.log('==========================================');
+        console.log('📦 EXTRACTED AGENT DATA:');
+        console.log('==========================================');
+        console.log('Agent Data:', agentData);
+        console.log('Agent ID:', agentData.id);
+        console.log('Agent Name:', agentData.name);
+        console.log('');
+        console.log('Has featuresContent:', !!agentData.featuresContent);
+        console.log('Has resourcesContent:', !!agentData.resourcesContent);
+        console.log('Has supportContent:', !!agentData.supportContent);
+        console.log('Has productComparisonContent:', !!agentData.productComparisonContent);
+        console.log('Has pricingContent:', !!agentData.pricingContent);
+        console.log('');
+        console.log('All Agent Keys:', Object.keys(agentData));
+        console.log('==========================================\n');
         
         setAgent(agentData);
       } catch (err) {
-        console.error('Error fetching AI agent:', err);
+        console.error('❌ Error fetching AI agent:', err);
+        console.error('Error details:', {
+          message: err.message,
+          response: err.response?.data,
+          status: err.response?.status
+        });
         setError(err.message || 'Failed to fetch AI agent details');
         setAgent(null);
       } finally {
@@ -82,6 +158,59 @@ const MarketplaceProductDetail = () => {
       highlightsList = [];
     }
 
+    // Handle nested content objects from API
+    const featuresContent = agent.featuresContent || agent.features_content || {};
+    const resourcesContent = agent.resourcesContent || agent.resources_content || {};
+    const supportContent = agent.supportContent || agent.support_content || {};
+    const productComparisonContent = agent.productComparisonContent || agent.product_comparison_content || {};
+    const pricingContent = agent.pricingContent || agent.pricing_content || {};
+    
+    // Debug: Log all featuresContent fields to see ACTUAL API structure
+    console.log('==========================================');
+    console.log('🔍 ACTUAL featuresContent FROM API:');
+    console.log('==========================================');
+    console.log('Full featuresContent Object:', featuresContent);
+    console.log('Type:', typeof featuresContent);
+    console.log('Is Array:', Array.isArray(featuresContent));
+    console.log('All Keys:', Object.keys(featuresContent));
+    console.log('');
+    console.log('Checking each field:');
+    Object.keys(featuresContent).forEach(key => {
+      console.log(`  ${key}:`, featuresContent[key], `(type: ${typeof featuresContent[key]})`);
+    });
+    console.log('');
+    console.log('Complete JSON:');
+    console.log(JSON.stringify(featuresContent, null, 2));
+    console.log('==========================================');
+    
+    // Debug: Log all resourcesContent fields to see ACTUAL API structure
+    console.log('==========================================');
+    console.log('🔍 ACTUAL resourcesContent FROM API:');
+    console.log('==========================================');
+    console.log('Full resourcesContent Object:', resourcesContent);
+    console.log('Type:', typeof resourcesContent);
+    console.log('Is Array:', Array.isArray(resourcesContent));
+    console.log('All Keys:', Object.keys(resourcesContent));
+    console.log('');
+    console.log('Checking each field:');
+    Object.keys(resourcesContent).forEach(key => {
+      console.log(`  ${key}:`, resourcesContent[key], `(type: ${typeof resourcesContent[key]})`);
+      // Check nested vendorResources
+      if (key === 'vendorResources' || key === 'vendor_resources') {
+        console.log(`    vendorResources type:`, typeof resourcesContent[key]);
+        console.log(`    vendorResources keys:`, Object.keys(resourcesContent[key] || {}));
+        if (resourcesContent[key]?.links) {
+          console.log(`    vendorResources.links:`, resourcesContent[key].links);
+          console.log(`    vendorResources.links length:`, resourcesContent[key].links?.length);
+        }
+      }
+    });
+    console.log('');
+    console.log('vendorResources.links:', resourcesContent.vendorResources?.links);
+    console.log('Complete JSON:');
+    console.log(JSON.stringify(resourcesContent, null, 2));
+    console.log('==========================================');
+
     const mapped = {
       id: agent.id,
       name: agent.name || agent.title || 'Unnamed Agent',
@@ -97,8 +226,12 @@ const MarketplaceProductDetail = () => {
       highlights: highlightsList,
       // Additional fields from API
       category: getCategoryName(agent.category) || agent.categoryName || agent.category_name || null,
-      categoryId: agent.categoryId || agent.category_id || (agent.category && typeof agent.category === 'object' ? agent.category.id : null) || null,
+      categoryId: agent.categoryId || agent.category_id || (agent.category && typeof agent.category === 'object' ? agent.category.id : null) || (agent.categoryIds && Array.isArray(agent.categoryIds) && agent.categoryIds.length > 0 ? agent.categoryIds[0] : null) || null,
+      categoryIds: agent.categoryIds || agent.category_ids || (agent.categoryId ? [agent.categoryId] : []) || [],
       deliveryMethod: agent.deliveryMethod || agent.delivery_method || agent.deliveryType || agent.delivery_type || null,
+      deliveryMethodId: agent.deliveryMethodId || agent.delivery_method_id || null,
+      publisherId: agent.publisherId || agent.publisher_id || null,
+      soldBy: agent.soldBy || agent.sold_by || agent.provider || null,
       deployedOnAWS: agent.deployedOnAWS || agent.deployed_on_aws || agent.awsDeployed || agent.aws_deployed || false,
       freeTrial: agent.freeTrial || agent.free_trial || false,
       pricing: agent.pricing || agent.price || agent.cost || null,
@@ -107,28 +240,271 @@ const MarketplaceProductDetail = () => {
       website: agent.website || agent.url || agent.homepage || agent.homePage || null,
       createdAt: agent.createdAt || agent.created_at || agent.createdDate || null,
       updatedAt: agent.updatedAt || agent.updated_at || agent.updatedDate || null,
-      // Features & Programs
-      features: agent.features || agent.featureList || agent.featuresList || [],
-      trustCenterUrl: agent.trustCenterUrl || agent.trust_center_url || agent.trustCenter || null,
-      buyerGuideUrl: agent.buyerGuideUrl || agent.buyer_guide_url || agent.buyerGuide || null,
-      // Resources
-      resources: agent.resources || agent.resourceLinks || agent.resource_links || [],
-      resourceLinks: agent.resourceLinks || agent.resource_links || agent.resources || [],
-      resourceVideos: agent.resourceVideos || agent.resource_videos || agent.videos || [],
-      // Support
-      supportDescription: agent.supportDescription || agent.support_description || agent.supportInfo || null,
-      supportEmail: agent.supportEmail || agent.support_email || agent.email || null,
-      supportPhone: agent.supportPhone || agent.support_phone || agent.phone || null,
-      awsSupportUrl: agent.awsSupportUrl || agent.aws_support_url || null,
-      // Product Comparison
-      comparisonProducts: agent.comparisonProducts || agent.comparison_products || agent.similarProducts || [],
-      accolades: agent.accolades || agent.awards || [],
-      // Pricing & How to Buy
-      pricingPlans: agent.pricingPlans || agent.pricing_plans || agent.plans || [],
-      pricingOptions: agent.pricingOptions || agent.pricing_options || [],
-      pricingDescription: agent.pricingDescription || agent.pricing_description || null,
-      contractType: agent.contractType || agent.contract_type || null,
-      standardContract: agent.standardContract || agent.standard_contract || false,
+      // Features & Programs - Extract ONLY from featuresContent, NOT from overview
+      // DO NOT use agent.overview or agent.description here - those are for Overview tab
+      features: (() => {
+        // ONLY check featuresContent object fields, NOT agent overview/description
+        let featuresList = featuresContent.features || 
+                          featuresContent.featureList || 
+                          featuresContent.list || 
+                          featuresContent.items ||
+                          featuresContent.featureItems ||
+                          featuresContent.featuresList ||
+                          featuresContent.data ||
+                          featuresContent.programs ||
+                          featuresContent.programsList ||
+                          [];
+        
+        // Handle string format
+        if (typeof featuresList === 'string') {
+          try {
+            featuresList = JSON.parse(featuresList);
+          } catch {
+            featuresList = featuresList.split(/\n|,|;/).filter(f => f.trim());
+          }
+        }
+        
+        // Handle if it's an object with nested arrays
+        if (typeof featuresList === 'object' && !Array.isArray(featuresList)) {
+          // Try to extract array from object
+          if (featuresList.items) featuresList = featuresList.items;
+          else if (featuresList.data) featuresList = featuresList.data;
+          else if (featuresList.features) featuresList = featuresList.features;
+          else featuresList = [];
+        }
+        
+        // Ensure it's an array
+        if (!Array.isArray(featuresList)) {
+          featuresList = [];
+        }
+        
+        return featuresList;
+      })(),
+      // Trust Center - Can be object with {title, description, buttonText, buttonLink} or just URL string
+      trustCenter: (() => {
+        const trustCenter = featuresContent.trustCenterUrl || featuresContent.trust_center_url || featuresContent.trustCenter || featuresContent.trustCenterURL || null;
+        if (!trustCenter) return null;
+        
+        // If it's an object, return it as is
+        if (typeof trustCenter === 'object') {
+          return {
+            title: trustCenter.title || 'Trust Center',
+            description: trustCenter.description || 'Access real-time vendor security and compliance information through their Trust Center.',
+            buttonText: trustCenter.buttonText || trustCenter.buttonText || 'View Trust Center',
+            buttonLink: trustCenter.buttonLink || trustCenter.url || trustCenter.link || '#'
+          };
+        }
+        
+        // If it's a string URL, return as object
+        if (typeof trustCenter === 'string') {
+          return {
+            title: 'Trust Center',
+            description: 'Access real-time vendor security and compliance information through their Trust Center.',
+            buttonText: 'View Trust Center',
+            buttonLink: trustCenter
+          };
+        }
+        
+        return null;
+      })(),
+      trustCenterUrl: (() => {
+        const trustCenter = featuresContent.trustCenterUrl || featuresContent.trust_center_url || featuresContent.trustCenter || featuresContent.trustCenterURL || null;
+        if (!trustCenter) return null;
+        // Return URL for backward compatibility
+        return typeof trustCenter === 'object' ? (trustCenter.buttonLink || trustCenter.url || trustCenter.link || null) : trustCenter;
+      })(),
+      
+      // Buyer Guide - Can be object with {title, description, buttonText, buttonLink} or just URL string
+      buyerGuide: (() => {
+        const buyerGuide = featuresContent.buyerGuideUrl || featuresContent.buyer_guide_url || featuresContent.buyerGuide || featuresContent.buyerGuideURL || null;
+        if (!buyerGuide) return null;
+        
+        // If it's an object, return it as is
+        if (typeof buyerGuide === 'object') {
+          return {
+            title: buyerGuide.title || 'Buyer Guide',
+            description: buyerGuide.description || 'Gain valuable insights from real users who purchased this product.',
+            buttonText: buyerGuide.buttonText || buyerGuide.button_text || 'Get the Buyer Guide',
+            buttonLink: buyerGuide.buttonLink || buyerGuide.url || buyerGuide.link || '#'
+          };
+        }
+        
+        // If it's a string URL, return as object
+        if (typeof buyerGuide === 'string') {
+          return {
+            title: 'Buyer Guide',
+            description: 'Gain valuable insights from real users who purchased this product.',
+            buttonText: 'Get the Buyer Guide',
+            buttonLink: buyerGuide
+          };
+        }
+        
+        return null;
+      })(),
+      buyerGuideUrl: (() => {
+        const buyerGuide = featuresContent.buyerGuideUrl || featuresContent.buyer_guide_url || featuresContent.buyerGuide || featuresContent.buyerGuideURL || null;
+        if (!buyerGuide) return null;
+        // Return URL for backward compatibility
+        return typeof buyerGuide === 'object' ? (buyerGuide.buttonLink || buyerGuide.url || buyerGuide.link || null) : buyerGuide;
+      })(),
+      // Store ALL featuresContent data for comprehensive display
+      featuresData: featuresContent,
+      // Only use description if it's specifically in featuresContent and NOT the same as overview
+      featuresDescription: (featuresContent.description && featuresContent.description !== agent.overview) 
+        ? featuresContent.description 
+        : (featuresContent.desc && featuresContent.desc !== agent.overview) 
+          ? featuresContent.desc 
+          : null,
+      featuresTitle: featuresContent.title || featuresContent.name || null,
+      featuresSections: featuresContent.sections || featuresContent.categories || null,
+      // Programs data
+      programs: featuresContent.programs || featuresContent.programsList || featuresContent.programList || [],
+      // Resources - Extract ONLY from resourcesContent, NOT from agent overview/description
+      resources: (() => {
+        // Check vendorResources.links first, then other fields
+        let resourcesList = resourcesContent.vendorResources?.links ||
+                           resourcesContent.vendor_resources?.links ||
+                           resourcesContent.resources || 
+                           resourcesContent.resourceLinks || 
+                           resourcesContent.links || 
+                           resourcesContent.list ||
+                           resourcesContent.items ||
+                           resourcesContent.resourceList ||
+                           resourcesContent.data ||
+                           [];
+        
+        // Handle string format
+        if (typeof resourcesList === 'string') {
+          try {
+            resourcesList = JSON.parse(resourcesList);
+          } catch {
+            resourcesList = resourcesList.split(/\n|,|;/).filter(r => r.trim());
+          }
+        }
+        
+        // Handle if it's an object with nested arrays
+        if (typeof resourcesList === 'object' && !Array.isArray(resourcesList)) {
+          if (resourcesList.items) resourcesList = resourcesList.items;
+          else if (resourcesList.data) resourcesList = resourcesList.data;
+          else if (resourcesList.resources) resourcesList = resourcesList.resources;
+          else if (resourcesList.links) resourcesList = resourcesList.links;
+          else resourcesList = [];
+        }
+        
+        // Ensure it's an array
+        if (!Array.isArray(resourcesList)) {
+          resourcesList = [];
+        }
+        
+        return resourcesList;
+      })(),
+      resourceLinks: (() => {
+        // Extract links from resourcesContent - Check vendorResources.links first
+        let links = resourcesContent.vendorResources?.links ||
+                    resourcesContent.vendor_resources?.links ||
+                    resourcesContent.resourceLinks || 
+                    resourcesContent.links || 
+                    resourcesContent.linkList ||
+                    resourcesContent.resources || // Sometimes resources is the links array
+                    [];
+        
+        // Handle string format
+        if (typeof links === 'string') {
+          try {
+            links = JSON.parse(links);
+          } catch {
+            links = links.split(/\n|,|;/).filter(l => l.trim());
+          }
+        }
+        
+        // Handle if it's an object with nested arrays
+        if (typeof links === 'object' && !Array.isArray(links)) {
+          if (links.items) links = links.items;
+          else if (links.data) links = links.data;
+          else if (links.links) links = links.links;
+          else links = [];
+        }
+        
+        if (!Array.isArray(links)) {
+          links = [];
+        }
+        
+        return links;
+      })(),
+      resourceVideos: (() => {
+        // Extract videos from resourcesContent
+        let videos = resourcesContent.videos || 
+                     resourcesContent.resourceVideos || 
+                     resourcesContent.videoList ||
+                     resourcesContent.videoLinks ||
+                     [];
+        
+        // Handle string format
+        if (typeof videos === 'string') {
+          try {
+            videos = JSON.parse(videos);
+          } catch {
+            videos = videos.split(/\n|,|;/).filter(v => v.trim());
+          }
+        }
+        
+        // Handle if it's an object with nested arrays
+        if (typeof videos === 'object' && !Array.isArray(videos)) {
+          if (videos.items) videos = videos.items;
+          else if (videos.data) videos = videos.data;
+          else if (videos.videos) videos = videos.videos;
+          else videos = [];
+        }
+        
+        if (!Array.isArray(videos)) {
+          videos = [];
+        }
+        
+        return videos;
+      })(),
+      resourcesData: resourcesContent, // Store full resourcesContent object
+      resourcesDescription: resourcesContent.description || resourcesContent.desc || null,
+      resourcesTitle: resourcesContent.title || resourcesContent.name || null,
+      // Support - from supportContent object or direct fields
+      supportDescription: supportContent.description || supportContent.info || agent.supportDescription || agent.support_description || agent.supportInfo || null,
+      supportEmail: supportContent.email || agent.supportEmail || agent.support_email || agent.email || null,
+      supportPhone: supportContent.phone || agent.supportPhone || agent.support_phone || agent.phone || null,
+      awsSupportUrl: supportContent.awsSupportUrl || supportContent.aws_support_url || agent.awsSupportUrl || agent.aws_support_url || null,
+      supportData: supportContent, // Store full supportContent object
+      // Product Comparison - Extract from comparisonData array structure
+      comparisonData: productComparisonContent, // Store full productComparisonContent object
+      comparisonProducts: (() => {
+        // Check if comparisonData array exists with products
+        if (productComparisonContent.comparisonData && Array.isArray(productComparisonContent.comparisonData) && productComparisonContent.comparisonData.length > 0) {
+          // Get products from first comparisonData item
+          const firstComparison = productComparisonContent.comparisonData[0];
+          if (firstComparison.products && Array.isArray(firstComparison.products)) {
+            return firstComparison.products;
+          }
+        }
+        // Fallback to other field names
+        return productComparisonContent.products || 
+               productComparisonContent.comparisonProducts || 
+               agent.comparisonProducts || 
+               agent.comparison_products || 
+               agent.similarProducts || [];
+      })(),
+      comparisonTitle: (() => {
+        // Get comparison title from comparisonData
+        if (productComparisonContent.comparisonData && Array.isArray(productComparisonContent.comparisonData) && productComparisonContent.comparisonData.length > 0) {
+          return productComparisonContent.comparisonData[0].comparison_title || null;
+        }
+        return productComparisonContent.title || productComparisonContent.comparisonTitle || null;
+      })(),
+      updatedWeekly: productComparisonContent.updatedWeekly || productComparisonContent.updated_weekly || false,
+      accolades: productComparisonContent.accolades || agent.accolades || agent.awards || [],
+      // Pricing & How to Buy - from pricingContent object or direct fields (but keep hardcoded for display)
+      pricingPlans: pricingContent.plans || pricingContent.pricingPlans || agent.pricingPlans || agent.pricing_plans || agent.plans || [],
+      pricingOptions: pricingContent.options || pricingContent.pricingOptions || agent.pricingOptions || agent.pricing_options || [],
+      pricingDescription: pricingContent.description || agent.pricingDescription || agent.pricing_description || null,
+      contractType: pricingContent.contractType || pricingContent.contract_type || agent.contractType || agent.contract_type || null,
+      standardContract: pricingContent.standardContract || pricingContent.standard_contract || agent.standardContract || agent.standard_contract || false,
+      pricingData: pricingContent, // Store full pricingContent object
       // Store original agent object for access to any other fields
       _original: agent,
       breadcrumbs: [
@@ -140,6 +516,21 @@ const MarketplaceProductDetail = () => {
 
     // Debug: Log mapped product to see what's available
     console.log('📦 Mapped Product Data:', mapped);
+    console.log('📦 Features Content:', featuresContent);
+    console.log('📦 Features Array:', mapped.features);
+    console.log('📦 Trust Center Object:', mapped.trustCenter);
+    console.log('📦 Trust Center URL:', mapped.trustCenterUrl);
+    console.log('📦 Buyer Guide Object:', mapped.buyerGuide);
+    console.log('📦 Buyer Guide URL:', mapped.buyerGuideUrl);
+    console.log('📦 Features Content trustCenterUrl field:', featuresContent.trustCenterUrl);
+    console.log('📦 Features Content buyerGuideUrl field:', featuresContent.buyerGuideUrl);
+    console.log('📦 Resources Content:', resourcesContent);
+    console.log('📦 Support Content:', supportContent);
+    console.log('📦 Product Comparison Content:', productComparisonContent);
+    console.log('📦 Comparison Products:', mapped.comparisonProducts);
+    console.log('📦 Comparison Title:', mapped.comparisonTitle);
+    console.log('📦 Updated Weekly:', mapped.updatedWeekly);
+    console.log('📦 Pricing Content:', pricingContent);
     
     return mapped;
   })() : {
@@ -1048,6 +1439,145 @@ const MarketplaceProductDetail = () => {
 
               {/* Features Cards Grid */}
               <div className="row">
+                {/* Features Description - Only show if it's NOT overview data */}
+                {product.featuresDescription && 
+                 product.featuresDescription !== product.overview && 
+                 product.featuresDescription !== agent?.overview && (
+                  <div className="col-12 mb-4">
+                    <div style={{
+                      border: '1px solid #D5D9D9',
+                      borderRadius: '8px',
+                      padding: '24px',
+                      backgroundColor: 'white'
+                    }}>
+                      {product.featuresTitle && (
+                        <h3 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          color: '#16191f',
+                          marginBottom: '12px',
+                          fontFamily: 'inherit'
+                        }}>
+                          {product.featuresTitle}
+                        </h3>
+                      )}
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#16191f',
+                        lineHeight: '1.6',
+                        fontFamily: 'inherit',
+                        margin: 0
+                      }}>
+                        {product.featuresDescription}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Features List - Show if features array exists */}
+                {product.features && Array.isArray(product.features) && product.features.length > 0 && (
+                  <div className="col-12 mb-4">
+                    <div style={{
+                      border: '1px solid #D5D9D9',
+                      borderRadius: '8px',
+                      padding: '24px',
+                      backgroundColor: 'white'
+                    }}>
+                      <h3 style={{
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        color: '#16191f',
+                        marginBottom: '16px',
+                        fontFamily: 'inherit'
+                      }}>
+                        Features
+                      </h3>
+                      <ul style={{
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: 0
+                      }}>
+                        {product.features.map((feature, index) => (
+                          <li key={index} style={{
+                            padding: '8px 0',
+                            borderBottom: index < product.features.length - 1 ? '1px solid #E5E7EB' : 'none',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px'
+                          }}>
+                            <span style={{
+                              color: '#10b981',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              marginTop: '2px'
+                            }}>✓</span>
+                            <span style={{
+                              fontSize: '14px',
+                              color: '#16191f',
+                              fontFamily: 'inherit',
+                              lineHeight: '1.6'
+                            }}>
+                              {typeof feature === 'string' ? feature : feature.name || feature.title || feature.description || feature.text || JSON.stringify(feature)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Programs List - Show if programs array exists */}
+                {product.programs && Array.isArray(product.programs) && product.programs.length > 0 && (
+                  <div className="col-12 mb-4">
+                    <div style={{
+                      border: '1px solid #D5D9D9',
+                      borderRadius: '8px',
+                      padding: '24px',
+                      backgroundColor: 'white'
+                    }}>
+                      <h3 style={{
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        color: '#16191f',
+                        marginBottom: '16px',
+                        fontFamily: 'inherit'
+                      }}>
+                        Programs
+                      </h3>
+                      <ul style={{
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: 0
+                      }}>
+                        {product.programs.map((program, index) => (
+                          <li key={index} style={{
+                            padding: '8px 0',
+                            borderBottom: index < product.programs.length - 1 ? '1px solid #E5E7EB' : 'none',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '10px'
+                          }}>
+                            <span style={{
+                              color: '#007185',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              marginTop: '2px'
+                            }}>📋</span>
+                            <span style={{
+                              fontSize: '14px',
+                              color: '#16191f',
+                              fontFamily: 'inherit',
+                              lineHeight: '1.6'
+                            }}>
+                              {typeof program === 'string' ? program : program.name || program.title || program.description || program.text || JSON.stringify(program)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                
                 {/* Trust Center Card - Only show if URL exists */}
                 {product.trustCenterUrl && (
                 <div className="col-lg-6 mb-4">
@@ -1120,8 +1650,8 @@ const MarketplaceProductDetail = () => {
                 </div>
                 )}
 
-                {/* Buyer Guide Card - Only show if URL exists */}
-                {product.buyerGuideUrl && (
+                {/* Buyer Guide Card - Show if buyerGuide object exists */}
+                {product.buyerGuide && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
                     border: '1px solid #D5D9D9',
@@ -1140,7 +1670,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '16px',
                       fontFamily: 'inherit'
                     }}>
-                      Buyer Guide
+                      {product.buyerGuide.title || 'Buyer Guide'}
                     </h3>
 
                     {/* Description */}
@@ -1151,12 +1681,12 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '20px',
                       fontFamily: 'inherit'
                     }}>
-                      Gain valuable insights from real users who purchased this product.
+                      {product.buyerGuide.description || 'Gain valuable insights from real users who purchased this product.'}
                     </p>
 
                     {/* Button */}
                     <a
-                      href={product.buyerGuideUrl}
+                      href={product.buyerGuide.buttonLink || product.buyerGuideUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -1186,14 +1716,18 @@ const MarketplaceProductDetail = () => {
                         e.target.style.transform = 'translateY(0)';
                       }}
                     >
-                      Get the Buyer Guide →
+                      {product.buyerGuide.buttonText || 'Get the Buyer Guide'} →
                     </a>
                   </div>
                 </div>
                 )}
 
                 {/* Show message if no features available */}
-                {!product.trustCenterUrl && !product.buyerGuideUrl && (
+                {!product.trustCenter && 
+                 !product.buyerGuide && 
+                 (!product.features || !Array.isArray(product.features) || product.features.length === 0) &&
+                 (!product.programs || !Array.isArray(product.programs) || product.programs.length === 0) &&
+                 (!product.featuresData || Object.keys(product.featuresData).length === 0) && (
                   <div className="col-12">
                     <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', textAlign: 'center', padding: '40px' }}>
                       No features and programs available at this time.
@@ -1289,61 +1823,73 @@ const MarketplaceProductDetail = () => {
                 {/* Links Content */}
                 <div style={{ padding: '24px' }}>
                   {(() => {
-                    // Process resource links from API
-                    let resourceLinksList = product.resourceLinks || product.resources || [];
+                    // Use properly extracted resourceLinks from resourcesContent
+                    let resourceLinksList = product.resourceLinks || [];
                     
-                    // Handle different formats
-                    if (typeof resourceLinksList === 'string') {
-                      try {
-                        resourceLinksList = JSON.parse(resourceLinksList);
-                      } catch {
-                        resourceLinksList = [];
-                      }
+                    // If resourceLinks is empty, try resources array
+                    if (!resourceLinksList || resourceLinksList.length === 0) {
+                      resourceLinksList = product.resources || [];
                     }
                     
-                    if (!Array.isArray(resourceLinksList)) {
-                      resourceLinksList = [];
-                    }
-                    
-                    // Also check documentation URL
-                    if (product.documentationUrl && !resourceLinksList.find(r => r.url === product.documentationUrl)) {
+                    // Also check documentation URL from agent
+                    if (product.documentationUrl && !resourceLinksList.find(r => (r.url || r.link || r.href) === product.documentationUrl)) {
                       resourceLinksList.push({ 
                         title: 'Documentation', 
                         url: product.documentationUrl,
-                        name: 'Documentation'
+                        name: 'Documentation',
+                        link: product.documentationUrl
                       });
                     }
                     
+                    // Also check website URL
+                    if (product.website && !resourceLinksList.find(r => (r.url || r.link || r.href) === product.website)) {
+                      resourceLinksList.push({ 
+                        title: 'Website', 
+                        url: product.website,
+                        name: 'Website',
+                        link: product.website
+                      });
+                    }
+                    
+                    console.log('🔗 Resource Links List:', resourceLinksList);
+                    console.log('🔗 Resource Links Count:', resourceLinksList.length);
+                    
                     if (resourceLinksList.length > 0) {
-                      return resourceLinksList.map((resource, index) => (
-                        <div key={index} style={{ marginBottom: index < resourceLinksList.length - 1 ? '16px' : '0' }}>
-                          <a
-                            href={resource.url || resource.link || resource.href || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              fontSize: '14px',
-                              color: '#007185',
-                              textDecoration: 'none',
-                              fontFamily: 'inherit',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '6px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.color = '#C7511F';
-                              e.target.style.textDecoration = 'underline';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = '#007185';
-                              e.target.style.textDecoration = 'none';
-                            }}
-                          >
-                            {resource.title || resource.name || resource.label || `Resource ${index + 1}`}
-                            <span style={{ fontSize: '12px' }}>🔗</span>
-                          </a>
-                        </div>
-                      ));
+                      return resourceLinksList.map((resource, index) => {
+                        // Handle both object and string formats
+                        const resourceUrl = resource.url || resource.link || resource.href || (typeof resource === 'string' ? resource : '#');
+                        const resourceTitle = resource.title || resource.name || resource.label || (typeof resource === 'string' ? resource : `Resource ${index + 1}`);
+                        
+                        return (
+                          <div key={index} style={{ marginBottom: index < resourceLinksList.length - 1 ? '16px' : '0' }}>
+                            <a
+                              href={resourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                fontSize: '14px',
+                                color: '#007185',
+                                textDecoration: 'none',
+                                fontFamily: 'inherit',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.color = '#C7511F';
+                                e.target.style.textDecoration = 'underline';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.color = '#007185';
+                                e.target.style.textDecoration = 'none';
+                              }}
+                            >
+                              {resourceTitle}
+                              <span style={{ fontSize: '12px' }}>🔗</span>
+                            </a>
+                          </div>
+                        );
+                      });
                     } else {
                       return (
                         <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', margin: 0 }}>
@@ -1353,6 +1899,89 @@ const MarketplaceProductDetail = () => {
                     }
                   })()}
                 </div>
+                
+                {/* Videos Content - Show if videos exist */}
+                {product.resourceVideos && Array.isArray(product.resourceVideos) && product.resourceVideos.length > 0 && (
+                  <div style={{ padding: '24px', borderTop: '1px solid #D5D9D9' }}>
+                    {product.resourceVideos.map((video, index) => {
+                      const videoUrl = video.url || video.link || video.href || (typeof video === 'string' ? video : '#');
+                      const videoTitle = video.title || video.name || video.label || (typeof video === 'string' ? video : `Video ${index + 1}`);
+                      const videoThumbnail = video.thumbnail || video.image || video.thumb || null;
+                      
+                      return (
+                        <div key={index} style={{ marginBottom: index < product.resourceVideos.length - 1 ? '20px' : '0' }}>
+                          <a
+                            href={videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px',
+                              textDecoration: 'none',
+                              color: '#16191f',
+                              fontFamily: 'inherit'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.opacity = '0.8';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.opacity = '1';
+                            }}
+                          >
+                            {videoThumbnail ? (
+                              <img 
+                                src={videoThumbnail} 
+                                alt={videoTitle}
+                                style={{
+                                  width: '120px',
+                                  height: '68px',
+                                  objectFit: 'cover',
+                                  borderRadius: '4px',
+                                  backgroundColor: '#f0f0f0'
+                                }}
+                              />
+                            ) : (
+                              <div style={{
+                                width: '120px',
+                                height: '68px',
+                                backgroundColor: '#f0f0f0',
+                                borderRadius: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '24px',
+                                color: '#007185'
+                              }}>
+                                ▶
+                              </div>
+                            )}
+                            <div style={{ flex: 1 }}>
+                              <div style={{
+                                fontSize: '14px',
+                                fontWeight: '600',
+                                color: '#16191f',
+                                marginBottom: '4px',
+                                fontFamily: 'inherit'
+                              }}>
+                                {videoTitle}
+                              </div>
+                              {video.description && (
+                                <div style={{
+                                  fontSize: '12px',
+                                  color: '#6B7280',
+                                  fontFamily: 'inherit'
+                                }}>
+                                  {video.description}
+                                </div>
+                              )}
+                            </div>
+                          </a>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1623,7 +2252,7 @@ const MarketplaceProductDetail = () => {
                     margin: 0,
                     fontFamily: 'inherit'
                   }}>
-                    Compare this product with similar alternatives
+                    {product.updatedWeekly ? 'Updated weekly' : product.comparisonTitle || 'Compare this product with similar alternatives'}
                   </p>
                 </div>
               </div>
@@ -1647,20 +2276,7 @@ const MarketplaceProductDetail = () => {
                   </p>
                 </div>
               ) : (
-                <div style={{
-                  border: '1px solid #D5D9D9',
-                  borderRadius: '8px',
-                  padding: '40px',
-                  backgroundColor: 'white',
-                  textAlign: 'center'
-                }}>
-                  <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', margin: 0 }}>
-                    Comparison products would be displayed here when available.
-                  </p>
-                </div>
-              )}
-
-              {/* Comparison Table */}
+              /* Comparison Table - Display actual products from API */
               <div style={{
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
@@ -1670,531 +2286,732 @@ const MarketplaceProductDetail = () => {
                 {/* Product Headers */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  borderBottom: '1px solid #D5D9D9',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  borderBottom: '2px solid #007185',
                   backgroundColor: '#F7F8F8',
-                  minWidth: isMobile ? '750px' : 'auto'
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto'
                 }}>
-                  <div style={{ padding: '20px' }}></div>
-                  {/* Product 1 */}
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '8px'
-                    }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        backgroundColor: '#000',
-                        borderRadius: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '10px',
-                        color: 'white'
-                      }}>
-                        okta
-                      </div>
-                      <div>
-                        <div style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
-                        }}>
-                          Okta Platform
-                        </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
-                        }}>
-                          by Okta, Inc.
-                        </div>
-                      </div>
-                    </div>
+                  <div style={{ 
+                    padding: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '18px' }}>📊</span>
+                    <span style={{ 
+                      fontSize: '14px', 
+                      fontWeight: '600', 
+                      color: '#16191f',
+                      fontFamily: 'inherit'
+                    }}>Compare</span>
                   </div>
-                  {/* Product 2 */}
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '8px'
-                    }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        backgroundColor: '#4A90E2',
-                        borderRadius: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '10px',
-                        color: 'white'
+                  {/* Dynamic Product Headers from API */}
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    const brandInitials = (compProduct.brand || compProduct.name || 'N/A').substring(0, 2).toUpperCase();
+                    const brandColors = [
+                      { bg: '#000', text: '#fff' },
+                      { bg: '#4A90E2', text: '#fff' },
+                      { bg: '#E53935', text: '#fff' },
+                      { bg: '#10b981', text: '#fff' },
+                      { bg: '#F59E0B', text: '#fff' },
+                      { bg: '#8B5CF6', text: '#fff' },
+                      { bg: '#EC4899', text: '#fff' }
+                    ];
+                    const brandColor = brandColors[index % brandColors.length];
+                    
+                    return (
+                      <div key={index} style={{ 
+                        padding: '20px', 
+                        borderLeft: '1px solid #D5D9D9',
+                        backgroundColor: index === 0 ? '#FFFFFF' : '#FAFAFA',
+                        position: 'relative'
                       }}>
-                        1L
-                      </div>
-                      <div>
                         <div style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          marginBottom: '8px'
                         }}>
-                          OneLogin Workforce Identity
-                        </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
-                        }}>
-                          by OneLogin
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Product 3 */}
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '8px'
-                    }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        backgroundColor: '#E53935',
-                        borderRadius: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '10px',
-                        color: 'white'
-                      }}>
-                        CA
-                      </div>
-                      <div>
-                        <div style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
-                        }}>
-                          CyberArk Workforce Identity
-                        </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: '#16191f',
-                          fontFamily: 'inherit'
-                        }}>
-                          by CyberArk
+                          <div style={{
+                            width: '50px',
+                            height: '50px',
+                            backgroundColor: brandColor.bg,
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '14px',
+                            color: brandColor.text,
+                            fontWeight: 'bold',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                            border: '2px solid #fff'
+                          }}>
+                            {brandInitials}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{
+                              fontSize: '15px',
+                              fontWeight: '700',
+                              color: '#16191f',
+                              fontFamily: 'inherit',
+                              marginBottom: '4px'
+                            }}>
+                              {compProduct.model || compProduct.name || compProduct.title || `Product ${index + 1}`}
+                            </div>
+                            <div style={{
+                              fontSize: '12px',
+                              color: '#6B7280',
+                              fontFamily: 'inherit'
+                            }}>
+                              by {compProduct.brand || compProduct.provider || compProduct.seller || 'Unknown'}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
 
-                {/* Accolades Section */}
+                {/* Price Row */}
+                {(() => {
+                  // Find best (lowest) price
+                  const prices = product.comparisonProducts.map(p => p.price).filter(p => p != null && !isNaN(p));
+                  const bestPrice = prices.length > 0 ? Math.min(...prices) : null;
+                  
+                  return (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: isMobile 
+                        ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                        : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                      minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                      borderBottom: '1px solid #D5D9D9',
+                      backgroundColor: '#FAFAFA'
+                    }}>
+                      <div style={{
+                        padding: '16px 20px',
+                        fontWeight: '600',
+                        fontSize: '14px',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <span style={{ fontSize: '16px' }}>💰</span>
+                        <span>Price</span>
+                      </div>
+                      {product.comparisonProducts.map((compProduct, index) => {
+                        const isBestPrice = bestPrice && compProduct.price === bestPrice;
+                        return (
+                          <div key={index} style={{ 
+                            padding: '16px 20px', 
+                            borderLeft: '1px solid #D5D9D9', 
+                            fontSize: '14px', 
+                            fontFamily: 'inherit',
+                            backgroundColor: isBestPrice ? '#F0FDF4' : 'white',
+                            position: 'relative'
+                          }}>
+                            <div style={{
+                              fontWeight: isBestPrice ? '700' : '500',
+                              color: isBestPrice ? '#10b981' : '#16191f',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}>
+                              {compProduct.price ? (
+                                <>
+                                  <span>{compProduct.currency || 'USD'} {compProduct.price}</span>
+                                  {isBestPrice && (
+                                    <span style={{
+                                      fontSize: '10px',
+                                      backgroundColor: '#10b981',
+                                      color: 'white',
+                                      padding: '2px 6px',
+                                      borderRadius: '10px',
+                                      fontWeight: '600'
+                                    }}>Best</span>
+                                  )}
+                                </>
+                              ) : (
+                                <span style={{ color: '#9CA3AF' }}>N/A</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+
+                {/* Brand Row */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
                 }}>
                   <div style={{
-                    padding: '20px',
-                    backgroundColor: '#F7F8F8',
+                    padding: '16px 20px',
                     fontWeight: '600',
                     fontSize: '14px',
                     color: '#16191f',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    Accolades
+                    <span style={{ fontSize: '16px' }}>🏷️</span>
+                    <span>Brand</span>
                   </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      fontSize: '13px',
-                      color: '#16191f',
-                      fontFamily: 'inherit'
-                    }}>
-                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 10</div>
-                      <div style={{ color: '#16191f' }}>in Infrastructure as Code, Application Development, Security</div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      fontSize: '13px',
-                      color: '#16191f',
-                      fontFamily: 'inherit'
-                    }}>
-                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 100</div>
-                      <div style={{ color: '#16191f' }}>in Applications</div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{
-                      fontSize: '13px',
-                      color: '#16191f',
-                      fontFamily: 'inherit'
-                    }}>
-                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>Top 100</div>
-                      <div style={{ color: '#16191f' }}>in Security</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer Reviews Section Header */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9',
-                  backgroundColor: '#F7F8F8'
-                }}>
-                  <div style={{
-                    padding: '20px',
-                    fontWeight: '600',
-                    fontSize: '14px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Customer reviews
-                  </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }} colSpan="3"></div>
-                </div>
-
-                {/* Sentiment Note */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 1fr' : '250px 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9',
-                  backgroundColor: 'white'
-                }}>
-                  <div style={{ padding: '12px 20px' }}>
-                    <div style={{
-                      fontSize: '12px',
-                      color: '#16191f',
+                  {product.comparisonProducts.map((compProduct, index) => (
+                    <div key={index} style={{ 
+                      padding: '16px 20px', 
+                      borderLeft: '1px solid #D5D9D9', 
+                      fontSize: '14px', 
                       fontFamily: 'inherit',
-                      marginBottom: '8px'
+                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                     }}>
-                      Sentiment is AI generated from actual customer reviews on G2 and G2.
+                      <span style={{
+                        fontWeight: '600',
+                        color: '#374151'
+                      }}>
+                        {compProduct.brand || 'N/A'}
+                      </span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#16191f' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ width: '12px', height: '12px', backgroundColor: '#4CAF50', borderRadius: '2px', display: 'inline-block' }}></span>
-                        Positive review
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ width: '12px', height: '12px', backgroundColor: '#FFC107', borderRadius: '2px', display: 'inline-block' }}></span>
-                        Mixed review
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ width: '12px', height: '12px', backgroundColor: '#F44336', borderRadius: '2px', display: 'inline-block' }}></span>
-                        Negative review
-                      </div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '12px 20px', borderLeft: '1px solid #D5D9D9' }}></div>
+                  ))}
                 </div>
 
-                {/* Reviews Count */}
+                {/* Model Row */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Reviews
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>500 reviews</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>8 reviews</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>108 reviews</div>
-                </div>
-
-                {/* Functionality */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <div style={{
-                    padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Functionality
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '85%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '80%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '82%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Ease of use */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <div style={{
-                    padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Ease of use
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '78%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '75%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '80%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer service */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <div style={{
-                    padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Customer service
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
-                      <div style={{ width: '45%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                      <div style={{ width: '35%', height: '100%', backgroundColor: '#FFC107' }}></div>
-                      <div style={{ width: '20%', height: '100%', backgroundColor: '#F44336' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
-                      <div style={{ width: '40%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                      <div style={{ width: '40%', height: '100%', backgroundColor: '#FFC107' }}></div>
-                      <div style={{ width: '20%', height: '100%', backgroundColor: '#F44336' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Positive</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: '77%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Cost effectiveness */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <div style={{
-                    padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Cost effectiveness
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Negative</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
-                      <div style={{ width: '25%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                      <div style={{ width: '25%', height: '100%', backgroundColor: '#FFC107' }}></div>
-                      <div style={{ width: '50%', height: '100%', backgroundColor: '#F44336' }}></div>
-                    </div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', color: '#16191f', fontFamily: 'inherit' }}>Insufficient data</div>
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>
-                    <div style={{ fontSize: '13px', marginBottom: '6px', fontFamily: 'inherit' }}>Mixed</div>
-                    <div style={{ height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden', display: 'flex' }}>
-                      <div style={{ width: '40%', height: '100%', backgroundColor: '#4CAF50' }}></div>
-                      <div style={{ width: '35%', height: '100%', backgroundColor: '#FFC107' }}></div>
-                      <div style={{ width: '25%', height: '100%', backgroundColor: '#F44336' }}></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Overview Section Header */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9',
-                  backgroundColor: '#F7F8F8'
-                }}>
-                  <div style={{
-                    padding: '20px',
                     fontWeight: '600',
                     fontSize: '14px',
                     color: '#16191f',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    Overview
-                    <div style={{
-                      fontSize: '11px',
-                      fontWeight: '400',
-                      color: '#16191f',
-                      marginTop: '4px'
+                    <span style={{ fontSize: '16px' }}>📱</span>
+                    <span>Model</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => (
+                    <div key={index} style={{ 
+                      padding: '16px 20px', 
+                      borderLeft: '1px solid #D5D9D9', 
+                      fontSize: '14px', 
+                      fontFamily: 'inherit',
+                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                     }}>
-                      AI generated from product descriptions
+                      <span style={{
+                        fontWeight: '600',
+                        color: '#16191f'
+                      }}>
+                        {compProduct.model || compProduct.name || 'N/A'}
+                      </span>
                     </div>
-                  </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }} colSpan="3"></div>
+                  ))}
                 </div>
 
-                {/* Overview Details - Identity Management */}
+                {/* Display Row */}
+                {product.comparisonProducts.some(p => p.display) && (
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Identity Management
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    Unified identity security platform with comprehensive user lifecycle management across applications and devices.
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    —
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    —
-                  </div>
-                </div>
-
-                {/* Authentication Mechanism */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <div style={{
-                    padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
-                    color: '#16191f',
-                    fontFamily: 'inherit'
-                  }}>
-                    Authentication Mechanism
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    Adaptive multi-factor authentication with intelligent, phishing-resistant capabilities.
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    —
-                  </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', color: '#16191f', lineHeight: '1.5', fontFamily: 'inherit' }}>
-                    —
-                  </div>
-                </div>
-
-                {/* More rows can be added here following the same pattern */}
-
-                {/* Contract Section Header */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '150px 200px 200px 200px' : '250px 1fr 1fr 1fr',
-                  minWidth: isMobile ? '750px' : 'auto',
-                  borderBottom: '1px solid #D5D9D9',
-                  backgroundColor: '#F7F8F8'
-                }}>
-                  <div style={{
-                    padding: '20px',
                     fontWeight: '600',
                     fontSize: '14px',
                     color: '#16191f',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    Contract
+                    <span style={{ fontSize: '16px' }}>📺</span>
+                    <span>Display</span>
                   </div>
-                  <div style={{ padding: '20px', borderLeft: '1px solid #D5D9D9' }} colSpan="3"></div>
+                  {product.comparisonProducts.map((compProduct, index) => (
+                    <div key={index} style={{ 
+                      padding: '16px 20px', 
+                      borderLeft: '1px solid #D5D9D9', 
+                      fontSize: '14px', 
+                      fontFamily: 'inherit',
+                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                    }}>
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 10px',
+                        backgroundColor: compProduct.display ? '#EFF6FF' : 'transparent',
+                        borderRadius: '6px',
+                        color: compProduct.display ? '#1E40AF' : '#9CA3AF',
+                        fontWeight: compProduct.display ? '500' : '400'
+                      }}>
+                        {compProduct.display || '—'}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                )}
 
-                {/* Standard contract */}
+                {/* Processor Row */}
+                {product.comparisonProducts.some(p => p.processor) && (
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '250px 1fr 1fr 1fr'
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
                 }}>
                   <div style={{
                     padding: '16px 20px',
-                    fontWeight: '400',
-                    fontSize: '13px',
+                    fontWeight: '600',
+                    fontSize: '14px',
                     color: '#16191f',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    Standard contract
+                    <span style={{ fontSize: '16px' }}>⚡</span>
+                    <span>Processor</span>
                   </div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
-                  <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9', fontSize: '13px', fontFamily: 'inherit' }}>No</div>
+                  {product.comparisonProducts.map((compProduct, index) => (
+                    <div key={index} style={{ 
+                      padding: '16px 20px', 
+                      borderLeft: '1px solid #D5D9D9', 
+                      fontSize: '14px', 
+                      fontFamily: 'inherit',
+                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                    }}>
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 10px',
+                        backgroundColor: compProduct.processor ? '#FEF3C7' : 'transparent',
+                        borderRadius: '6px',
+                        color: compProduct.processor ? '#92400E' : '#9CA3AF',
+                        fontWeight: compProduct.processor ? '500' : '400'
+                      }}>
+                        {compProduct.processor || '—'}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                )}
+
+                {/* RAM Row */}
+                {product.comparisonProducts.some(p => p.ram) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>💾</span>
+                    <span>RAM</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    // Extract RAM size for comparison
+                    const ramSize = compProduct.ram ? parseInt(compProduct.ram) : 0;
+                    const maxRam = Math.max(...product.comparisonProducts.map(p => parseInt(p.ram) || 0));
+                    const ramPercentage = maxRam > 0 ? (ramSize / maxRam) * 100 : 0;
+                    
+                    return (
+                      <div key={index} style={{ 
+                        padding: '16px 20px', 
+                        borderLeft: '1px solid #D5D9D9', 
+                        fontSize: '14px', 
+                        fontFamily: 'inherit',
+                        backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                      }}>
+                        <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
+                          {compProduct.ram || '—'}
+                        </div>
+                        {compProduct.ram && ramSize > 0 && (
+                          <div style={{
+                            width: '100%',
+                            height: '6px',
+                            backgroundColor: '#E5E7EB',
+                            borderRadius: '3px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: `${ramPercentage}%`,
+                              height: '100%',
+                              backgroundColor: '#3B82F6',
+                              borderRadius: '3px',
+                              transition: 'width 0.3s ease'
+                            }}></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
+
+                {/* Storage Row */}
+                {product.comparisonProducts.some(p => p.storage) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>💿</span>
+                    <span>Storage</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    // Extract storage size for comparison
+                    const storageSize = compProduct.storage ? parseInt(compProduct.storage) : 0;
+                    const maxStorage = Math.max(...product.comparisonProducts.map(p => parseInt(p.storage) || 0));
+                    const storagePercentage = maxStorage > 0 ? (storageSize / maxStorage) * 100 : 0;
+                    
+                    return (
+                      <div key={index} style={{ 
+                        padding: '16px 20px', 
+                        borderLeft: '1px solid #D5D9D9', 
+                        fontSize: '14px', 
+                        fontFamily: 'inherit',
+                        backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                      }}>
+                        <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
+                          {compProduct.storage || '—'}
+                        </div>
+                        {compProduct.storage && storageSize > 0 && (
+                          <div style={{
+                            width: '100%',
+                            height: '6px',
+                            backgroundColor: '#E5E7EB',
+                            borderRadius: '3px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: `${storagePercentage}%`,
+                              height: '100%',
+                              backgroundColor: '#8B5CF6',
+                              borderRadius: '3px',
+                              transition: 'width 0.3s ease'
+                            }}></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
+
+                {/* Battery Row */}
+                {product.comparisonProducts.some(p => p.battery) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>🔋</span>
+                    <span>Battery</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    // Extract battery capacity for comparison
+                    const batterySize = compProduct.battery ? parseInt(compProduct.battery) : 0;
+                    const maxBattery = Math.max(...product.comparisonProducts.map(p => parseInt(p.battery) || 0));
+                    const batteryPercentage = maxBattery > 0 ? (batterySize / maxBattery) * 100 : 0;
+                    
+                    return (
+                      <div key={index} style={{ 
+                        padding: '16px 20px', 
+                        borderLeft: '1px solid #D5D9D9', 
+                        fontSize: '14px', 
+                        fontFamily: 'inherit',
+                        backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                      }}>
+                        <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
+                          {compProduct.battery || '—'}
+                        </div>
+                        {compProduct.battery && batterySize > 0 && (
+                          <div style={{
+                            width: '100%',
+                            height: '6px',
+                            backgroundColor: '#E5E7EB',
+                            borderRadius: '3px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: `${batteryPercentage}%`,
+                              height: '100%',
+                              backgroundColor: batteryPercentage >= 80 ? '#10b981' : batteryPercentage >= 60 ? '#F59E0B' : '#EF4444',
+                              borderRadius: '3px',
+                              transition: 'width 0.3s ease'
+                            }}></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
+
+                {/* Camera Row */}
+                {product.comparisonProducts.some(p => p.camera) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>📷</span>
+                    <span>Camera</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    const camera = compProduct.camera;
+                    const cameraText = typeof camera === 'object' 
+                      ? `Rear: ${camera.rear || 'N/A'}, Front: ${camera.front || 'N/A'}`
+                      : (camera || '—');
+                    return (
+                      <div key={index} style={{ 
+                        padding: '16px 20px', 
+                        borderLeft: '1px solid #D5D9D9', 
+                        fontSize: '13px', 
+                        fontFamily: 'inherit',
+                        backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA',
+                        lineHeight: '1.6'
+                      }}>
+                        <div style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '6px 12px',
+                          backgroundColor: camera ? '#FCE7F3' : 'transparent',
+                          borderRadius: '6px',
+                          color: camera ? '#9F1239' : '#9CA3AF',
+                          fontWeight: camera ? '500' : '400'
+                        }}>
+                          <span style={{ fontSize: '14px' }}>📸</span>
+                          <span>{cameraText}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
+
+                {/* OS Row */}
+                {product.comparisonProducts.some(p => p.os) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>🖥️</span>
+                    <span>OS</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => (
+                    <div key={index} style={{ 
+                      padding: '16px 20px', 
+                      borderLeft: '1px solid #D5D9D9', 
+                      fontSize: '14px', 
+                      fontFamily: 'inherit',
+                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                    }}>
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 10px',
+                        backgroundColor: compProduct.os ? '#E0E7FF' : 'transparent',
+                        borderRadius: '6px',
+                        color: compProduct.os ? '#3730A3' : '#9CA3AF',
+                        fontWeight: compProduct.os ? '600' : '400'
+                      }}>
+                        {compProduct.os || '—'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                )}
+
+                {/* Rating Row */}
+                {product.comparisonProducts.some(p => p.rating) && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile 
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                    : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
+                  minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
+                  borderBottom: '1px solid #E5E7EB'
+                }}>
+                  <div style={{
+                    padding: '16px 20px',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    color: '#16191f',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{ fontSize: '16px' }}>⭐</span>
+                    <span>Rating</span>
+                  </div>
+                  {product.comparisonProducts.map((compProduct, index) => {
+                    const rating = compProduct.rating || 0;
+                    const maxRating = Math.max(...product.comparisonProducts.map(p => p.rating || 0), 5);
+                    const ratingPercentage = maxRating > 0 ? (rating / maxRating) * 100 : 0;
+                    const isBestRating = rating === maxRating && rating > 0;
+                    
+                    return (
+                      <div key={index} style={{ 
+                        padding: '16px 20px', 
+                        borderLeft: '1px solid #D5D9D9', 
+                        fontSize: '14px', 
+                        fontFamily: 'inherit',
+                        backgroundColor: isBestRating ? '#FEF3C7' : (index % 2 === 0 ? 'white' : '#FAFAFA')
+                      }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '8px',
+                          marginBottom: '8px'
+                        }}>
+                          <div style={{
+                            fontSize: '18px',
+                            color: rating >= 4.5 ? '#F59E0B' : rating >= 4 ? '#FBBF24' : rating >= 3 ? '#FCD34D' : '#9CA3AF',
+                            display: 'flex',
+                            gap: '2px'
+                          }}>
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} style={{
+                                color: i < Math.round(rating) ? (rating >= 4.5 ? '#F59E0B' : rating >= 4 ? '#FBBF24' : '#FCD34D') : '#E5E7EB'
+                              }}>★</span>
+                            ))}
+                          </div>
+                          <span style={{
+                            fontWeight: '700',
+                            color: rating >= 4.5 ? '#F59E0B' : '#16191f',
+                            fontSize: '16px'
+                          }}>
+                            {rating > 0 ? rating.toFixed(1) : '—'}
+                          </span>
+                          {isBestRating && (
+                            <span style={{
+                              fontSize: '10px',
+                              backgroundColor: '#F59E0B',
+                              color: 'white',
+                              padding: '2px 6px',
+                              borderRadius: '10px',
+                              fontWeight: '600'
+                            }}>Top</span>
+                          )}
+                        </div>
+                        {rating > 0 && (
+                          <div style={{
+                            width: '100%',
+                            height: '8px',
+                            backgroundColor: '#E5E7EB',
+                            borderRadius: '4px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: `${ratingPercentage}%`,
+                              height: '100%',
+                              backgroundColor: rating >= 4.5 ? '#10b981' : rating >= 4 ? '#F59E0B' : rating >= 3 ? '#FCD34D' : '#EF4444',
+                              borderRadius: '4px',
+                              transition: 'width 0.3s ease'
+                            }}></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
               </div>
+              )}
 
               {/* Show Less Link */}
               <div style={{ marginTop: '16px', textAlign: 'center' }}>
@@ -2327,7 +3144,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '12px',
                       fontFamily: 'inherit'
                     }}>
-                      {product.pricingDescription || 'Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.'}
+                      Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.
                     </p>
 
                     <p style={{
@@ -2428,64 +3245,42 @@ const MarketplaceProductDetail = () => {
                     <div>Cost/12 months</div>
                   </div>
 
-                  {/* Table Rows - Use API pricing options if available */}
-                  {(() => {
-                    let pricingOptions = product.pricingOptions || product.pricingPlans || [];
-                    
-                    // Handle different formats
-                    if (typeof pricingOptions === 'string') {
-                      try {
-                        pricingOptions = JSON.parse(pricingOptions);
-                      } catch {
-                        pricingOptions = [];
-                      }
+                  {/* Table Rows - Hardcoded frontend data */}
+                  {[
+                    {
+                      whereToBuy: 'Buy on PIMS',
+                      description: 'Starting your Identity journey? Put a strong foundation in place.',
+                      cost: 'Request a Quote'
+                    },
+                    {
+                      whereToBuy: 'Buy on AWS',
+                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
+                      cost: 'Request a Quote'
+                    },
+                    {
+                      whereToBuy: 'Buy on Microsoft Azure',
+                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
+                      cost: 'Request a Quote'
                     }
-                    
-                    if (!Array.isArray(pricingOptions)) {
-                      pricingOptions = [];
-                    }
-                    
-                    // If no pricing options from API, show empty message
-                    if (pricingOptions.length === 0) {
-                      return (
-                        <div style={{
-                          padding: '40px',
-                          textAlign: 'center',
-                          color: '#6B7280',
-                          fontSize: '14px',
-                          fontFamily: 'inherit'
-                        }}>
-                          No pricing options available at this time. Please contact the vendor for pricing information.
-                        </div>
-                      );
-                    }
-                    
-                    return pricingOptions.map((row, index) => {
-                      const pricingRow = typeof row === 'object' ? row : {
-                        whereToBuy: 'Purchase Option',
-                        description: String(row),
-                        cost: product.pricing || 'Contact for pricing'
-                      };
-                      
-                      return (
-                        <div
-                          key={index}
-                          style={{
-                            display: 'grid',
-                            gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
-                            padding: isMobile ? '12px' : '16px',
-                            borderBottom: index < pricingOptions.length - 1 ? '1px solid #D5D9D9' : 'none',
-                            fontSize: isMobile ? '12px' : '14px',
-                            color: '#16191f',
-                            fontFamily: 'inherit',
-                            backgroundColor: 'white',
-                            minWidth: isMobile ? '470px' : 'auto'
-                          }}
-                        >
-                          <div style={{ fontWeight: '400' }}>{pricingRow.whereToBuy || pricingRow.where_to_buy || pricingRow.platform || 'Purchase Option'}</div>
-                          <div style={{ color: '#16191f' }}>{pricingRow.description || pricingRow.desc || ''}</div>
-                          <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
-                            {pricingRow.cost === 'Request a Quote' || pricingRow.action === 'quote' ? (
+                  ].map((row, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
+                        padding: isMobile ? '12px' : '16px',
+                        borderBottom: index < 2 ? '1px solid #D5D9D9' : 'none',
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        backgroundColor: 'white',
+                        minWidth: isMobile ? '470px' : 'auto'
+                      }}
+                    >
+                      <div style={{ fontWeight: '400' }}>{row.whereToBuy}</div>
+                      <div style={{ color: '#16191f' }}>{row.description}</div>
+                      <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
+                        {row.cost === 'Request a Quote' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2509,7 +3304,7 @@ const MarketplaceProductDetail = () => {
                           >
                             Request a Quote
                           </button>
-                        ) : pricingRow.cost === 'Request Private Offer' || pricingRow.action === 'private_offer' ? (
+                        ) : row.cost === 'Request Private Offer' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2533,7 +3328,7 @@ const MarketplaceProductDetail = () => {
                           >
                             Request Private Offer
                           </button>
-                        ) : pricingRow.cost === 'Request Pricing' || pricingRow.action === 'pricing' ? (
+                        ) : row.cost === 'Request Pricing' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2558,13 +3353,11 @@ const MarketplaceProductDetail = () => {
                             Request Pricing
                           </button>
                         ) : (
-                          pricingRow.cost || pricingRow.price || 'Contact for pricing'
+                          row.cost
                         )}
                       </div>
                     </div>
-                      );
-                    });
-                  })()}
+                  ))}
                 </div>
               </div>
 

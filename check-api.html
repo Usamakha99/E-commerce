@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Response Checker</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #252526;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a9e;
+        }
+        pre {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: #f48771;
+        }
+        .success {
+            color: #4ec9b0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 AI Agent API Response Checker</h1>
+    <p>This tool will test the actual API responses to see the structure.</p>
+    
+    <div class="test-section">
+        <h2>Test GET All Agents</h2>
+        <button onclick="testGetAll()">Test GET /api/aiagents?page=1&limit=2</button>
+        <pre id="getAllResult">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test GET Single Agent</h2>
+        <input type="number" id="agentId" placeholder="Agent ID (e.g., 1)" value="1" style="padding: 8px; margin: 5px;">
+        <button onclick="testGetOne()">Test GET /api/aiagents/:id</button>
+        <pre id="getOneResult">Click button to test...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test POST Create Agent</h2>
+        <button onclick="testPost()">Test POST /api/aiagents</button>
+        <pre id="postResult">Click button to test...</pre>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        
+        async function testGetAll() {
+            const resultEl = document.getElementById('getAllResult');
+            resultEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/aiagents?page=1&limit=2`);
+                const data = await response.json();
+                
+                resultEl.innerHTML = `<span class="success">✅ SUCCESS</span>
+Status: ${response.status}
+Status Text: ${response.statusText}
+
+Response Structure:
+${JSON.stringify(data, null, 2)}
+
+Analysis:
+- Type: ${typeof data}
+- Is Array: ${Array.isArray(data)}
+- Has success: ${data?.success !== undefined ? 'Yes (' + data.success + ')' : 'No'}
+- Has data: ${data?.data !== undefined ? 'Yes' : 'No'}
+- Has pagination: ${data?.pagination !== undefined ? 'Yes' : 'No'}
+${data?.data ? `- Data Type: ${typeof data.data}` : ''}
+${data?.data ? `- Data Is Array: ${Array.isArray(data.data)}` : ''}
+${data?.data && Array.isArray(data.data) ? `- Data Length: ${data.data.length}` : ''}`;
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ ERROR</span>\n${error.message}`;
+            }
+        }
+        
+        async function testGetOne() {
+            const id = document.getElementById('agentId').value || '1';
+            const resultEl = document.getElementById('getOneResult');
+            resultEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/aiagents/${id}`);
+                const data = await response.json();
+                
+                resultEl.innerHTML = `<span class="success">✅ SUCCESS</span>
+Status: ${response.status}
+Status Text: ${response.statusText}
+
+Response Structure:
+${JSON.stringify(data, null, 2)}
+
+Analysis:
+- Type: ${typeof data}
+- Is Array: ${Array.isArray(data)}
+- Has success: ${data?.success !== undefined ? 'Yes (' + data.success + ')' : 'No'}
+- Has data: ${data?.data !== undefined ? 'Yes' : 'No'}
+${data?.data ? `- Data Type: ${typeof data.data}` : ''}
+${data?.data && typeof data.data === 'object' ? `- Data Keys: ${Object.keys(data.data).join(', ')}` : ''}
+${data?.data?.featuresContent ? '✅ Has featuresContent' : '❌ No featuresContent'}
+${data?.data?.resourcesContent ? '✅ Has resourcesContent' : '❌ No resourcesContent'}
+${data?.data?.supportContent ? '✅ Has supportContent' : '❌ No supportContent'}
+${data?.data?.productComparisonContent ? '✅ Has productComparisonContent' : '❌ No productComparisonContent'}
+${data?.data?.pricingContent ? '✅ Has pricingContent' : '❌ No pricingContent'}`;
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ ERROR</span>\n${error.message}`;
+            }
+        }
+        
+        async function testPost() {
+            const resultEl = document.getElementById('postResult');
+            resultEl.innerHTML = '⏳ Testing...';
+            
+            try {
+                const testData = {
+                    name: "Test Agent",
+                    provider: "Test Provider",
+                    shortDescription: "Test description"
+                };
+                
+                const response = await fetch(`${API_BASE}/aiagents`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                const data = await response.json();
+                
+                resultEl.innerHTML = `<span class="success">✅ SUCCESS</span>
+Status: ${response.status}
+Status Text: ${response.statusText}
+
+Response Structure:
+${JSON.stringify(data, null, 2)}
+
+Analysis:
+- Type: ${typeof data}
+- Is Array: ${Array.isArray(data)}
+- Has success: ${data?.success !== undefined ? 'Yes (' + data.success + ')' : 'No'}
+- Has data: ${data?.data !== undefined ? 'Yes' : 'No'}`;
+            } catch (error) {
+                resultEl.innerHTML = `<span class="error">❌ ERROR</span>\n${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
+
