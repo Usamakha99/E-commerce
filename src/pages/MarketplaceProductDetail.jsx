@@ -6,6 +6,7 @@ const MarketplaceProductDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('overview');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isComparisonExpanded, setIsComparisonExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
   const [isTablet, setIsTablet] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
   
@@ -2526,6 +2527,9 @@ const MarketplaceProductDetail = () => {
                   ))}
                 </div>
 
+                {/* Additional rows shown only when expanded */}
+                {isComparisonExpanded && (
+                <>
                 {/* Display Row */}
                 {product.comparisonProducts.some(p => p.display) && (
                 <div style={{
@@ -3010,28 +3014,79 @@ const MarketplaceProductDetail = () => {
                   })}
                 </div>
                 )}
+                </>
+                )}
               </div>
               )}
 
-              {/* Show Less Link */}
-              <div style={{ marginTop: '16px', textAlign: 'center' }}>
-                <a href="#" style={{
-                  fontSize: '14px',
-                  color: '#007185',
-                  textDecoration: 'none',
-                  fontFamily: 'inherit'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#C7511F';
-                  e.target.style.textDecoration = 'underline';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = '#007185';
-                  e.target.style.textDecoration = 'none';
-                }}
+              {/* Show Less/More Button */}
+              <div style={{ 
+                marginTop: '24px', 
+                textAlign: 'center',
+                padding: '20px 0'
+              }}>
+                <button
+                  onClick={() => setIsComparisonExpanded(!isComparisonExpanded)}
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    color: 'white',
+                    backgroundColor: '#111A45',
+                    border: 'none',
+                    borderRadius: '25px',
+                    padding: '12px 24px',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)',
+                    minWidth: '140px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#1a2555';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.4)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#111A45';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                  Show less
-                </a>
+                  <span>{isComparisonExpanded ? 'Show less' : 'Show more'}</span>
+                  <svg 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{
+                      transition: 'transform 0.3s ease',
+                      transform: isComparisonExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }}
+                  >
+                    {isComparisonExpanded ? (
+                      <path 
+                        d="M18 15L12 9L6 15" 
+                        stroke="currentColor" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    ) : (
+                      <path 
+                        d="M6 9L12 15L18 9" 
+                        stroke="currentColor" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    )}
+                  </svg>
+                </button>
               </div>
             </div>
 
