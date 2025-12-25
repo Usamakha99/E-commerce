@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { aiAgentService } from '../services/aiAgent.service';
 
 const MarketplaceProductDetail = () => {
   const { id } = useParams();
@@ -7,6 +8,11 @@ const MarketplaceProductDetail = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
   const [isTablet, setIsTablet] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
+  
+  // API state
+  const [agent, setAgent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -17,36 +23,150 @@ const MarketplaceProductDetail = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Mock product data
-  const product = {
-    id: 1,
-    name: 'Okta Platform',
+  // Fetch agent data from API
+  useEffect(() => {
+    const fetchAgent = async () => {
+      if (!id) {
+        setError('Agent ID is required');
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const response = await aiAgentService.getAgentById(id);
+        
+        // Handle response structure - adjust based on your API response format
+        const agentData = response.data || response;
+        
+        // Debug: Log the API response to see what data is coming
+        console.log('📦 API Response:', agentData);
+        console.log('📦 Full Response:', response);
+        
+        setAgent(agentData);
+      } catch (err) {
+        console.error('Error fetching AI agent:', err);
+        setError(err.message || 'Failed to fetch AI agent details');
+        setAgent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAgent();
+  }, [id]);
+
+  // Map API agent data to product structure for display
+  // Comprehensive mapping to ensure all API fields are accessible
+  const product = agent ? (() => {
+    // Helper to safely get nested property
+    const getCategoryName = (cat) => {
+      if (!cat) return null;
+      if (typeof cat === 'string') return cat;
+      if (typeof cat === 'object') return cat.name || cat.title || cat.label || null;
+      return null;
+    };
+
+    // Process highlights - handle string/array conversion
+    let highlightsList = agent.highlights || agent.features || agent.keyFeatures || agent.key_features || agent.bulletPoints || agent.bullet_points || agent.bulletsPoint || [];
+    if (typeof highlightsList === 'string') {
+      try {
+        highlightsList = JSON.parse(highlightsList);
+      } catch {
+        highlightsList = highlightsList.split(/\n|,|;/).filter(h => h.trim());
+      }
+    }
+    if (!Array.isArray(highlightsList)) {
+      highlightsList = [];
+    }
+
+    const mapped = {
+      id: agent.id,
+      name: agent.name || agent.title || 'Unnamed Agent',
+      logo: agent.logo || agent.image || agent.mainImage || agent.thumbnail || agent.logoUrl || '/src/assets/imgs/page/homepage1/imgsp1.png',
+      seller: agent.provider || agent.seller || agent.vendor || agent.company || agent.publisher || 'Unknown Provider',
+      rating: agent.rating || agent.averageRating || agent.avgRating || 0,
+      awsReviews: agent.awsReviews || agent.aws_reviews || 0,
+      externalReviews: agent.externalReviews || agent.external_reviews || agent.reviews || agent.totalReviews || 0,
+      badges: agent.badges || agent.tags || (agent.freeTrial || agent.free_trial ? ['Free Trial'] : []),
+      shortDescription: agent.shortDescription || agent.short_description || agent.description || agent.shortDescp || agent.summary || 'No description available.',
+      videoThumbnail: agent.videoThumbnail || agent.video_thumbnail || agent.thumbnail || agent.image || agent.mainImage || agent.videoUrl || '/src/assets/imgs/page/homepage1/imgsp1.png',
+      overview: agent.overview || agent.longDescription || agent.long_description || agent.description || agent.fullDescription || agent.full_description || agent.detailedDescription || agent.details || 'No overview available.',
+      highlights: highlightsList,
+      // Additional fields from API
+      category: getCategoryName(agent.category) || agent.categoryName || agent.category_name || null,
+      categoryId: agent.categoryId || agent.category_id || (agent.category && typeof agent.category === 'object' ? agent.category.id : null) || null,
+      deliveryMethod: agent.deliveryMethod || agent.delivery_method || agent.deliveryType || agent.delivery_type || null,
+      deployedOnAWS: agent.deployedOnAWS || agent.deployed_on_aws || agent.awsDeployed || agent.aws_deployed || false,
+      freeTrial: agent.freeTrial || agent.free_trial || false,
+      pricing: agent.pricing || agent.price || agent.cost || null,
+      supportUrl: agent.supportUrl || agent.support_url || agent.support || null,
+      documentationUrl: agent.documentationUrl || agent.documentation_url || agent.docs || agent.documentation || null,
+      website: agent.website || agent.url || agent.homepage || agent.homePage || null,
+      createdAt: agent.createdAt || agent.created_at || agent.createdDate || null,
+      updatedAt: agent.updatedAt || agent.updated_at || agent.updatedDate || null,
+      // Features & Programs
+      features: agent.features || agent.featureList || agent.featuresList || [],
+      trustCenterUrl: agent.trustCenterUrl || agent.trust_center_url || agent.trustCenter || null,
+      buyerGuideUrl: agent.buyerGuideUrl || agent.buyer_guide_url || agent.buyerGuide || null,
+      // Resources
+      resources: agent.resources || agent.resourceLinks || agent.resource_links || [],
+      resourceLinks: agent.resourceLinks || agent.resource_links || agent.resources || [],
+      resourceVideos: agent.resourceVideos || agent.resource_videos || agent.videos || [],
+      // Support
+      supportDescription: agent.supportDescription || agent.support_description || agent.supportInfo || null,
+      supportEmail: agent.supportEmail || agent.support_email || agent.email || null,
+      supportPhone: agent.supportPhone || agent.support_phone || agent.phone || null,
+      awsSupportUrl: agent.awsSupportUrl || agent.aws_support_url || null,
+      // Product Comparison
+      comparisonProducts: agent.comparisonProducts || agent.comparison_products || agent.similarProducts || [],
+      accolades: agent.accolades || agent.awards || [],
+      // Pricing & How to Buy
+      pricingPlans: agent.pricingPlans || agent.pricing_plans || agent.plans || [],
+      pricingOptions: agent.pricingOptions || agent.pricing_options || [],
+      pricingDescription: agent.pricingDescription || agent.pricing_description || null,
+      contractType: agent.contractType || agent.contract_type || null,
+      standardContract: agent.standardContract || agent.standard_contract || false,
+      // Store original agent object for access to any other fields
+      _original: agent,
+      breadcrumbs: [
+        { name: 'AWS Marketplace', url: '/marketplace' },
+        { name: getCategoryName(agent.category) || agent.categoryName || agent.category_name || 'Category', url: '/marketplace' },
+        { name: agent.name || agent.title || 'Agent', url: '#' }
+      ]
+    };
+
+    // Debug: Log mapped product to see what's available
+    console.log('📦 Mapped Product Data:', mapped);
+    
+    return mapped;
+  })() : {
+    // Fallback structure when no data
+    id: null,
+    name: '',
     logo: '/src/assets/imgs/page/homepage1/imgsp1.png',
-    seller: 'Okta, Inc',
-    rating: 4.5,
-    awsReviews: 1,
-    externalReviews: 999,
-    badges: ['Deployed on AWS', 'Free Trial', 'AWS Free Tier'],
-    shortDescription: 'Secure your employees, contractors, and partners - wherever they are. Covers every part of the Identity lifecycle, from governance, to access, to privileged controls.',
+    seller: '',
+    rating: 0,
+    awsReviews: 0,
+    externalReviews: 0,
+    badges: [],
+    shortDescription: '',
     videoThumbnail: '/src/assets/imgs/page/homepage1/imgsp1.png',
-    overview: 'Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business,Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business,Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor, and respond to threats in real-time, Okta helps you protect your workforce and your business.',
-    highlights: [
-      'Turn Identity into a business advantage: Empower your people, protect your organization, and accelerate your business with an Identity-first security solution built for todays dynamic workforce.',
-      'Build the tech ecosystem of your choice: Never again worry about building or maintaining your SSO integrations. Okta takes care of that with the largest network of over 7000 pre-built cloud and on-prem apps available, so you can build the tech ecosystem you need, and set up access immediately.',
-      'Okta Workforce Identity Suites: Mature your identity security with the Okta Workforce Identity Suites, solution-based packages. These suites provide paths to mature your identity posture, in phases - without the complexity of selecting individual tools.'
-    ],
+    overview: '',
+    highlights: [],
     breadcrumbs: [
-      { name: 'AWS Marketplace', url: '/marketplace' },
-      { name: 'Security', url: '/marketplace' },
-      { name: 'Software as a Service (SaaS)', url: '/marketplace' },
-      { name: 'Okta Platform', url: '#' }
+      { name: 'AWS Marketplace', url: '/marketplace' }
     ]
   };
 
   // Update document title when product loads
   useEffect(() => {
-    if (product) {
+    if (product && product.name) {
       document.title = `${product.name} - AI Marketplace - VCloud Tech`;
+    } else {
+      document.title = 'AI Marketplace - VCloud Tech';
     }
   }, [product]);
 
@@ -118,6 +238,91 @@ const MarketplaceProductDetail = () => {
   return (
     <main className="main" style={{ paddingTop: '70px', backgroundColor: 'white' }}>
       <div className="container-fluid" style={{ padding: isMobile ? '0 15px' : '0 40px' }}>
+        {/* Loading State */}
+        {loading && (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '60px 20px',
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            marginBottom: '25px'
+          }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #111A45',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 20px'
+            }}></div>
+            <p style={{ 
+              fontSize: '16px', 
+              color: '#565959',
+              margin: 0,
+              fontFamily: 'DM Sans, sans-serif'
+            }}>
+              Loading agent details...
+            </p>
+            <style>{`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}</style>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <div style={{ 
+            backgroundColor: '#fff5f5',
+            border: '1px solid #fecaca',
+            borderRadius: '10px',
+            padding: '30px',
+            marginBottom: '25px',
+            textAlign: 'center'
+          }}>
+            <p style={{ 
+              fontSize: '18px', 
+              color: '#dc2626',
+              fontWeight: '600',
+              margin: '0 0 10px 0',
+              fontFamily: 'DM Sans, sans-serif'
+            }}>
+              Error loading agent details
+            </p>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#991b1b',
+              margin: 0,
+              fontFamily: 'DM Sans, sans-serif'
+            }}>
+              {error}
+            </p>
+            <Link 
+              to="/marketplace"
+              style={{
+                display: 'inline-block',
+                marginTop: '20px',
+                padding: '10px 24px',
+                backgroundColor: '#111A45',
+                color: 'white',
+                textDecoration: 'none',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '600',
+                fontFamily: 'DM Sans, sans-serif'
+              }}
+            >
+              Back to Marketplace
+            </Link>
+          </div>
+        )}
+
+        {/* Product Content - Only show if not loading and no error */}
+        {!loading && !error && agent && (
+          <>
         {/* Product Header - Design 1: Clean & Professional */}
         <div style={{
           backgroundColor: 'white',
@@ -549,28 +754,51 @@ const MarketplaceProductDetail = () => {
                     padding: 0,
                     margin: 0
                   }}>
-                    {product.highlights.map((highlight, index) => (
-                      <li key={index} style={{
-                        fontSize: '15px',
-                        color: '#16191f',
-                        lineHeight: '1.7',
-                        marginBottom: '15px',
-                        paddingLeft: '25px',
-                        position: 'relative',
-                        fontFamily: 'inherit'
-                      }}>
-                        <span style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: '8px',
-                          width: '8px',
-                          height: '8px',
-                          backgroundColor: '#111A45',
-                          borderRadius: '50%'
-                        }}></span>
-                        {highlight}
-                      </li>
-                    ))}
+                    {(() => {
+                      // Handle highlights - convert string to array if needed
+                      let highlightsList = product.highlights;
+                      if (typeof highlightsList === 'string') {
+                        // Try to parse if it's JSON string
+                        try {
+                          highlightsList = JSON.parse(highlightsList);
+                        } catch {
+                          // If not JSON, split by comma or newline
+                          highlightsList = highlightsList.split(/\n|,|;/).filter(h => h.trim());
+                        }
+                      }
+                      if (!Array.isArray(highlightsList)) {
+                        highlightsList = [];
+                      }
+                      
+                      return highlightsList.length > 0 ? (
+                        highlightsList.map((highlight, index) => (
+                          <li key={index} style={{
+                            fontSize: '15px',
+                            color: '#16191f',
+                            lineHeight: '1.7',
+                            marginBottom: '15px',
+                            paddingLeft: '25px',
+                            position: 'relative',
+                            fontFamily: 'inherit'
+                          }}>
+                            <span style={{
+                              position: 'absolute',
+                              left: 0,
+                              top: '8px',
+                              width: '8px',
+                              height: '8px',
+                              backgroundColor: '#111A45',
+                              borderRadius: '50%'
+                            }}></span>
+                            {typeof highlight === 'string' ? highlight : (highlight.text || highlight.title || String(highlight))}
+                          </li>
+                        ))
+                      ) : (
+                        <li style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>
+                          No highlights available.
+                        </li>
+                      );
+                    })()}
                   </ul>
                 </div>
                 </div>
@@ -630,10 +858,9 @@ const MarketplaceProductDetail = () => {
                         Categories
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        {['Security', 'Application Development', 'IT Support'].map((category, index) => (
+                        {product.category ? (
                           <a
-                            key={index}
-                            href="#"
+                            href={`/marketplace?category=${product.categoryId || ''}`}
                             style={{
                               fontSize: '14px',
                               color: '#007185',
@@ -654,10 +881,12 @@ const MarketplaceProductDetail = () => {
                               e.target.style.textDecoration = 'none';
                             }}
                           >
-                            {category}
+                            {typeof product.category === 'string' ? product.category : (product.category.name || product.category.title || 'Category')}
                             <span style={{ fontSize: '11px' }}>🔗</span>
                           </a>
-                        ))}
+                        ) : (
+                          <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>Not specified</span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -683,7 +912,7 @@ const MarketplaceProductDetail = () => {
                         borderBottom: '1px dotted #16191f',
                         display: 'inline-block'
                       }}>
-                        Software as a Service (SaaS)
+                        {product.deliveryMethod || 'Not specified'}
                       </span>
                     </div>
 
@@ -706,7 +935,7 @@ const MarketplaceProductDetail = () => {
                         borderBottom: '1px dotted #16191f',
                         display: 'inline-block'
                       }}>
-                        Yes
+                        {product.deployedOnAWS ? 'Yes' : 'No'}
                       </span>
                     </div>
                   </div>
@@ -819,7 +1048,8 @@ const MarketplaceProductDetail = () => {
 
               {/* Features Cards Grid */}
               <div className="row">
-                {/* Trust Center Card */}
+                {/* Trust Center Card - Only show if URL exists */}
+                {product.trustCenterUrl && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
                     border: '1px solid #D5D9D9',
@@ -848,40 +1078,50 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '16px',
                       fontFamily: 'inherit'
                     }}>
-                      Access real-time vendor security and compliance information through their Trust Center powered by Drata. Review certifications and security standards before purchase.
+                      Access real-time vendor security and compliance information through their Trust Center. Review certifications and security standards before purchase.
                     </p>
 
                     {/* Button */}
-                    <button style={{
-                      padding: '12px 24px',
-                      backgroundColor: '#111A45',
-                      border: 'none',
-                      borderRadius: '25px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: 'white',
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#0D1433';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = '#111A45';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
-                    }}
+                    <a
+                      href={product.trustCenterUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        padding: '12px 24px',
+                        backgroundColor: '#111A45',
+                        border: 'none',
+                        borderRadius: '25px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: 'white',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)',
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        textAlign: 'center',
+                        width: 'fit-content'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = '#0D1433';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = '#111A45';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
+                      }}
                     >
                       View Trust Center →
-                    </button>
+                    </a>
                   </div>
                 </div>
+                )}
 
-                {/* Buyer Guide Card */}
+                {/* Buyer Guide Card - Only show if URL exists */}
+                {product.buyerGuideUrl && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
                     border: '1px solid #D5D9D9',
@@ -911,94 +1151,55 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '20px',
                       fontFamily: 'inherit'
                     }}>
-                      Gain valuable insights from real users who purchased this product, powered by PeerSpot.
+                      Gain valuable insights from real users who purchased this product.
                     </p>
 
-                    {/* Preview Image */}
-                    <div style={{
-                      marginBottom: '24px',
-                      flex: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'white',
-                      borderRadius: '12px',
-                      padding: '24px',
-                      minHeight: '150px',
-                      border: '1px solid #E5E7EB'
-                    }}>
-                      <div style={{ position: 'relative', display: 'flex', gap: '12px' }}>
-                        {/* Document preview illustration */}
-                        <div style={{
-                          width: '70px',
-                          height: '90px',
-                          backgroundColor: '#111A45',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '28px',
-                          boxShadow: '0 4px 10px rgba(17, 26, 69, 0.2)'
-                        }}>
-                          📄
-                        </div>
-                        <div style={{
-                          width: '70px',
-                          height: '90px',
-                          backgroundColor: 'white',
-                          border: '2px solid #E5E7EB',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '28px'
-                        }}>
-                          📊
-                        </div>
-                        <div style={{
-                          width: '70px',
-                          height: '90px',
-                          backgroundColor: 'white',
-                          border: '2px solid #E5E7EB',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '28px'
-                        }}>
-                          📈
-                        </div>
-                      </div>
-                    </div>
-
                     {/* Button */}
-                    <button style={{
-                      padding: '12px 24px',
-                      backgroundColor: 'white',
-                      border: '2px solid #111A45',
-                      borderRadius: '25px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#16191f',
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#111A45';
-                      e.target.style.color = 'white';
-                      e.target.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'white';
-                      e.target.style.color = '#16191f';
-                      e.target.style.transform = 'translateY(0)';
-                    }}
+                    <a
+                      href={product.buyerGuideUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        padding: '12px 24px',
+                        backgroundColor: 'white',
+                        border: '2px solid #111A45',
+                        borderRadius: '25px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: '#16191f',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        transition: 'all 0.3s ease',
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        textAlign: 'center',
+                        width: 'fit-content'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = '#111A45';
+                        e.target.style.color = 'white';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'white';
+                        e.target.style.color = '#16191f';
+                        e.target.style.transform = 'translateY(0)';
+                      }}
                     >
                       Get the Buyer Guide →
-                    </button>
+                    </a>
                   </div>
                 </div>
+                )}
+
+                {/* Show message if no features available */}
+                {!product.trustCenterUrl && !product.buyerGuideUrl && (
+                  <div className="col-12">
+                    <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', textAlign: 'center', padding: '40px' }}>
+                      No features and programs available at this time.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1087,59 +1288,70 @@ const MarketplaceProductDetail = () => {
 
                 {/* Links Content */}
                 <div style={{ padding: '24px' }}>
-                  {/* Link 1 */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <a
-                      href="#"
-                      style={{
-                        fontSize: '14px',
-                        color: '#007185',
-                        textDecoration: 'none',
-                        fontFamily: 'inherit',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.color = '#C7511F';
-                        e.target.style.textDecoration = 'underline';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.color = '#007185';
-                        e.target.style.textDecoration = 'none';
-                      }}
-                    >
-                      Customer Success Data Sheet
-                      <span style={{ fontSize: '12px' }}>🔗</span>
-                    </a>
-                  </div>
-
-                  {/* Link 2 */}
-                  <div>
-                    <a
-                      href="#"
-                      style={{
-                        fontSize: '14px',
-                        color: '#007185',
-                        textDecoration: 'none',
-                        fontFamily: 'inherit',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.color = '#C7511F';
-                        e.target.style.textDecoration = 'underline';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.color = '#007185';
-                        e.target.style.textDecoration = 'none';
-                      }}
-                    >
-                      Okta Community Support
-                      <span style={{ fontSize: '12px' }}>🔗</span>
-                    </a>
-                  </div>
+                  {(() => {
+                    // Process resource links from API
+                    let resourceLinksList = product.resourceLinks || product.resources || [];
+                    
+                    // Handle different formats
+                    if (typeof resourceLinksList === 'string') {
+                      try {
+                        resourceLinksList = JSON.parse(resourceLinksList);
+                      } catch {
+                        resourceLinksList = [];
+                      }
+                    }
+                    
+                    if (!Array.isArray(resourceLinksList)) {
+                      resourceLinksList = [];
+                    }
+                    
+                    // Also check documentation URL
+                    if (product.documentationUrl && !resourceLinksList.find(r => r.url === product.documentationUrl)) {
+                      resourceLinksList.push({ 
+                        title: 'Documentation', 
+                        url: product.documentationUrl,
+                        name: 'Documentation'
+                      });
+                    }
+                    
+                    if (resourceLinksList.length > 0) {
+                      return resourceLinksList.map((resource, index) => (
+                        <div key={index} style={{ marginBottom: index < resourceLinksList.length - 1 ? '16px' : '0' }}>
+                          <a
+                            href={resource.url || resource.link || resource.href || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              fontSize: '14px',
+                              color: '#007185',
+                              textDecoration: 'none',
+                              fontFamily: 'inherit',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.color = '#C7511F';
+                              e.target.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.color = '#007185';
+                              e.target.style.textDecoration = 'none';
+                            }}
+                          >
+                            {resource.title || resource.name || resource.label || `Resource ${index + 1}`}
+                            <span style={{ fontSize: '12px' }}>🔗</span>
+                          </a>
+                        </div>
+                      ));
+                    } else {
+                      return (
+                        <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', margin: 0 }}>
+                          No resources available at this time.
+                        </p>
+                      );
+                    }
+                  })()}
                 </div>
               </div>
             </div>
@@ -1185,7 +1397,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '16px',
                       fontFamily: 'inherit'
                     }}>
-                      Through our expert teams and robust digital resources, we ensure you can always access urgent and proactive support, whenever and however you need it, anywhere in the world. Access the Okta Community to get help, engage with us and your peers, submit product requests, and access the key resources you need to drive success. We offer support packages that are aligned to your requirements to give you the power of choice.
+                      {product.supportDescription || 'Contact the vendor for support inquiries and assistance.'}
                     </p>
 
                     <div style={{
@@ -1194,62 +1406,100 @@ const MarketplaceProductDetail = () => {
                       lineHeight: '1.6',
                       fontFamily: 'inherit'
                     }}>
-                      <p style={{ marginBottom: '12px' }}>
-                        For additional information please visit{' '}
-                        <a
-                          href="https://support.okta.com/help"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            color: '#007185',
-                            textDecoration: 'none',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.color = '#C7511F';
-                            e.target.style.textDecoration = 'underline';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.color = '#007185';
-                            e.target.style.textDecoration = 'none';
-                          }}
-                        >
-                          https://support.okta.com/help
-                          <span style={{ fontSize: '12px' }}>🔗</span>
-                        </a>.
-                      </p>
+                      {product.supportUrl && (
+                        <p style={{ marginBottom: '12px' }}>
+                          For additional information please visit{' '}
+                          <a
+                            href={product.supportUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              color: '#007185',
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.color = '#C7511F';
+                              e.target.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.color = '#007185';
+                              e.target.style.textDecoration = 'none';
+                            }}
+                          >
+                            {product.supportUrl}
+                            <span style={{ fontSize: '12px' }}>🔗</span>
+                          </a>.
+                        </p>
+                      )}
 
-                      <p style={{ margin: 0 }}>
-                        You can also email{' '}
-                        <a
-                          href="mailto:support@okta.com"
-                          style={{
-                            color: '#007185',
-                            textDecoration: 'none',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.color = '#C7511F';
-                            e.target.style.textDecoration = 'underline';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.color = '#007185';
-                            e.target.style.textDecoration = 'none';
-                          }}
-                        >
-                          support@okta.com
-                          <span style={{ fontSize: '12px' }}>🔗</span>
-                        </a>.
-                      </p>
+                      {product.supportEmail && (
+                        <p style={{ margin: product.supportUrl ? 0 : '0 0 12px 0' }}>
+                          You can also email{' '}
+                          <a
+                            href={`mailto:${product.supportEmail}`}
+                            style={{
+                              color: '#007185',
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.color = '#C7511F';
+                              e.target.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.color = '#007185';
+                              e.target.style.textDecoration = 'none';
+                            }}
+                          >
+                            {product.supportEmail}
+                            <span style={{ fontSize: '12px' }}>🔗</span>
+                          </a>.
+                        </p>
+                      )}
+
+                      {product.supportPhone && (
+                        <p style={{ margin: 0 }}>
+                          Call us at{' '}
+                          <a
+                            href={`tel:${product.supportPhone}`}
+                            style={{
+                              color: '#007185',
+                              textDecoration: 'none',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.color = '#C7511F';
+                              e.target.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.color = '#007185';
+                              e.target.style.textDecoration = 'none';
+                            }}
+                          >
+                            {product.supportPhone}
+                            <span style={{ fontSize: '12px' }}>🔗</span>
+                          </a>.
+                        </p>
+                      )}
+
+                      {!product.supportUrl && !product.supportEmail && !product.supportPhone && (
+                        <p style={{ margin: 0, color: '#6B7280' }}>
+                          No support contact information available.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* AWS Infrastructure Support Card */}
+                {/* AWS Infrastructure Support Card - Only show if deployed on AWS */}
+                {product.deployedOnAWS && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
                     border: '1px solid #D5D9D9',
@@ -1281,37 +1531,74 @@ const MarketplaceProductDetail = () => {
                       AWS Support is a one-on-one, fast-response support channel that is staffed 24x7x365 with experienced and technical support engineers. The service helps customers of all sizes and technical abilities to successfully utilize the products and features provided by Amazon Web Services.
                     </p>
 
-                    <button style={{
-                      padding: '10px 24px',
-                      backgroundColor: 'white',
-                      border: '1px solid #007185',
-                      borderRadius: '25px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: '#007185',
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      transition: 'background-color 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '6px',
-                      alignSelf: 'flex-start'
-                    }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                    >
-                      Get support
-                      <span style={{ fontSize: '12px' }}>🔗</span>
-                    </button>
+                    {product.awsSupportUrl ? (
+                      <a
+                        href={product.awsSupportUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          padding: '10px 24px',
+                          backgroundColor: 'white',
+                          border: '1px solid #007185',
+                          borderRadius: '25px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#007185',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          transition: 'background-color 0.2s',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          alignSelf: 'flex-start',
+                          textDecoration: 'none'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                      >
+                        Get support
+                        <span style={{ fontSize: '12px' }}>🔗</span>
+                      </a>
+                    ) : (
+                      <a
+                        href="https://aws.amazon.com/support/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          padding: '10px 24px',
+                          backgroundColor: 'white',
+                          border: '1px solid #007185',
+                          borderRadius: '25px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#007185',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                          transition: 'background-color 0.2s',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          alignSelf: 'flex-start',
+                          textDecoration: 'none'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                      >
+                        Get support
+                        <span style={{ fontSize: '12px' }}>🔗</span>
+                      </a>
+                    )}
                   </div>
                 </div>
+                )}
               </div>
             </div>
 
           {/* Product Comparison Section */}
           <div id="product-comparison" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
-              {/* Header with Buttons */}
+              {/* Header */}
               <div style={{
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
@@ -1336,11 +1623,42 @@ const MarketplaceProductDetail = () => {
                     margin: 0,
                     fontFamily: 'inherit'
                   }}>
-                    Updated weekly
+                    Compare this product with similar alternatives
                   </p>
                 </div>
-
               </div>
+              
+              {/* Show message if no comparison data available */}
+              {(!product.comparisonProducts || product.comparisonProducts.length === 0) ? (
+                <div style={{
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  padding: '40px',
+                  backgroundColor: 'white',
+                  textAlign: 'center'
+                }}>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6B7280',
+                    fontFamily: 'inherit',
+                    margin: 0
+                  }}>
+                    Product comparison data is not available at this time.
+                  </p>
+                </div>
+              ) : (
+                <div style={{
+                  border: '1px solid #D5D9D9',
+                  borderRadius: '8px',
+                  padding: '40px',
+                  backgroundColor: 'white',
+                  textAlign: 'center'
+                }}>
+                  <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', margin: 0 }}>
+                    Comparison products would be displayed here when available.
+                  </p>
+                </div>
+              )}
 
               {/* Comparison Table */}
               <div style={{
@@ -1912,7 +2230,8 @@ const MarketplaceProductDetail = () => {
                 Pricing
               </h2>
 
-              {/* Free Trial Section */}
+              {/* Free Trial Section - Only show if free trial is available */}
+              {product.freeTrial && (
               <div style={{
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
@@ -1963,6 +2282,7 @@ const MarketplaceProductDetail = () => {
                   Try for free
                 </button>
               </div>
+              )}
 
               {/* Okta Platform Pricing Section */}
               <div style={{
@@ -1988,7 +2308,7 @@ const MarketplaceProductDetail = () => {
                         margin: 0,
                         fontFamily: 'inherit'
                       }}>
-                        Okta Platform
+                        {product.name}
                       </h3>
                       <a href="#" style={{
                         fontSize: '13px',
@@ -2007,7 +2327,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '12px',
                       fontFamily: 'inherit'
                     }}>
-                      Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.
+                      {product.pricingDescription || 'Pricing is based on the duration and terms of your contract with the vendor. This entitles you to a specified quantity of use for the contract duration. If you choose not to renew or replace your contract before it ends, access to these entitlements will expire.'}
                     </p>
 
                     <p style={{
@@ -2108,42 +2428,64 @@ const MarketplaceProductDetail = () => {
                     <div>Cost/12 months</div>
                   </div>
 
-                  {/* Table Rows */}
-                  {[
-                    {
-                      whereToBuy: 'Buy on-PREM',
-                      description: 'Starting your Identity journey? Put a strong foundation in place.',
-                      cost: 'Request a Quote'
-                    },
-                    {
-                      whereToBuy: 'Buy on AWS',
-                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: 'Request Private Offer'
-                    },
-                    {
-                      whereToBuy: 'Buy on Microsoft Azure',
-                      description: 'Want to keep Identity at pace with growth? Get more must-haves',
-                      cost: 'Request Pricing'
+                  {/* Table Rows - Use API pricing options if available */}
+                  {(() => {
+                    let pricingOptions = product.pricingOptions || product.pricingPlans || [];
+                    
+                    // Handle different formats
+                    if (typeof pricingOptions === 'string') {
+                      try {
+                        pricingOptions = JSON.parse(pricingOptions);
+                      } catch {
+                        pricingOptions = [];
+                      }
                     }
-                  ].map((row, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
-                        padding: isMobile ? '12px' : '16px',
-                        borderBottom: index < 2 ? '1px solid #D5D9D9' : 'none',
-                        fontSize: isMobile ? '12px' : '14px',
-                        color: '#16191f',
-                        fontFamily: 'inherit',
-                        backgroundColor: 'white',
-                        minWidth: isMobile ? '470px' : 'auto'
-                      }}
-                    >
-                      <div style={{ fontWeight: '400' }}>{row.whereToBuy}</div>
-                      <div style={{ color: '#16191f' }}>{row.description}</div>
-                      <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
-                        {row.cost === 'Request a Quote' ? (
+                    
+                    if (!Array.isArray(pricingOptions)) {
+                      pricingOptions = [];
+                    }
+                    
+                    // If no pricing options from API, show empty message
+                    if (pricingOptions.length === 0) {
+                      return (
+                        <div style={{
+                          padding: '40px',
+                          textAlign: 'center',
+                          color: '#6B7280',
+                          fontSize: '14px',
+                          fontFamily: 'inherit'
+                        }}>
+                          No pricing options available at this time. Please contact the vendor for pricing information.
+                        </div>
+                      );
+                    }
+                    
+                    return pricingOptions.map((row, index) => {
+                      const pricingRow = typeof row === 'object' ? row : {
+                        whereToBuy: 'Purchase Option',
+                        description: String(row),
+                        cost: product.pricing || 'Contact for pricing'
+                      };
+                      
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: isMobile ? '150px 200px 120px' : '2fr 3fr 1.5fr',
+                            padding: isMobile ? '12px' : '16px',
+                            borderBottom: index < pricingOptions.length - 1 ? '1px solid #D5D9D9' : 'none',
+                            fontSize: isMobile ? '12px' : '14px',
+                            color: '#16191f',
+                            fontFamily: 'inherit',
+                            backgroundColor: 'white',
+                            minWidth: isMobile ? '470px' : 'auto'
+                          }}
+                        >
+                          <div style={{ fontWeight: '400' }}>{pricingRow.whereToBuy || pricingRow.where_to_buy || pricingRow.platform || 'Purchase Option'}</div>
+                          <div style={{ color: '#16191f' }}>{pricingRow.description || pricingRow.desc || ''}</div>
+                          <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
+                            {pricingRow.cost === 'Request a Quote' || pricingRow.action === 'quote' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2167,7 +2509,7 @@ const MarketplaceProductDetail = () => {
                           >
                             Request a Quote
                           </button>
-                        ) : row.cost === 'Request Private Offer' ? (
+                        ) : pricingRow.cost === 'Request Private Offer' || pricingRow.action === 'private_offer' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2191,7 +2533,7 @@ const MarketplaceProductDetail = () => {
                           >
                             Request Private Offer
                           </button>
-                        ) : row.cost === 'Request Pricing' ? (
+                        ) : pricingRow.cost === 'Request Pricing' || pricingRow.action === 'pricing' ? (
                           <button
                             style={{
                               padding: '8px 16px',
@@ -2216,11 +2558,13 @@ const MarketplaceProductDetail = () => {
                             Request Pricing
                           </button>
                         ) : (
-                          row.cost
+                          pricingRow.cost || pricingRow.price || 'Contact for pricing'
                         )}
                       </div>
                     </div>
-                  ))}
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
@@ -2309,10 +2653,13 @@ const MarketplaceProductDetail = () => {
 
           {/* Add more tab content as needed */}
         </div>
+          </>
+        )}
       </div>
     </main>
   );
 };
 
 export default MarketplaceProductDetail;
+
 

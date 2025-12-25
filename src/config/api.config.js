@@ -89,6 +89,15 @@ export const API_ENDPOINTS = {
     getAll: '/productinquiries',
     getById: (id) => `/productinquiries/${id}`,
   },
+  
+  // AI Agents
+  aiAgents: {
+    getAll: '/aiagents',
+    getById: (id) => `/aiagents/${id}`,
+    create: '/aiagents',
+    update: (id) => `/aiagents/${id}`,
+    delete: (id) => `/aiagents/${id}`,
+  },
 };
 
 export default API_CONFIG;

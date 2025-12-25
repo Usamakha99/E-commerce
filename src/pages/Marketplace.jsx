@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { aiAgentService } from '../services/aiAgent.service';
 
 const Marketplace = () => {
   const [selectedCategory, setSelectedCategory] = useState('AI Agents & Tools');
@@ -12,6 +13,12 @@ const Marketplace = () => {
   const [showDeliveryMethods, setShowDeliveryMethods] = useState(true);
   const [showPublishers, setShowPublishers] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
+  
+  // AI Agents API state
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [totalAgents, setTotalAgents] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,6 +35,47 @@ const Marketplace = () => {
       : 'AI Marketplace - VCloud Tech';
     document.title = title;
   }, [selectedCategory]);
+
+  // Fetch AI agents from API
+  useEffect(() => {
+    const fetchAgents = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Map category name to categoryId (you may need to adjust this based on your category structure)
+        // For now, using categoryId=1 as shown in the user's example
+        const categoryId = 1; // You can map this based on selectedCategory if needed
+        
+        const response = await aiAgentService.getAllAgents({
+          page: currentPage,
+          limit: 20,
+          categoryId: categoryId,
+        });
+        
+        // Handle response structure - adjust based on your API response format
+        // API might return: { data: [...], total: 100 } or just [...]
+        if (Array.isArray(response)) {
+          setAgents(response);
+          setTotalAgents(response.length);
+        } else if (response.data && Array.isArray(response.data)) {
+          setAgents(response.data);
+          setTotalAgents(response.total || response.data.length);
+        } else {
+          setAgents([]);
+          setTotalAgents(0);
+        }
+      } catch (err) {
+        console.error('Error fetching AI agents:', err);
+        setError(err.message || 'Failed to fetch AI agents');
+        // Fallback to empty array on error
+        setAgents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAgents();
+  }, [currentPage, selectedCategory]); // Re-fetch when page or category changes
 
   // Mock data for categories
   const categories = [
@@ -64,42 +112,21 @@ const Marketplace = () => {
     { name: 'Deloitte Consulting LLP', count: 103 }
   ];
 
-  // Mock products
-  const products = [
-    {
-      id: 1,
-      name: 'Okta Platform',
-      provider: 'Okta, Inc',
-      logo: '/src/assets/imgs/page/homepage1/imgsp1.png',
-      awsReviews: 1,
-      externalReviews: 999,
-      rating: 5,
-      freeTrial: true,
-      description: 'Okta Workforce Identity delivers a unified identity security platform that protects customer environments before, during, and after authentication and with continuous assessment of user and session risk. By offering an integrated and multi-layer security approach that enables you to view, monitor...'
-    },
-    {
-      id: 2,
-      name: 'Auth0 Platform',
-      provider: 'Okta, Inc',
-      logo: '/src/assets/imgs/page/homepage1/imgsp1.png',
-      awsReviews: 1,
-      externalReviews: 236,
-      rating: 1,
-      freeTrial: true,
-      description: 'Product Overview: Customer Identity Cloud makes it easy to add basic and advanced authentication and authorization capabilities to your applications. Built for consumer and SaaS apps in any industry, it allows you to add functionality like branded login flows, MFA, or Passkeys in a matter of days, no...'
-    },
-    {
-      id: 3,
-      name: 'JFrog Software Supply Chain Platform',
-      provider: 'JFrog',
-      logo: '/src/assets/imgs/page/homepage1/imgsp1.png',
-      awsReviews: 0,
-      externalReviews: 106,
-      rating: 0,
-      freeTrial: false,
-      description: 'Trusted by millions of developers, engineers, architects, and security professionals at thousands of enterprises, including the majority of the Fortune 100, the cloud-native JFrog Software Supply Chain Platform is the single source of truth for all software packages, data, and ML models utilized...'
-    }
-  ];
+  // Map API agents to product format for display
+  // Use API agents if available, otherwise fallback to empty array
+  const products = agents.length > 0 
+    ? agents.map(agent => ({
+        id: agent.id,
+        name: agent.name || 'Unnamed Agent',
+        provider: agent.provider || agent.seller || 'Unknown Provider',
+        logo: agent.logo || agent.image || '/src/assets/imgs/page/homepage1/imgsp1.png',
+        awsReviews: agent.awsReviews || 0,
+        externalReviews: agent.externalReviews || agent.reviews || 0,
+        rating: agent.rating || 0,
+        freeTrial: agent.freeTrial || false,
+        description: agent.description || agent.shortDescription || 'No description available.'
+      }))
+    : [];
 
   const handleDeliveryMethodToggle = (method) => {
     if (selectedDeliveryMethods.includes(method)) {
@@ -338,7 +365,7 @@ const Marketplace = () => {
                     margin: 0,
                     fontFamily: 'DM Sans, sans-serif'
                   }}>
-                    {selectedCategory} (2,073 results) showing 1-20
+                    {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}) showing {products.length > 0 ? `1-${products.length}` : '0'}
                   </p>
                 </div>
 
@@ -441,7 +468,33 @@ const Marketplace = () => {
 
               {/* Products List */}
               <div>
-                {products.map((product, index) => (
+                {loading && (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#565959' }}>
+                    Loading AI agents...
+                  </div>
+                )}
+                
+                {error && !loading && (
+                  <div style={{ 
+                    textAlign: 'center', 
+                    padding: '40px', 
+                    color: '#df2020',
+                    backgroundColor: '#fff5f5',
+                    borderRadius: '8px',
+                    marginBottom: '20px'
+                  }}>
+                    <p style={{ margin: 0, fontWeight: '600' }}>Error loading agents</p>
+                    <p style={{ margin: '10px 0 0 0', fontSize: '14px' }}>{error}</p>
+                  </div>
+                )}
+                
+                {!loading && !error && products.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#565959' }}>
+                    No AI agents found.
+                  </div>
+                )}
+                
+                {!loading && products.map((product, index) => (
                   <div
                     key={product.id}
                     style={{
