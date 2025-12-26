@@ -237,7 +237,23 @@ const MarketplaceProductDetail = () => {
       deployedOnAWS: agent.deployedOnAWS || agent.deployed_on_aws || agent.awsDeployed || agent.aws_deployed || false,
       freeTrial: agent.freeTrial || agent.free_trial || false,
       pricing: agent.pricing || agent.price || agent.cost || null,
-      supportUrl: agent.supportUrl || agent.support_url || agent.support || null,
+      supportUrl: (() => {
+        // First check supportContent.vendorSupport.website, then other fields
+        return supportContent?.vendorSupport?.website || 
+               supportContent?.vendorSupport?.url || 
+               supportContent?.vendorSupport?.supportUrl || 
+               supportContent?.vendorSupport?.link || 
+               supportContent?.url || 
+               supportContent?.supportUrl || 
+               supportContent?.support_url || 
+               supportContent?.link || 
+               supportContent?.supportLink || 
+               supportContent?.support_link ||
+               agent.supportUrl || 
+               agent.support_url || 
+               agent.support || 
+               null;
+      })(),
       documentationUrl: agent.documentationUrl || agent.documentation_url || agent.docs || agent.documentation || null,
       website: agent.website || agent.url || agent.homepage || agent.homePage || null,
       createdAt: agent.createdAt || agent.created_at || agent.createdDate || null,
@@ -467,11 +483,16 @@ const MarketplaceProductDetail = () => {
       resourcesData: resourcesContent, // Store full resourcesContent object
       resourcesDescription: resourcesContent.description || resourcesContent.desc || null,
       resourcesTitle: resourcesContent.title || resourcesContent.name || null,
-      // Support - from supportContent object or direct fields
-      supportDescription: supportContent.description || supportContent.info || agent.supportDescription || agent.support_description || agent.supportInfo || null,
-      supportEmail: supportContent.email || agent.supportEmail || agent.support_email || agent.email || null,
-      supportPhone: supportContent.phone || agent.supportPhone || agent.support_phone || agent.phone || null,
-      awsSupportUrl: supportContent.awsSupportUrl || supportContent.aws_support_url || agent.awsSupportUrl || agent.aws_support_url || null,
+      // Support - from supportContent object (vendorSupport and awsSupport nested structure)
+      supportDescription: supportContent?.vendorSupport?.description || supportContent?.description || supportContent?.info || supportContent?.desc || agent.supportDescription || agent.support_description || agent.supportInfo || null,
+      supportEmail: supportContent?.vendorSupport?.email || supportContent?.email || supportContent?.emailAddress || supportContent?.email_address || agent.supportEmail || agent.support_email || agent.email || null,
+      supportPhone: supportContent?.vendorSupport?.phone || supportContent?.phone || supportContent?.phoneNumber || supportContent?.phone_number || supportContent?.tel || supportContent?.telephone || agent.supportPhone || agent.support_phone || agent.phone || null,
+      supportTitle: supportContent?.vendorSupport?.title || 'Vendor support',
+      // AWS Support - from awsSupport nested structure
+      awsSupportDescription: supportContent?.awsSupport?.description || null,
+      awsSupportTitle: supportContent?.awsSupport?.title || 'AWS infrastructure support',
+      awsSupportButtonText: supportContent?.awsSupport?.buttonText || supportContent?.awsSupport?.button_text || 'Get support',
+      awsSupportUrl: supportContent?.awsSupport?.buttonLink || supportContent?.awsSupport?.button_link || supportContent?.awsSupport?.url || supportContent?.awsSupportUrl || supportContent?.aws_support_url || supportContent?.awsUrl || supportContent?.aws_url || agent.awsSupportUrl || agent.aws_support_url || null,
       supportData: supportContent, // Store full supportContent object
       // Product Comparison - Extract from comparisonData array structure
       comparisonData: productComparisonContent, // Store full productComparisonContent object
@@ -534,6 +555,8 @@ const MarketplaceProductDetail = () => {
     console.log('Type:', typeof supportContent);
     console.log('Is Array:', Array.isArray(supportContent));
     console.log('Keys:', supportContent ? Object.keys(supportContent) : 'null/undefined');
+    console.log('supportContent.vendorSupport:', supportContent.vendorSupport);
+    console.log('supportContent.awsSupport:', supportContent.awsSupport);
     console.log('supportContent.description:', supportContent.description);
     console.log('supportContent.email:', supportContent.email);
     console.log('supportContent.phone:', supportContent.phone);
@@ -541,6 +564,18 @@ const MarketplaceProductDetail = () => {
     console.log('supportContent.url:', supportContent.url);
     console.log('supportContent.supportUrl:', supportContent.supportUrl);
     console.log('Complete supportContent JSON:', JSON.stringify(supportContent, null, 2));
+    console.log('==========================================');
+    console.log('🔍 MAPPED SUPPORT DATA:');
+    console.log('==========================================');
+    console.log('Mapped supportTitle:', mapped.supportTitle);
+    console.log('Mapped supportDescription:', mapped.supportDescription);
+    console.log('Mapped supportEmail:', mapped.supportEmail);
+    console.log('Mapped supportPhone:', mapped.supportPhone);
+    console.log('Mapped supportUrl:', mapped.supportUrl);
+    console.log('Mapped awsSupportTitle:', mapped.awsSupportTitle);
+    console.log('Mapped awsSupportDescription:', mapped.awsSupportDescription);
+    console.log('Mapped awsSupportButtonText:', mapped.awsSupportButtonText);
+    console.log('Mapped awsSupportUrl:', mapped.awsSupportUrl);
     console.log('==========================================');
     console.log('📦 Product Comparison Content:', productComparisonContent);
     console.log('📦 Comparison Products:', mapped.comparisonProducts);
@@ -2159,7 +2194,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '16px',
                       fontFamily: 'inherit'
                     }}>
-                      Vendor support
+                      {product.supportTitle || 'Vendor support'}
                     </h3>
 
                     <p style={{
@@ -2270,8 +2305,8 @@ const MarketplaceProductDetail = () => {
                   </div>
                 </div>
 
-                {/* AWS Infrastructure Support Card - Only show if deployed on AWS */}
-                {product.deployedOnAWS && (
+                {/* AWS Infrastructure Support Card - Show if awsSupport data exists in API */}
+                {((product.supportData?.awsSupport) || product.awsSupportTitle || product.awsSupportDescription || product.awsSupportUrl || product.deployedOnAWS) && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
                     border: '1px solid #D5D9D9',
@@ -2289,7 +2324,7 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '16px',
                       fontFamily: 'inherit'
                     }}>
-                      AWS infrastructure support
+                      {product.awsSupportTitle || 'AWS infrastructure support'}
                     </h3>
 
                     <p style={{
@@ -2300,7 +2335,7 @@ const MarketplaceProductDetail = () => {
                       fontFamily: 'inherit',
                       flex: 1
                     }}>
-                      AWS Support is a one-on-one, fast-response support channel that is staffed 24x7x365 with experienced and technical support engineers. The service helps customers of all sizes and technical abilities to successfully utilize the products and features provided by Amazon Web Services.
+                      {product.awsSupportDescription || 'AWS Support is a one-on-one, fast-response support channel that is staffed 24x7x365 with experienced and technical support engineers. The service helps customers of all sizes and technical abilities to successfully utilize the products and features provided by Amazon Web Services.'}
                     </p>
 
                     {product.awsSupportUrl ? (
@@ -2315,7 +2350,7 @@ const MarketplaceProductDetail = () => {
                       borderRadius: '25px',
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: '#007185',
+                      color: 'rgb(0, 113, 133)',
                       cursor: 'pointer',
                       fontFamily: 'inherit',
                       transition: 'background-color 0.2s',
@@ -2329,7 +2364,7 @@ const MarketplaceProductDetail = () => {
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
                     >
-                      Get support
+                      {product.awsSupportButtonText || 'Get support'}
                       <span style={{ fontSize: '12px' }}>🔗</span>
                       </a>
                     ) : (
@@ -2344,7 +2379,7 @@ const MarketplaceProductDetail = () => {
                           borderRadius: '25px',
                           fontSize: '14px',
                           fontWeight: '600',
-                          color: '#007185',
+                          color: 'rgb(0, 113, 133)',
                           cursor: 'pointer',
                           fontFamily: 'inherit',
                           transition: 'background-color 0.2s',
@@ -2358,7 +2393,7 @@ const MarketplaceProductDetail = () => {
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
                         onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
                       >
-                        Get support
+                        {product.awsSupportButtonText || 'Get support'}
                         <span style={{ fontSize: '12px' }}>🔗</span>
                       </a>
                     )}
