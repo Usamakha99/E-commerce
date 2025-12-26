@@ -6,6 +6,7 @@ const MarketplaceProductDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('overview');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isShortDescriptionExpanded, setIsShortDescriptionExpanded] = useState(false);
   const [isComparisonExpanded, setIsComparisonExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
   const [isTablet, setIsTablet] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
@@ -526,7 +527,21 @@ const MarketplaceProductDetail = () => {
     console.log('📦 Features Content trustCenterUrl field:', featuresContent.trustCenterUrl);
     console.log('📦 Features Content buyerGuideUrl field:', featuresContent.buyerGuideUrl);
     console.log('📦 Resources Content:', resourcesContent);
-    console.log('📦 Support Content:', supportContent);
+    console.log('==========================================');
+    console.log('🔍 SUPPORT CONTENT FROM API:');
+    console.log('==========================================');
+    console.log('Full supportContent Object:', supportContent);
+    console.log('Type:', typeof supportContent);
+    console.log('Is Array:', Array.isArray(supportContent));
+    console.log('Keys:', supportContent ? Object.keys(supportContent) : 'null/undefined');
+    console.log('supportContent.description:', supportContent.description);
+    console.log('supportContent.email:', supportContent.email);
+    console.log('supportContent.phone:', supportContent.phone);
+    console.log('supportContent.awsSupportUrl:', supportContent.awsSupportUrl);
+    console.log('supportContent.url:', supportContent.url);
+    console.log('supportContent.supportUrl:', supportContent.supportUrl);
+    console.log('Complete supportContent JSON:', JSON.stringify(supportContent, null, 2));
+    console.log('==========================================');
     console.log('📦 Product Comparison Content:', productComparisonContent);
     console.log('📦 Comparison Products:', mapped.comparisonProducts);
     console.log('📦 Comparison Title:', mapped.comparisonTitle);
@@ -609,6 +624,43 @@ const MarketplaceProductDetail = () => {
     'Product comparison',
     'How to buy'
   ];
+
+  // Function to convert text URLs to clickable links with styled color
+  const renderTextWithLinks = (text) => {
+    if (!text) return text;
+    
+    // URL regex pattern
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: 'rgb(0, 113, 133)',
+              textDecoration: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.textDecoration = 'underline';
+              e.target.style.color = 'rgb(0, 95, 115)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.textDecoration = 'none';
+              e.target.style.color = 'rgb(0, 113, 133)';
+            }}
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -807,16 +859,87 @@ const MarketplaceProductDetail = () => {
                   </div> */}
 
                   {/* Description */}
-                  <p style={{
+                  <div style={{
                     fontSize: '14px',
                     fontWeight: '400',
                     color: '#000000',
                     lineHeight: '1.7',
                     margin: '0 0 14px 0',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    maxHeight: isShortDescriptionExpanded ? 'none' : '60px',
+                    overflow: 'hidden',
+                    transition: 'max-height 0.3s ease'
                   }}>
-                    {product.shortDescription}
-                  </p>
+                    <p style={{ margin: 0 }}>
+                      {renderTextWithLinks(product.shortDescription)}
+                    </p>
+                  </div>
+
+                  {/* Show More/Less Button for Short Description */}
+                  {product.shortDescription && product.shortDescription.length > 100 && (
+                    <button
+                      onClick={() => setIsShortDescriptionExpanded(!isShortDescriptionExpanded)}
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        color: 'rgb(0, 113, 133)',
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        padding: '0',
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        textDecoration: 'none',
+                        marginTop: '8px',
+                        marginBottom: '14px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.textDecoration = 'underline';
+                        e.currentTarget.style.color = 'rgb(0, 95, 115)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textDecoration = 'none';
+                        e.currentTarget.style.color = 'rgb(0, 113, 133)';
+                      }}
+                    >
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 16 16" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <rect 
+                          width="16" 
+                          height="16" 
+                          rx="2" 
+                          fill="rgb(0, 113, 133)"
+                        />
+                        {isShortDescriptionExpanded ? (
+                          <line 
+                            x1="4" 
+                            y1="8" 
+                            x2="12" 
+                            y2="8" 
+                            stroke="white" 
+                            strokeWidth="2" 
+                            strokeLinecap="round"
+                          />
+                        ) : (
+                          <path 
+                            d="M8 4V12M4 8H12" 
+                            stroke="white" 
+                            strokeWidth="2" 
+                            strokeLinecap="round"
+                          />
+                        )}
+                      </svg>
+                      <span>{isShortDescriptionExpanded ? 'Show less' : 'Show more'}</span>
+                    </button>
+                  )}
 
                   {/* Rating */}
                   {/* <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1164,26 +1287,26 @@ const MarketplaceProductDetail = () => {
                       
                       return highlightsList.length > 0 ? (
                         highlightsList.map((highlight, index) => (
-                          <li key={index} style={{
-                            fontSize: '15px',
-                            color: '#16191f',
-                            lineHeight: '1.7',
-                            marginBottom: '15px',
-                            paddingLeft: '25px',
-                            position: 'relative',
-                            fontFamily: 'inherit'
-                          }}>
-                            <span style={{
-                              position: 'absolute',
-                              left: 0,
-                              top: '8px',
-                              width: '8px',
-                              height: '8px',
-                              backgroundColor: '#111A45',
-                              borderRadius: '50%'
-                            }}></span>
+                      <li key={index} style={{
+                        fontSize: '15px',
+                        color: '#16191f',
+                        lineHeight: '1.7',
+                        marginBottom: '15px',
+                        paddingLeft: '25px',
+                        position: 'relative',
+                        fontFamily: 'inherit'
+                      }}>
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: '8px',
+                          width: '8px',
+                          height: '8px',
+                          backgroundColor: '#111A45',
+                          borderRadius: '50%'
+                        }}></span>
                             {typeof highlight === 'string' ? highlight : (highlight.text || highlight.title || String(highlight))}
-                          </li>
+                      </li>
                         ))
                       ) : (
                         <li style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>
@@ -1255,7 +1378,7 @@ const MarketplaceProductDetail = () => {
                             href={`/marketplace?category=${product.categoryId || ''}`}
                             style={{
                               fontSize: '14px',
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               textDecoration: 'none',
                               fontFamily: 'inherit',
                               fontWeight: '400',
@@ -1265,11 +1388,11 @@ const MarketplaceProductDetail = () => {
                               width: 'fit-content'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.color = '#C7511F';
+                              e.target.style.color = 'rgb(0, 95, 115)';
                               e.target.style.textDecoration = 'underline';
                             }}
                             onMouseLeave={(e) => {
-                              e.target.style.color = '#007185';
+                              e.target.style.color = 'rgb(0, 113, 133)';
                               e.target.style.textDecoration = 'none';
                             }}
                           >
@@ -1355,7 +1478,7 @@ const MarketplaceProductDetail = () => {
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease'
                   }}>
-                    <p style={{ margin: 0, fontSize: '14px', color: '#000000' }}>{product.overview}</p>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#000000' }}>{renderTextWithLinks(product.overview)}</p>
                   </div>
 
                   {/* See More/Less Button - Modern & Spicy */}
@@ -1372,7 +1495,7 @@ const MarketplaceProductDetail = () => {
                           fontWeight: '600',
                           color: '#007185',
                           backgroundColor: 'transparent',
-                          border: '2px solid #007185',
+                          border: '2px solid rgb(0, 113, 133)',
                           borderRadius: '25px',
                           padding: '12px 28px',
                           cursor: 'pointer',
@@ -1417,9 +1540,9 @@ const MarketplaceProductDetail = () => {
                             transform: isDescriptionExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
                             position: 'relative',
                             zIndex: 1
-                          }}
-                        >
-                          {isDescriptionExpanded ? (
+                        }}
+                      >
+                        {isDescriptionExpanded ? (
                             <path 
                               d="M18 15L12 9L6 15" 
                               stroke="currentColor" 
@@ -1578,7 +1701,7 @@ const MarketplaceProductDetail = () => {
                             gap: '10px'
                           }}>
                             <span style={{
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               fontSize: '16px',
                               fontWeight: 'bold',
                               marginTop: '2px'
@@ -1637,32 +1760,32 @@ const MarketplaceProductDetail = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        padding: '12px 24px',
-                        backgroundColor: '#111A45',
-                        border: 'none',
-                        borderRadius: '25px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: 'white',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
-                        transition: 'all 0.3s ease',
+                      padding: '12px 24px',
+                      backgroundColor: '#111A45',
+                      border: 'none',
+                      borderRadius: '25px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: 'white',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      transition: 'all 0.3s ease',
                         boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)',
                         textDecoration: 'none',
                         display: 'inline-block',
                         textAlign: 'center',
                         width: 'fit-content'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = '#0D1433';
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = '#111A45';
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
-                      }}
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#0D1433';
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = '#111A45';
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
+                    }}
                     >
                       View Trust Center →
                     </a>
@@ -1710,31 +1833,31 @@ const MarketplaceProductDetail = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        padding: '12px 24px',
-                        backgroundColor: 'white',
-                        border: '2px solid #111A45',
-                        borderRadius: '25px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: '#16191f',
-                        cursor: 'pointer',
-                        fontFamily: 'inherit',
+                      padding: '12px 24px',
+                      backgroundColor: 'white',
+                      border: '2px solid #111A45',
+                      borderRadius: '25px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#16191f',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
                         transition: 'all 0.3s ease',
                         textDecoration: 'none',
                         display: 'inline-block',
                         textAlign: 'center',
                         width: 'fit-content'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = '#111A45';
-                        e.target.style.color = 'white';
-                        e.target.style.transform = 'translateY(-2px)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = 'white';
-                        e.target.style.color = '#16191f';
-                        e.target.style.transform = 'translateY(0)';
-                      }}
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#111A45';
+                      e.target.style.color = 'white';
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'white';
+                      e.target.style.color = '#16191f';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
                     >
                       {product.buyerGuide.buttonText || 'Get the Buyer Guide'} →
                     </a>
@@ -1804,7 +1927,7 @@ const MarketplaceProductDetail = () => {
                       marginRight: '24px',
                       border: 'none',
                       backgroundColor: 'transparent',
-                      borderBottom: '3px solid #007185',
+                          borderBottom: '3px solid rgb(0, 113, 133)',
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '600',
@@ -1833,7 +1956,7 @@ const MarketplaceProductDetail = () => {
                       fontFamily: 'inherit',
                       transition: 'color 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.color = '#007185'}
+                    onMouseEnter={(e) => e.target.style.color = 'rgb(0, 113, 133)'}
                     onMouseLeave={(e) => e.target.style.color = '#16191f'}
                   >
                     Videos
@@ -1886,27 +2009,27 @@ const MarketplaceProductDetail = () => {
                               href={resourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{
-                                fontSize: '14px',
-                                color: '#007185',
-                                textDecoration: 'none',
-                                fontFamily: 'inherit',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '6px'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.color = '#C7511F';
-                                e.target.style.textDecoration = 'underline';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.color = '#007185';
-                                e.target.style.textDecoration = 'none';
-                              }}
-                            >
+                      style={{
+                        fontSize: '14px',
+                                color: 'rgb(0, 113, 133)',
+                        textDecoration: 'none',
+                        fontFamily: 'inherit',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                      onMouseEnter={(e) => {
+                                e.target.style.color = 'rgb(0, 95, 115)';
+                        e.target.style.textDecoration = 'underline';
+                      }}
+                      onMouseLeave={(e) => {
+                                e.target.style.color = 'rgb(0, 113, 133)';
+                        e.target.style.textDecoration = 'none';
+                      }}
+                    >
                               {resourceTitle}
-                              <span style={{ fontSize: '12px' }}>🔗</span>
-                            </a>
+                      <span style={{ fontSize: '12px' }}>🔗</span>
+                    </a>
                           </div>
                         );
                       });
@@ -1918,8 +2041,8 @@ const MarketplaceProductDetail = () => {
                       );
                     }
                   })()}
-                </div>
-                
+                  </div>
+
                 {/* Videos Content - Show if videos exist */}
                 {product.resourceVideos && Array.isArray(product.resourceVideos) && product.resourceVideos.length > 0 && (
                   <div style={{ padding: '24px', borderTop: '1px solid #D5D9D9' }}>
@@ -1934,18 +2057,18 @@ const MarketplaceProductDetail = () => {
                             href={videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{
+                      style={{
                               display: 'flex',
-                              alignItems: 'center',
+                        alignItems: 'center',
                               gap: '12px',
                               textDecoration: 'none',
-                              color: '#16191f',
+                              color: 'rgb(0, 113, 133)',
                               fontFamily: 'inherit'
-                            }}
-                            onMouseEnter={(e) => {
+                      }}
+                      onMouseEnter={(e) => {
                               e.currentTarget.style.opacity = '0.8';
-                            }}
-                            onMouseLeave={(e) => {
+                      }}
+                      onMouseLeave={(e) => {
                               e.currentTarget.style.opacity = '1';
                             }}
                           >
@@ -1996,11 +2119,11 @@ const MarketplaceProductDetail = () => {
                                 </div>
                               )}
                             </div>
-                          </a>
-                        </div>
+                    </a>
+                  </div>
                       );
                     })}
-                  </div>
+                </div>
                 )}
               </div>
             </div>
@@ -2056,59 +2179,59 @@ const MarketplaceProductDetail = () => {
                       fontFamily: 'inherit'
                     }}>
                       {product.supportUrl && (
-                        <p style={{ marginBottom: '12px' }}>
-                          For additional information please visit{' '}
-                          <a
+                      <p style={{ marginBottom: '12px' }}>
+                        For additional information please visit{' '}
+                        <a
                             href={product.supportUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              color: '#007185',
-                              textDecoration: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.color = '#C7511F';
-                              e.target.style.textDecoration = 'underline';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = '#007185';
-                              e.target.style.textDecoration = 'none';
-                            }}
-                          >
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                              color: 'rgb(0, 113, 133)',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                          onMouseEnter={(e) => {
+                              e.target.style.color = 'rgb(0, 95, 115)';
+                            e.target.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                              e.target.style.color = 'rgb(0, 113, 133)';
+                            e.target.style.textDecoration = 'none';
+                          }}
+                        >
                             {product.supportUrl}
-                            <span style={{ fontSize: '12px' }}>🔗</span>
-                          </a>.
-                        </p>
+                          <span style={{ fontSize: '12px' }}>🔗</span>
+                        </a>.
+                      </p>
                       )}
 
                       {product.supportEmail && (
                         <p style={{ margin: product.supportUrl ? 0 : '0 0 12px 0' }}>
-                          You can also email{' '}
-                          <a
+                        You can also email{' '}
+                        <a
                             href={`mailto:${product.supportEmail}`}
-                            style={{
-                              color: '#007185',
-                              textDecoration: 'none',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.color = '#C7511F';
-                              e.target.style.textDecoration = 'underline';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = '#007185';
-                              e.target.style.textDecoration = 'none';
-                            }}
-                          >
+                          style={{
+                              color: 'rgb(0, 113, 133)',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                          onMouseEnter={(e) => {
+                              e.target.style.color = 'rgb(0, 95, 115)';
+                            e.target.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                              e.target.style.color = 'rgb(0, 113, 133)';
+                            e.target.style.textDecoration = 'none';
+                          }}
+                        >
                             {product.supportEmail}
-                            <span style={{ fontSize: '12px' }}>🔗</span>
-                          </a>.
-                        </p>
+                          <span style={{ fontSize: '12px' }}>🔗</span>
+                        </a>.
+                      </p>
                       )}
 
                       {product.supportPhone && (
@@ -2117,18 +2240,18 @@ const MarketplaceProductDetail = () => {
                           <a
                             href={`tel:${product.supportPhone}`}
                             style={{
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               textDecoration: 'none',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '4px'
                             }}
                             onMouseEnter={(e) => {
-                              e.target.style.color = '#C7511F';
+                              e.target.style.color = 'rgb(0, 95, 115)';
                               e.target.style.textDecoration = 'underline';
                             }}
                             onMouseLeave={(e) => {
-                              e.target.style.color = '#007185';
+                              e.target.style.color = 'rgb(0, 113, 133)';
                               e.target.style.textDecoration = 'none';
                             }}
                           >
@@ -2186,28 +2309,28 @@ const MarketplaceProductDetail = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                          padding: '10px 24px',
-                          backgroundColor: 'white',
-                          border: '1px solid #007185',
-                          borderRadius: '25px',
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#007185',
-                          cursor: 'pointer',
-                          fontFamily: 'inherit',
-                          transition: 'background-color 0.2s',
+                      padding: '10px 24px',
+                      backgroundColor: 'white',
+                          border: '1px solid rgb(0, 113, 133)',
+                      borderRadius: '25px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#007185',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      transition: 'background-color 0.2s',
                           display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '6px',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
                           alignSelf: 'flex-start',
                           textDecoration: 'none'
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
-                      >
-                        Get support
-                        <span style={{ fontSize: '12px' }}>🔗</span>
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                    >
+                      Get support
+                      <span style={{ fontSize: '12px' }}>🔗</span>
                       </a>
                     ) : (
                       <a
@@ -2217,7 +2340,7 @@ const MarketplaceProductDetail = () => {
                         style={{
                           padding: '10px 24px',
                           backgroundColor: 'white',
-                          border: '1px solid #007185',
+                          border: '1px solid rgb(0, 113, 133)',
                           borderRadius: '25px',
                           fontSize: '14px',
                           fontWeight: '600',
@@ -2275,15 +2398,15 @@ const MarketplaceProductDetail = () => {
                     {product.updatedWeekly ? 'Updated weekly' : product.comparisonTitle || 'Compare this product with similar alternatives'}
                   </p>
                 </div>
-              </div>
-              
+                </div>
+
               {/* Show message if no comparison data available */}
               {(!product.comparisonProducts || product.comparisonProducts.length === 0) ? (
                 <div style={{
-                  border: '1px solid #D5D9D9',
-                  borderRadius: '8px',
+                    border: '1px solid #D5D9D9',
+                    borderRadius: '8px',
                   padding: '40px',
-                  backgroundColor: 'white',
+                    backgroundColor: 'white',
                   textAlign: 'center'
                 }}>
                   <p style={{
@@ -2309,24 +2432,24 @@ const MarketplaceProductDetail = () => {
                   gridTemplateColumns: isMobile 
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
-                  borderBottom: '2px solid #007185',
+                  borderBottom: '2px solid rgb(0, 113, 133)',
                   backgroundColor: '#F7F8F8',
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto'
                 }}>
-                  <div style={{ 
+                    <div style={{
                     padding: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
                     gap: '8px'
                   }}>
                     <span style={{ fontSize: '18px' }}>📊</span>
                     <span style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '600', 
-                      color: '#16191f',
-                      fontFamily: 'inherit'
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#16191f',
+                          fontFamily: 'inherit'
                     }}>Compare</span>
-                  </div>
+                        </div>
                   {/* Dynamic Product Headers from API */}
                   {product.comparisonProducts.map((compProduct, index) => {
                     const brandInitials = (compProduct.brand || compProduct.name || 'N/A').substring(0, 2).toUpperCase();
@@ -2348,20 +2471,20 @@ const MarketplaceProductDetail = () => {
                         backgroundColor: index === 0 ? '#FFFFFF' : '#FAFAFA',
                         position: 'relative'
                       }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          marginBottom: '8px'
-                        }}>
-                          <div style={{
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: '8px'
+                    }}>
+                      <div style={{
                             width: '50px',
                             height: '50px',
                             backgroundColor: brandColor.bg,
                             borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                             fontSize: '14px',
                             color: brandColor.text,
                             fontWeight: 'bold',
@@ -2369,27 +2492,27 @@ const MarketplaceProductDetail = () => {
                             border: '2px solid #fff'
                           }}>
                             {brandInitials}
-                          </div>
+                      </div>
                           <div style={{ flex: 1 }}>
-                            <div style={{
+                        <div style={{
                               fontSize: '15px',
                               fontWeight: '700',
-                              color: '#16191f',
+                          color: '#16191f',
                               fontFamily: 'inherit',
                               marginBottom: '4px'
-                            }}>
+                        }}>
                               {compProduct.model || compProduct.name || compProduct.title || `Product ${index + 1}`}
-                            </div>
-                            <div style={{
-                              fontSize: '12px',
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
                               color: '#6B7280',
-                              fontFamily: 'inherit'
-                            }}>
+                          fontFamily: 'inherit'
+                        }}>
                               by {compProduct.brand || compProduct.provider || compProduct.seller || 'Unknown'}
-                            </div>
-                          </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
                     );
                   })}
                 </div>
@@ -2429,12 +2552,12 @@ const MarketplaceProductDetail = () => {
                           <div key={index} style={{ 
                             padding: '16px 20px', 
                             borderLeft: '1px solid #D5D9D9', 
-                            fontSize: '14px', 
+                          fontSize: '14px',
                             fontFamily: 'inherit',
                             backgroundColor: isBestPrice ? '#F0FDF4' : 'white',
                             position: 'relative'
                           }}>
-                            <div style={{
+                        <div style={{
                               fontWeight: isBestPrice ? '700' : '500',
                               color: isBestPrice ? '#10b981' : '#16191f',
                               display: 'flex',
@@ -2458,8 +2581,8 @@ const MarketplaceProductDetail = () => {
                               ) : (
                                 <span style={{ color: '#9CA3AF' }}>N/A</span>
                               )}
-                            </div>
-                          </div>
+                        </div>
+                      </div>
                         );
                       })}
                     </div>
@@ -2504,10 +2627,10 @@ const MarketplaceProductDetail = () => {
                       </span>
                     </div>
                   ))}
-                </div>
+                  </div>
 
                 {/* Model Row */}
-                <div style={{
+                    <div style={{
                   display: 'grid',
                   gridTemplateColumns: isMobile 
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
@@ -2515,19 +2638,19 @@ const MarketplaceProductDetail = () => {
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
                   borderBottom: '1px solid #E5E7EB'
                 }}>
-                  <div style={{
+                    <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#16191f',
+                      color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
-                  }}>
+                    }}>
                     <span style={{ fontSize: '16px' }}>📱</span>
                     <span>Model</span>
-                  </div>
+                    </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
@@ -2542,7 +2665,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         {compProduct.model || compProduct.name || 'N/A'}
                       </span>
-                    </div>
+                  </div>
                   ))}
                 </div>
 
@@ -2580,7 +2703,7 @@ const MarketplaceProductDetail = () => {
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                     }}>
-                      <div style={{
+                    <div style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
@@ -2591,10 +2714,10 @@ const MarketplaceProductDetail = () => {
                         fontWeight: compProduct.display ? '500' : '400'
                       }}>
                         {compProduct.display || '—'}
-                      </div>
                     </div>
+                      </div>
                   ))}
-                </div>
+                      </div>
                 )}
 
                 {/* Processor Row */}
@@ -2627,8 +2750,8 @@ const MarketplaceProductDetail = () => {
                       fontSize: '14px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
-                    }}>
-                      <div style={{
+                }}>
+                  <div style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
@@ -2639,10 +2762,10 @@ const MarketplaceProductDetail = () => {
                         fontWeight: compProduct.processor ? '500' : '400'
                       }}>
                         {compProduct.processor || '—'}
-                      </div>
+                  </div>
                     </div>
                   ))}
-                </div>
+                  </div>
                 )}
 
                 {/* RAM Row */}
@@ -2684,7 +2807,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
                           {compProduct.ram || '—'}
-                        </div>
+                    </div>
                         {compProduct.ram && ramSize > 0 && (
                           <div style={{
                             width: '100%',
@@ -2700,12 +2823,12 @@ const MarketplaceProductDetail = () => {
                               borderRadius: '3px',
                               transition: 'width 0.3s ease'
                             }}></div>
-                          </div>
+                  </div>
                         )}
-                      </div>
+                    </div>
                     );
                   })}
-                </div>
+                  </div>
                 )}
 
                 {/* Storage Row */}
@@ -2747,7 +2870,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
                           {compProduct.storage || '—'}
-                        </div>
+                    </div>
                         {compProduct.storage && storageSize > 0 && (
                           <div style={{
                             width: '100%',
@@ -2763,12 +2886,12 @@ const MarketplaceProductDetail = () => {
                               borderRadius: '3px',
                               transition: 'width 0.3s ease'
                             }}></div>
-                          </div>
+                  </div>
                         )}
-                      </div>
+                    </div>
                     );
                   })}
-                </div>
+                  </div>
                 )}
 
                 {/* Battery Row */}
@@ -2810,7 +2933,7 @@ const MarketplaceProductDetail = () => {
                       }}>
                         <div style={{ marginBottom: '6px', fontWeight: '600', color: '#16191f' }}>
                           {compProduct.battery || '—'}
-                        </div>
+                    </div>
                         {compProduct.battery && batterySize > 0 && (
                           <div style={{
                             width: '100%',
@@ -2826,12 +2949,12 @@ const MarketplaceProductDetail = () => {
                               borderRadius: '3px',
                               transition: 'width 0.3s ease'
                             }}></div>
-                          </div>
+                  </div>
                         )}
-                      </div>
+                  </div>
                     );
                   })}
-                </div>
+                    </div>
                 )}
 
                 {/* Camera Row */}
@@ -2871,7 +2994,7 @@ const MarketplaceProductDetail = () => {
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA',
                         lineHeight: '1.6'
                       }}>
-                        <div style={{
+                    <div style={{
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
@@ -2883,8 +3006,8 @@ const MarketplaceProductDetail = () => {
                         }}>
                           <span style={{ fontSize: '14px' }}>📸</span>
                           <span>{cameraText}</span>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
                     );
                   })}
                 </div>
@@ -2932,10 +3055,10 @@ const MarketplaceProductDetail = () => {
                         fontWeight: compProduct.os ? '600' : '400'
                       }}>
                         {compProduct.os || '—'}
-                      </div>
-                    </div>
+                  </div>
+                  </div>
                   ))}
-                </div>
+                  </div>
                 )}
 
                 {/* Rating Row */}
@@ -2975,13 +3098,13 @@ const MarketplaceProductDetail = () => {
                         fontFamily: 'inherit',
                         backgroundColor: isBestRating ? '#FEF3C7' : (index % 2 === 0 ? 'white' : '#FAFAFA')
                       }}>
-                        <div style={{ 
+                <div style={{
                           display: 'flex', 
                           alignItems: 'center', 
                           gap: '8px',
                           marginBottom: '8px'
-                        }}>
-                          <div style={{
+                }}>
+                  <div style={{
                             fontSize: '18px',
                             color: rating >= 4.5 ? '#F59E0B' : rating >= 4 ? '#FBBF24' : rating >= 3 ? '#FCD34D' : '#9CA3AF',
                             display: 'flex',
@@ -2992,7 +3115,7 @@ const MarketplaceProductDetail = () => {
                                 color: i < Math.round(rating) ? (rating >= 4.5 ? '#F59E0B' : rating >= 4 ? '#FBBF24' : '#FCD34D') : '#E5E7EB'
                               }}>★</span>
                             ))}
-                          </div>
+                  </div>
                           <span style={{
                             fontWeight: '700',
                             color: rating >= 4.5 ? '#F59E0B' : '#16191f',
@@ -3010,28 +3133,28 @@ const MarketplaceProductDetail = () => {
                               fontWeight: '600'
                             }}>Top</span>
                           )}
-                        </div>
+                </div>
                         {rating > 0 && (
-                          <div style={{
+                <div style={{
                             width: '100%',
                             height: '8px',
                             backgroundColor: '#E5E7EB',
                             borderRadius: '4px',
                             overflow: 'hidden'
-                          }}>
-                            <div style={{
+                }}>
+                  <div style={{
                               width: `${ratingPercentage}%`,
                               height: '100%',
                               backgroundColor: rating >= 4.5 ? '#10b981' : rating >= 4 ? '#F59E0B' : rating >= 3 ? '#FCD34D' : '#EF4444',
                               borderRadius: '4px',
                               transition: 'width 0.3s ease'
                             }}></div>
-                          </div>
+                  </div>
                         )}
-                      </div>
+                </div>
                     );
                   })}
-                </div>
+              </div>
                 )}
                 </>
                 )}
@@ -3049,7 +3172,7 @@ const MarketplaceProductDetail = () => {
                   style={{
                     fontSize: '15px',
                     fontWeight: '600',
-                    color: '#007185',
+                  color: '#007185',
                     backgroundColor: 'transparent',
                     border: '2px solid #007185',
                     borderRadius: '25px',
@@ -3066,15 +3189,15 @@ const MarketplaceProductDetail = () => {
                     whiteSpace: 'nowrap',
                     position: 'relative',
                     overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
+                }}
+                onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#E6F4F7';
                     e.currentTarget.style.color = '#007185';
                     e.currentTarget.style.borderColor = '#007185';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                     e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 113, 133, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
+                }}
+                onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent';
                     e.currentTarget.style.color = '#007185';
                     e.currentTarget.style.borderColor = '#007185';
@@ -3214,7 +3337,7 @@ const MarketplaceProductDetail = () => {
                       </h3>
                       <a href="#" style={{
                         fontSize: '13px',
-                        color: '#007185',
+                        color: 'rgb(0, 113, 133)',
                         textDecoration: 'none',
                         fontFamily: 'inherit'
                       }}>
@@ -3241,15 +3364,15 @@ const MarketplaceProductDetail = () => {
                     }}>
                       Additional AWS infrastructure costs may apply. Use the{' '}
                       <a href="#" style={{
-                        color: '#007185',
+                        color: 'rgb(0, 113, 133)',
                         textDecoration: 'none'
                       }}
                       onMouseEnter={(e) => {
-                        e.target.style.color = '#C7511F';
+                        e.target.style.color = 'rgb(0, 113, 133)';
                         e.target.style.textDecoration = 'underline';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.color = '#007185';
+                        e.target.style.color = 'rgb(0, 113, 133)';
                         e.target.style.textDecoration = 'none';
                       }}
                       >
@@ -3298,7 +3421,7 @@ const MarketplaceProductDetail = () => {
                   </h4>
                   <a href="#" style={{
                     fontSize: '13px',
-                    color: '#007185',
+                    color: 'rgb(0, 113, 133)',
                     textDecoration: 'none',
                     fontFamily: 'inherit'
                   }}>
@@ -3370,11 +3493,11 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #007185',
+                              border: '1px solid rgb(0, 113, 133)',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
                               transition: 'background-color 0.2s',
@@ -3394,11 +3517,11 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #007185',
+                              border: '1px solid rgb(0, 113, 133)',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
                               transition: 'background-color 0.2s',
@@ -3418,11 +3541,11 @@ const MarketplaceProductDetail = () => {
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
-                              border: '1px solid #007185',
+                              border: '1px solid rgb(0, 113, 133)',
                               borderRadius: '25px',
                               fontSize: '13px',
                               fontWeight: '600',
-                              color: '#007185',
+                              color: 'rgb(0, 113, 133)',
                               cursor: 'pointer',
                               fontFamily: 'inherit',
                               transition: 'background-color 0.2s',
