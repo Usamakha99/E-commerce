@@ -663,10 +663,10 @@ const MarketplaceProductDetail = () => {
         {/* Product Header - Design 1: Clean & Professional */}
         <div style={{
           backgroundColor: 'white',
-          borderRadius: '10px',
-          padding: isMobile ? '20px' : '35px',
-          marginBottom: '25px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+          borderRadius: '12px',
+          padding: isMobile ? '24px' : '40px',
+          marginBottom: '32px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           border: '1px solid #E5E7EB'
         }}>
           <div className="row">
@@ -675,16 +675,16 @@ const MarketplaceProductDetail = () => {
               <div style={{ display: 'flex', gap: isMobile ? '15px' : '25px', alignItems: 'flex-start' }}>
                 {/* Logo - Clean Gray Box */}
                 <div style={{
-                  width: isMobile ? '70px' : '95px',
-                  height: isMobile ? '70px' : '95px',
+                  width: isMobile ? '72px' : '96px',
+                  height: isMobile ? '72px' : '96px',
                   flexShrink: 0,
-                  backgroundColor: '#F3F4F6',
-                  borderRadius: '10px',
+                  backgroundColor: '#F9FAFB',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '12px',
-                  border: '2px solid #E5E7EB'
+                  padding: '14px',
+                  border: '1px solid #E5E7EB'
                 }}>
                   <img
                     src={product.logo}
@@ -701,12 +701,13 @@ const MarketplaceProductDetail = () => {
                 <div style={{ flex: 1 }}>
                   {/* Title */}
                     <h1 style={{
-                    fontSize: isMobile ? '22px' : '30px',
+                    fontSize: isMobile ? '24px' : '32px',
                     fontWeight: '700',
                     color: '#16191f',
-                    margin: '0 0 16px 0',
+                    margin: '0 0 20px 0',
                     fontFamily: 'inherit',
-                    lineHeight: '1.2'
+                    lineHeight: '1.3',
+                    letterSpacing: '-0.02em'
                     }}>
                       {product.name}
                     </h1>
@@ -753,14 +754,18 @@ const MarketplaceProductDetail = () => {
 
                   {/* Description */}
                   <div style={{
-                    fontSize: '14px',
-                    fontWeight: '400',
+                    fontSize: '15px',
+                    fontWeight: '500',
                     color: '#000000',
                     lineHeight: '1.7',
-                    margin: '0 0 14px 0',
+                    margin: '0 0 16px 0',
                     fontFamily: 'inherit',
-                    maxHeight: isShortDescriptionExpanded ? 'none' : '60px',
+                    display: '-webkit-box',
+                    WebkitLineClamp: isShortDescriptionExpanded ? 'none' : 2,
+                    WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxHeight: isShortDescriptionExpanded ? 'none' : '51px',
                     transition: 'max-height 0.3s ease'
                   }}>
                     <p style={{ margin: 0 }}>
@@ -954,17 +959,18 @@ const MarketplaceProductDetail = () => {
           position: 'sticky',
           top: '70px',
           zIndex: 100,
-          backgroundColor: '#F9FAFB',
+          backgroundColor: 'white',
           borderRadius: '12px',
-          padding: '12px 20px',
-          marginBottom: '25px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          padding: '8px',
+          marginBottom: '32px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+          border: '1px solid #E5E7EB',
           overflowX: 'auto',
           scrollbarWidth: 'thin'
         }}>
           <div style={{
             display: 'flex',
-            gap: '10px',
+            gap: '8px',
             flexWrap: isMobile ? 'nowrap' : 'wrap'
           }}>
             {tabs.map((tab, index) => {
@@ -974,34 +980,30 @@ const MarketplaceProductDetail = () => {
                   key={index}
                   onClick={() => handleTabClick(tab)}
                   style={{
-                    padding: '12px 24px',
+                    padding: '10px 20px',
                     border: 'none',
-                    backgroundColor: isActive ? '#df2020' : 'white',
-                    color: isActive ? 'white' : '#16191f',
-                    borderRadius: '25px',
+                    backgroundColor: isActive ? '#df2020' : 'transparent',
+                    color: isActive ? 'white' : '#6B7280',
+                    borderRadius: '8px',
                     cursor: 'pointer',
-                    fontSize: '15px',
-                    fontWeight: '600',
+                    fontSize: '14px',
+                    fontWeight: isActive ? '600' : '500',
                     fontFamily: 'inherit',
                     whiteSpace: 'nowrap',
-                    transition: 'all 0.3s ease',
-                    boxShadow: isActive ? '0 4px 12px rgba(223, 32, 32, 0.3)' : '0 1px 3px rgba(0,0,0,0.08)',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: isActive ? 'none' : 'none',
                     position: 'relative'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.target.style.backgroundColor = '#E5E7EB';
+                      e.target.style.backgroundColor = '#F3F4F6';
                       e.target.style.color = '#16191f';
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) {
-                      e.target.style.backgroundColor = 'white';
-                      e.target.style.color = '#16191f';
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#6B7280';
                     }
                   }}
                 >
@@ -1032,18 +1034,19 @@ const MarketplaceProductDetail = () => {
         <div style={{
           backgroundColor: 'white',
           borderRadius: '12px',
-          padding: isMobile ? '25px' : '35px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+          padding: isMobile ? '28px' : '40px',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
           border: '1px solid #E5E7EB'
         }}>
           {/* Overview Section */}
-          <div id="overview" style={{ scrollMarginTop: '120px' }}>
+          <div id="overview" style={{ scrollMarginTop: '120px', marginBottom: '48px' }}>
               <h2 style={{
-                fontSize: isMobile ? '20px' : '24px',
-                fontWeight: '600',
+                fontSize: isMobile ? '22px' : '28px',
+                fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '20px',
-                fontFamily: 'inherit'
+                marginBottom: '24px',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.01em'
               }}>
                 Overview
               </h2>
@@ -1139,12 +1142,12 @@ const MarketplaceProductDetail = () => {
                 </div> */}
 
               {/* Highlights Column */}
-              <div className="col-lg-6" style={{ marginBottom: isMobile ? '20px' : '0' }}>
+              <div className="col-lg-6" style={{ marginBottom: isMobile ? '24px' : '0' }}>
                 <div style={{
-                  border: '1px solid #D5D9D9',
-                  borderRadius: '8px',
-                  padding: '24px',
-                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '12px',
+                  padding: '28px',
+                  backgroundColor: '#F9FAFB',
                   height: '100%',
                   overflow: 'hidden'
                 }}>
@@ -1152,10 +1155,10 @@ const MarketplaceProductDetail = () => {
                     fontSize: '18px',
                     fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '16px',
+                    marginBottom: '20px',
                     fontFamily: 'inherit'
                   }}>
-                    ✨ Key Highlights
+                    Key Highlights
                   </h3>
                   <ul style={{
                     listStyle: 'none',
@@ -1462,15 +1465,16 @@ const MarketplaceProductDetail = () => {
           </div>
 
           {/* Features Section */}
-          <div id="features" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          <div id="features" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
               <h2 style={{
-                fontSize: isMobile ? '20px' : '24px',
-                fontWeight: '600',
+                fontSize: isMobile ? '22px' : '28px',
+                fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '30px',
-                fontFamily: 'inherit'
+                marginBottom: '24px',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.01em'
               }}>
-                ⚡ Features and Programs
+                Features and Programs
               </h2>
 
               {/* Features Cards Grid */}
@@ -1690,9 +1694,9 @@ const MarketplaceProductDetail = () => {
                 {product.buyerGuide && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    padding: '24px',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '12px',
+                    padding: '28px',
                     height: '100%',
                     backgroundColor: 'white',
                     display: 'flex',
@@ -1712,7 +1716,7 @@ const MarketplaceProductDetail = () => {
                     {/* Description */}
                     <p style={{
                       fontSize: '15px',
-                      color: '#16191f',
+                      color: '#374151',
                       lineHeight: '1.7',
                       marginBottom: '20px',
                       fontFamily: 'inherit'
@@ -1774,21 +1778,22 @@ const MarketplaceProductDetail = () => {
             </div>
 
           {/* Resources Section */}
-          <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
               <h2 style={{
-                fontSize: '24px',
-                fontWeight: '600',
+                fontSize: isMobile ? '22px' : '28px',
+                fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '30px',
-                fontFamily: 'inherit'
+                marginBottom: '24px',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.01em'
               }}>
                 Resources
               </h2>
 
               {/* Vendor Resources Card */}
               <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
+                border: '1px solid #E5E7EB',
+                borderRadius: '12px',
                 backgroundColor: 'white',
                 overflow: 'hidden'
               }}>
@@ -2019,13 +2024,14 @@ const MarketplaceProductDetail = () => {
             </div>
 
           {/* Support Section */}
-          <div id="support" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          <div id="support" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
               <h2 style={{
-                fontSize: '24px',
-                fontWeight: '600',
+                fontSize: isMobile ? '22px' : '28px',
+                fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '30px',
-                fontFamily: 'inherit'
+                marginBottom: '24px',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.01em'
               }}>
                 Support
               </h2>
@@ -2034,9 +2040,9 @@ const MarketplaceProductDetail = () => {
                 {/* Vendor Support Card */}
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    padding: '24px',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '12px',
+                    padding: '28px',
                     backgroundColor: 'white',
                     height: '100%',
                     display: 'flex',
@@ -2053,10 +2059,10 @@ const MarketplaceProductDetail = () => {
                     </h3>
 
                     <p style={{
-                      fontSize: '14px',
-                      color: '#16191f',
-                      lineHeight: '1.6',
-                      marginBottom: '16px',
+                      fontSize: '15px',
+                      color: '#374151',
+                      lineHeight: '1.7',
+                      marginBottom: '20px',
                       fontFamily: 'inherit'
                     }}>
                       {product.supportDescription || 'Contact the vendor for support inquiries and assistance.'}
@@ -2164,9 +2170,9 @@ const MarketplaceProductDetail = () => {
                 {((product.supportData?.awsSupport) || product.awsSupportTitle || product.awsSupportDescription || product.awsSupportUrl || product.deployedOnAWS) && (
                 <div className="col-lg-6 mb-4">
                   <div style={{
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                    padding: '24px',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '12px',
+                    padding: '28px',
                     backgroundColor: 'white',
                     height: '100%',
                     display: 'flex',
@@ -2183,9 +2189,9 @@ const MarketplaceProductDetail = () => {
                     </h3>
 
                     <p style={{
-                      fontSize: '14px',
-                      color: '#16191f',
-                      lineHeight: '1.6',
+                      fontSize: '15px',
+                      color: '#374151',
+                      lineHeight: '1.7',
                       marginBottom: '20px',
                       fontFamily: 'inherit',
                       flex: 1
@@ -2259,23 +2265,24 @@ const MarketplaceProductDetail = () => {
             </div>
 
           {/* Product Comparison Section */}
-          <div id="product-comparison" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          <div id="product-comparison" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
               {/* Header */}
               <div style={{
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
                 alignItems: isMobile ? 'flex-start' : 'center',
-                marginBottom: '30px',
+                marginBottom: '24px',
                 gap: isMobile ? '15px' : '0'
               }}>
                 <div>
                   <h2 style={{
-                    fontSize: '24px',
-                    fontWeight: '600',
+                    fontSize: isMobile ? '22px' : '28px',
+                    fontWeight: '700',
                     color: '#16191f',
                     margin: '0 0 4px 0',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    letterSpacing: '-0.01em'
                   }}>
                     Product comparison
                   </h2>
