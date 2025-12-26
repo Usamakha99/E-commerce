@@ -40,39 +40,10 @@ const MarketplaceProductDetail = () => {
       try {
         // Make API call via service
         // This calls: GET http://localhost:5000/api/aiagents/:id
-        console.log(`🔗 Calling API: GET http://localhost:5000/api/aiagents/${id}`);
         const response = await aiAgentService.getAgentById(id);
         
-        // ============================================
-        // 🔍 ACTUAL API RESPONSE - YE PEECHE SE AA RAHA HAI
-        // ============================================
-        console.log('==========================================');
-        console.log('📥 API RESPONSE (Pechey se aa raha hai):');
-        console.log('==========================================');
-        console.log('Full Response Object:', response);
-        console.log('Response Type:', typeof response);
-        console.log('Is Array:', Array.isArray(response));
-        console.log('Response Keys:', response ? Object.keys(response) : 'null');
-        console.log('');
-        console.log('Full JSON Response:');
+        // Full API Response
         console.log(JSON.stringify(response, null, 2));
-        console.log('');
-        
-        // Check response structure
-        if (response?.success !== undefined) {
-          console.log('✅ Has success property:', response.success);
-        }
-        if (response?.data) {
-          console.log('✅ Has data property');
-          console.log('   Data Type:', typeof response.data);
-          console.log('   Data Keys:', Object.keys(response.data));
-        }
-        if (response?.id || response?.name) {
-          console.log('✅ Response is direct agent object');
-          console.log('   ID:', response.id);
-          console.log('   Name:', response.name);
-        }
-        console.log('==========================================\n');
         
         // Extract agent data from API response
         // Handle different response formats: { success: true, data: {...} } or direct object
@@ -82,17 +53,14 @@ const MarketplaceProductDetail = () => {
           // Format 1: { success: true, data: {...} }
           if (response.success === true && response.data && typeof response.data === 'object') {
             agentData = response.data;
-            console.log('✅ Using Format: { success: true, data: {...} }');
           } 
           // Format 2: { data: {...} }
           else if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
             agentData = response.data;
-            console.log('✅ Using Format: { data: {...} }');
           } 
           // Format 3: Direct agent object { id, name, ... }
           else if (response.id || response.name) {
             agentData = response;
-            console.log('✅ Using Format: Direct agent object');
           }
         }
         
@@ -100,23 +68,6 @@ const MarketplaceProductDetail = () => {
           console.error('❌ Could not extract agent data from response');
           throw new Error('No agent data received from API');
         }
-        
-        // Log extracted agent data
-        console.log('==========================================');
-        console.log('📦 EXTRACTED AGENT DATA:');
-        console.log('==========================================');
-        console.log('Agent Data:', agentData);
-        console.log('Agent ID:', agentData.id);
-        console.log('Agent Name:', agentData.name);
-        console.log('');
-        console.log('Has featuresContent:', !!agentData.featuresContent);
-        console.log('Has resourcesContent:', !!agentData.resourcesContent);
-        console.log('Has supportContent:', !!agentData.supportContent);
-        console.log('Has productComparisonContent:', !!agentData.productComparisonContent);
-        console.log('Has pricingContent:', !!agentData.pricingContent);
-        console.log('');
-        console.log('All Agent Keys:', Object.keys(agentData));
-        console.log('==========================================\n');
         
         setAgent(agentData);
       } catch (err) {
@@ -166,53 +117,6 @@ const MarketplaceProductDetail = () => {
     const supportContent = agent.supportContent || agent.support_content || {};
     const productComparisonContent = agent.productComparisonContent || agent.product_comparison_content || {};
     const pricingContent = agent.pricingContent || agent.pricing_content || {};
-    
-    // Debug: Log all featuresContent fields to see ACTUAL API structure
-    console.log('==========================================');
-    console.log('🔍 ACTUAL featuresContent FROM API:');
-    console.log('==========================================');
-    console.log('Full featuresContent Object:', featuresContent);
-    console.log('Type:', typeof featuresContent);
-    console.log('Is Array:', Array.isArray(featuresContent));
-    console.log('All Keys:', Object.keys(featuresContent));
-    console.log('');
-    console.log('Checking each field:');
-    Object.keys(featuresContent).forEach(key => {
-      console.log(`  ${key}:`, featuresContent[key], `(type: ${typeof featuresContent[key]})`);
-    });
-    console.log('');
-    console.log('Complete JSON:');
-    console.log(JSON.stringify(featuresContent, null, 2));
-    console.log('==========================================');
-    
-    // Debug: Log all resourcesContent fields to see ACTUAL API structure
-    console.log('==========================================');
-    console.log('🔍 ACTUAL resourcesContent FROM API:');
-    console.log('==========================================');
-    console.log('Full resourcesContent Object:', resourcesContent);
-    console.log('Type:', typeof resourcesContent);
-    console.log('Is Array:', Array.isArray(resourcesContent));
-    console.log('All Keys:', Object.keys(resourcesContent));
-    console.log('');
-    console.log('Checking each field:');
-    Object.keys(resourcesContent).forEach(key => {
-      console.log(`  ${key}:`, resourcesContent[key], `(type: ${typeof resourcesContent[key]})`);
-      // Check nested vendorResources
-      if (key === 'vendorResources' || key === 'vendor_resources') {
-        console.log(`    vendorResources type:`, typeof resourcesContent[key]);
-        console.log(`    vendorResources keys:`, Object.keys(resourcesContent[key] || {}));
-        if (resourcesContent[key]?.links) {
-          console.log(`    vendorResources.links:`, resourcesContent[key].links);
-          console.log(`    vendorResources.links length:`, resourcesContent[key].links?.length);
-        }
-      }
-    });
-    console.log('');
-    console.log('vendorResources.links:', resourcesContent.vendorResources?.links);
-    console.log('Complete JSON:');
-    console.log(JSON.stringify(resourcesContent, null, 2));
-    console.log('==========================================');
-
     const mapped = {
       id: agent.id,
       name: agent.name || agent.title || 'Unnamed Agent',
@@ -536,52 +440,6 @@ const MarketplaceProductDetail = () => {
         { name: agent.name || agent.title || 'Agent', url: '#' }
       ]
     };
-
-    // Debug: Log mapped product to see what's available
-    console.log('📦 Mapped Product Data:', mapped);
-    console.log('📦 Features Content:', featuresContent);
-    console.log('📦 Features Array:', mapped.features);
-    console.log('📦 Trust Center Object:', mapped.trustCenter);
-    console.log('📦 Trust Center URL:', mapped.trustCenterUrl);
-    console.log('📦 Buyer Guide Object:', mapped.buyerGuide);
-    console.log('📦 Buyer Guide URL:', mapped.buyerGuideUrl);
-    console.log('📦 Features Content trustCenterUrl field:', featuresContent.trustCenterUrl);
-    console.log('📦 Features Content buyerGuideUrl field:', featuresContent.buyerGuideUrl);
-    console.log('📦 Resources Content:', resourcesContent);
-    console.log('==========================================');
-    console.log('🔍 SUPPORT CONTENT FROM API:');
-    console.log('==========================================');
-    console.log('Full supportContent Object:', supportContent);
-    console.log('Type:', typeof supportContent);
-    console.log('Is Array:', Array.isArray(supportContent));
-    console.log('Keys:', supportContent ? Object.keys(supportContent) : 'null/undefined');
-    console.log('supportContent.vendorSupport:', supportContent.vendorSupport);
-    console.log('supportContent.awsSupport:', supportContent.awsSupport);
-    console.log('supportContent.description:', supportContent.description);
-    console.log('supportContent.email:', supportContent.email);
-    console.log('supportContent.phone:', supportContent.phone);
-    console.log('supportContent.awsSupportUrl:', supportContent.awsSupportUrl);
-    console.log('supportContent.url:', supportContent.url);
-    console.log('supportContent.supportUrl:', supportContent.supportUrl);
-    console.log('Complete supportContent JSON:', JSON.stringify(supportContent, null, 2));
-    console.log('==========================================');
-    console.log('🔍 MAPPED SUPPORT DATA:');
-    console.log('==========================================');
-    console.log('Mapped supportTitle:', mapped.supportTitle);
-    console.log('Mapped supportDescription:', mapped.supportDescription);
-    console.log('Mapped supportEmail:', mapped.supportEmail);
-    console.log('Mapped supportPhone:', mapped.supportPhone);
-    console.log('Mapped supportUrl:', mapped.supportUrl);
-    console.log('Mapped awsSupportTitle:', mapped.awsSupportTitle);
-    console.log('Mapped awsSupportDescription:', mapped.awsSupportDescription);
-    console.log('Mapped awsSupportButtonText:', mapped.awsSupportButtonText);
-    console.log('Mapped awsSupportUrl:', mapped.awsSupportUrl);
-    console.log('==========================================');
-    console.log('📦 Product Comparison Content:', productComparisonContent);
-    console.log('📦 Comparison Products:', mapped.comparisonProducts);
-    console.log('📦 Comparison Title:', mapped.comparisonTitle);
-    console.log('📦 Updated Weekly:', mapped.updatedWeekly);
-    console.log('📦 Pricing Content:', pricingContent);
     
     return mapped;
   })() : {
@@ -2028,9 +1886,6 @@ const MarketplaceProductDetail = () => {
                         link: product.website
                       });
                     }
-                    
-                    console.log('🔗 Resource Links List:', resourceLinksList);
-                    console.log('🔗 Resource Links Count:', resourceLinksList.length);
                     
                     if (resourceLinksList.length > 0) {
                       return resourceLinksList.map((resource, index) => {
