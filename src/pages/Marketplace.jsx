@@ -16,9 +16,16 @@ const Marketplace = () => {
   
   // AI Agents API state
   const [agents, setAgents] = useState([]);
+  const [allAgents, setAllAgents] = useState([]); // All agents for filter counts
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalAgents, setTotalAgents] = useState(0);
+  
+  // Filter data from API
+  const [categories, setCategories] = useState([]);
+  const [deliveryMethods, setDeliveryMethods] = useState([]);
+  const [publishers, setPublishers] = useState([]);
+  const [loadingFilters, setLoadingFilters] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -36,7 +43,145 @@ const Marketplace = () => {
     document.title = title;
   }, [selectedCategory]);
 
-  // Fetch AI agents from API
+  // Categories will be extracted from AI agents API response
+
+  // Fetch categories with counts from dedicated API endpoint
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setLoadingFilters(true);
+      try {
+        // Fetch categories with counts from dedicated endpoint
+        const categoriesResponse = await aiAgentService.getCategoriesWithCounts();
+        
+        // Log full API response
+        console.log('==========================================');
+        console.log('🔍 CATEGORIES WITH COUNTS API RESPONSE:');
+        console.log('==========================================');
+        console.log('Full Response:', JSON.stringify(categoriesResponse, null, 2));
+        console.log('==========================================');
+        
+        let categoriesList = [];
+        
+        // Handle different response structures
+        if (categoriesResponse && typeof categoriesResponse === 'object') {
+          if (Array.isArray(categoriesResponse)) {
+            categoriesList = categoriesResponse;
+            console.log('✅ Categories are direct array:', categoriesList);
+          } else if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+            categoriesList = categoriesResponse.data;
+            console.log('✅ Categories found in response.data:', categoriesList);
+          } else if (categoriesResponse.categories && Array.isArray(categoriesResponse.categories)) {
+            categoriesList = categoriesResponse.categories;
+            console.log('✅ Categories found in response.categories:', categoriesList);
+          } else if (categoriesResponse.success && categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
+            categoriesList = categoriesResponse.data;
+            console.log('✅ Categories found in response.success.data:', categoriesList);
+          } else if (categoriesResponse.result && Array.isArray(categoriesResponse.result)) {
+            categoriesList = categoriesResponse.result;
+            console.log('✅ Categories found in response.result:', categoriesList);
+          }
+        }
+        
+        // Map categories to format
+        let mappedCategories = categoriesList.map(cat => ({
+          id: cat.id || cat.categoryId || cat._id || String(Math.random()),
+          name: cat.name || cat.categoryName || cat.title || cat.label || 'Unnamed Category',
+          count: cat.count || cat.agentCount || cat.totalCount || cat.total || 0
+        }));
+        
+        // Remove "AI Agents & Tools" from the list since it's already shown as the selected category heading
+        mappedCategories = mappedCategories.filter(cat => {
+          const catName = cat.name?.toLowerCase() || '';
+          return !catName.includes('ai agents') && !catName.includes('ai agents & tools');
+        });
+        
+        // Sort by count descending
+        mappedCategories.sort((a, b) => b.count - a.count);
+        
+        console.log('📋 Final Categories (AI Agents & Tools removed from list):', mappedCategories);
+        
+        setCategories(mappedCategories);
+      } catch (err) {
+        console.error('Error fetching categories with counts:', err);
+        // Fallback: set empty array or default category
+        setCategories([{
+          id: 'ai-agents-tools',
+          name: 'AI Agents & Tools',
+          count: 0
+        }]);
+      } finally {
+        setLoadingFilters(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch all agents for filter counts (delivery methods and publishers)
+  useEffect(() => {
+    const fetchAllAgentsForFilters = async () => {
+      try {
+        const response = await aiAgentService.getAllAgents({
+          page: 1,
+          limit: 1000, // Fetch large number to get all agents for counts
+        });
+        
+        let agentsList = [];
+        
+        if (response && typeof response === 'object') {
+          // Extract agents list
+          if (response.success === true && Array.isArray(response.data)) {
+            agentsList = response.data;
+          } else if (Array.isArray(response.data)) {
+            agentsList = response.data;
+          } else if (Array.isArray(response)) {
+            agentsList = response;
+          } else if (response.result && Array.isArray(response.result)) {
+            agentsList = response.result;
+          } else if (response.result?.data && Array.isArray(response.result.data)) {
+            agentsList = response.result.data;
+          }
+        }
+        
+        setAllAgents(agentsList);
+        
+        // Calculate delivery methods counts
+        const deliveryMethodCounts = {};
+        agentsList.forEach(agent => {
+          const method = agent.deliveryMethod || agent.deliveryType || agent.delivery || 'Unknown';
+          deliveryMethodCounts[method] = (deliveryMethodCounts[method] || 0) + 1;
+        });
+        
+        const deliveryMethodsList = Object.entries(deliveryMethodCounts)
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count);
+        
+        setDeliveryMethods(deliveryMethodsList);
+        
+        // Calculate publishers counts
+        const publisherCounts = {};
+        agentsList.forEach(agent => {
+          const publisher = agent.provider || agent.seller || agent.publisher || 'Unknown';
+          publisherCounts[publisher] = (publisherCounts[publisher] || 0) + 1;
+        });
+        
+        const publishersList = Object.entries(publisherCounts)
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count);
+        
+        setPublishers(publishersList);
+        
+      } catch (err) {
+        console.error('Error fetching all agents for filters:', err);
+      } finally {
+        setLoadingFilters(false);
+      }
+    };
+
+    fetchAllAgentsForFilters();
+  }, []);
+
+  // Fetch AI agents from API (paginated)
   useEffect(() => {
     const fetchAgents = async () => {
       setLoading(true);
@@ -52,16 +197,11 @@ const Marketplace = () => {
           categoryId: categoryId,
         });
         
-        // Debug: Log API response structure
+        // Log full API response
         console.log('==========================================');
         console.log('🔍 MARKETPLACE API RESPONSE:');
         console.log('==========================================');
-        console.log('Full Response:', response);
-        console.log('Response Type:', typeof response);
-        console.log('Is Array:', Array.isArray(response));
-        console.log('Has success:', response?.success);
-        console.log('Has data:', !!response?.data);
-        console.log('Has pagination:', !!response?.pagination);
+        console.log('Full Response:', JSON.stringify(response, null, 2));
         console.log('==========================================');
         
         // Handle API response structure according to documentation:
@@ -74,29 +214,23 @@ const Marketplace = () => {
           if (response.success === true && Array.isArray(response.data)) {
             agentsList = response.data;
             total = response.pagination?.total || response.pagination?.totalCount || response.data.length;
-            console.log('✅ Response format: { success: true, data: [...], pagination: {...} }');
           } 
           // Check for { data: [...], pagination: {...} } format
           else if (Array.isArray(response.data) && response.pagination) {
             agentsList = response.data;
             total = response.pagination.total || response.pagination.totalCount || response.data.length;
-            console.log('✅ Response format: { data: [...], pagination: {...} }');
           }
           // Check for direct array response
           else if (Array.isArray(response)) {
             agentsList = response;
             total = response.length;
-            console.log('✅ Response format: direct array');
           }
           // Check for { data: [...] } format
           else if (Array.isArray(response.data)) {
             agentsList = response.data;
             total = response.total || response.count || response.data.length;
-            console.log('✅ Response format: { data: [...] }');
           }
         }
-        
-        console.log(`✅ Extracted ${agentsList.length} agents, Total: ${total}`);
         
         setAgents(agentsList);
         setTotalAgents(total);
@@ -112,41 +246,6 @@ const Marketplace = () => {
 
     fetchAgents();
   }, [currentPage, selectedCategory]); // Re-fetch when page or category changes
-
-  // Mock data for categories
-  const categories = [
-    { name: 'Software Development', count: 602 },
-    { name: 'Data Analysis', count: 447 },
-    { name: 'Customer Experience', count: 0 },
-    { name: 'Personalization', count: 226 },
-    { name: 'AI Security', count: 178 },
-    { name: 'Observability', count: 170 },
-    { name: 'Customer Support', count: 160 },
-    { name: 'Sales & Marketing', count: 137 },
-    { name: 'Legal & Compliance', count: 123 },
-    { name: 'IT Support', count: 113 },
-    { name: 'Content Creation', count: 108 },
-    { name: 'Finance & Accounting', count: 95 },
-    { name: 'Research', count: 80 },
-    { name: 'Procurement & Supply Chain', count: 63 },
-    { name: 'Quality Assurance', count: 62 },
-    { name: 'Scheduling & Coordination', count: 36 }
-  ];
-
-  const deliveryMethods = [
-    { name: 'Professional Services', count: 1137 },
-    { name: 'SaaS', count: 662 },
-    { name: 'Amazon Machine Image', count: 179 },
-    { name: 'API-Based Agents & Tools', count: 38 },
-    { name: 'Container Image', count: 35 },
-    { name: 'CloudFormation Template', count: 24 },
-    { name: 'Helm Chart', count: 11 }
-  ];
-
-  const publishers = [
-    { name: 'Flexa Cloud', count: 297 },
-    { name: 'Deloitte Consulting LLP', count: 103 }
-  ];
 
   // Map API agents to product format for display
   // Use API agents if available, otherwise fallback to empty array
@@ -187,39 +286,6 @@ const Marketplace = () => {
           {/* Left Sidebar - Filters */}
           <div className="col-lg-3 order-first order-lg-first" style={{ paddingRight: isMobile ? '0' : '30px', marginBottom: isMobile ? '30px' : '0' }}>
             <div>
-              {/* Refine Results Header */}
-              <h6 style={{
-                margin: 0,
-                color: '#000',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                borderBottom: '3px solid #df2020',
-                paddingBottom: '8px',
-                marginBottom: '20px',
-                display: 'inline-block'
-              }}>
-                Refine results
-              </h6>
-
-              {/* All Categories Link */}
-              <div style={{ marginBottom: '15px' }}>
-                <a href="#" style={{
-                  color: '#000',
-                  fontSize: '14px',
-                  textDecoration: 'underline',
-                  fontFamily: 'DM Sans, sans-serif'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#000';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = '#000';
-                }}
-                >
-                All categories
-                </a>
-              </div>
-
               {/* Selected Category */}
               <div style={{
                 fontSize: '16px',
@@ -236,9 +302,15 @@ const Marketplace = () => {
 
               {/* Categories List */}
               <div style={{ marginBottom: '25px' }}>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                  {categories.map((cat, index) => (
-                    <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {loadingFilters ? (
+                  <div style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading categories...</div>
+                ) : (
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {categories.length === 0 ? (
+                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>No categories available</li>
+                    ) : (
+                      categories.map((cat) => (
+                        <li key={cat.id || cat.name} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <a href="#" style={{
                         color: '#000',
                         fontSize: '14px',
@@ -273,9 +345,11 @@ const Marketplace = () => {
                           {cat.count}
                         </span>
                       )}
-                    </li>
-                  ))}
-                </ul>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                )}
               </div>
 
               {/* Delivery Methods */}
@@ -299,8 +373,13 @@ const Marketplace = () => {
                 </h6>
                 {showDeliveryMethods && (
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {deliveryMethods.map((method, index) => (
-                      <li key={index} style={{ marginBottom: '1px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {loadingFilters ? (
+                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading delivery methods...</li>
+                    ) : deliveryMethods.length === 0 ? (
+                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>No delivery methods available</li>
+                    ) : (
+                      deliveryMethods.map((method) => (
+                        <li key={method.name} style={{ marginBottom: '1px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <label className="cb-container" style={{ flex: 1 }}>
                           <input
                             type="checkbox"
@@ -315,8 +394,9 @@ const Marketplace = () => {
                         <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
                           {method.count}
                         </span>
-                      </li>
-                    ))}
+                        </li>
+                      ))
+                    )}
                   </ul>
                 )}
               </div>
@@ -342,8 +422,13 @@ const Marketplace = () => {
                 </h6>
                 {showPublishers && (
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {publishers.map((publisher, index) => (
-                      <li key={index} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {loadingFilters ? (
+                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading publishers...</li>
+                    ) : publishers.length === 0 ? (
+                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>No publishers available</li>
+                    ) : (
+                      publishers.map((publisher) => (
+                        <li key={publisher.name} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <label className="cb-container" style={{ flex: 1 }}>
                           <input
                             type="checkbox"
@@ -358,8 +443,9 @@ const Marketplace = () => {
                         <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
                           {publisher.count}
                         </span>
-                      </li>
-                    ))}
+                        </li>
+                      ))
+                    )}
                   </ul>
                 )}
               </div>

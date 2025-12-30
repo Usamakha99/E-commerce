@@ -77,6 +77,16 @@ export const aiAgentService = {
       throw error;
     }
   },
+
+  // Get categories with counts
+  getCategoriesWithCounts: async () => {
+    try {
+      return await apiService.get(API_ENDPOINTS.aiAgents.categoriesWithCounts);
+    } catch (error) {
+      console.error('Error fetching categories with counts:', error);
+      throw error;
+    }
+  },
 };
 
 export default aiAgentService;

@@ -97,6 +97,7 @@ export const API_ENDPOINTS = {
     create: '/aiagents',
     update: (id) => `/aiagents/${id}`,
     delete: (id) => `/aiagents/${id}`,
+    categoriesWithCounts: '/aiagents/categories/counts',
   },
 };
 
