@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { aiAgentService } from '../services/aiAgent.service';
+import ProductInquiryModal from '../components/ProductInquiryModal';
 
 const MarketplaceProductDetail = () => {
   const { id } = useParams();
@@ -15,6 +16,9 @@ const MarketplaceProductDetail = () => {
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Product Inquiry Modal state
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -894,6 +898,7 @@ const MarketplaceProductDetail = () => {
                   e.target.style.transform = 'translateY(0)';
                   e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)';
                 }}
+                onClick={() => setShowInquiryModal(true)}
                 >
                   View Purchase Options
                 </button>
@@ -920,6 +925,7 @@ const MarketplaceProductDetail = () => {
                   e.target.style.color = '#16191f';
                   e.target.style.transform = 'translateY(0)';
                 }}
+                onClick={() => setShowInquiryModal(true)}
                 >
                   Try for Free
                 </button>
@@ -946,6 +952,7 @@ const MarketplaceProductDetail = () => {
                   e.target.style.color = '#16191f';
                   e.target.style.transform = 'translateY(0)';
                 }}
+                onClick={() => setShowInquiryModal(true)}
                 >
                   Request Demo
                 </button>
@@ -3554,6 +3561,14 @@ const MarketplaceProductDetail = () => {
           </>
         )}
       </div>
+      
+      {/* Product Inquiry Modal */}
+      <ProductInquiryModal
+        isOpen={showInquiryModal}
+        onClose={() => setShowInquiryModal(false)}
+        productName={product?.name || product?.title || 'AI Agent'}
+        productId={product?.id || id}
+      />
     </main>
   );
 };
