@@ -76,45 +76,62 @@ export const productService = {
   // Get all products with optional filters
   getAllProducts: async (params = {}) => {
     try {
-      const queryString = new URLSearchParams(params).toString();
-      const url = queryString 
-        ? `${API_ENDPOINTS.products.getAll}?${queryString}` 
-        : API_ENDPOINTS.products.getAll;
+      const page = params.page || 1;
+      const limit = params.limit || 1000; // Shop page does client-side pagination; fetch enough once.
+      const { page: _p, limit: _l, ...rest } = params;
       
-      const response = await apiService.get(url);
-      
-      // Handle null/undefined response
-      if (!response) {
-        return { data: [], pagination: null };
+      const buildUrl = (path, queryObj) => {
+        const qs = new URLSearchParams(queryObj).toString();
+        return qs ? `${path}?${qs}` : path;
+      };
+
+      const extractList = (resp) => {
+        if (!resp) return [];
+        if (Array.isArray(resp)) return resp;
+        if (Array.isArray(resp.data)) return resp.data;
+        if (resp.success === true && Array.isArray(resp.data)) return resp.data;
+        // Some endpoints return { message, data: [] }
+        if (Array.isArray(resp.data)) return resp.data;
+        if (Array.isArray(resp.result)) return resp.result;
+        if (resp.result?.data && Array.isArray(resp.result.data)) return resp.result.data;
+        // Fallback: pick object values that look like products
+        if (typeof resp === 'object') {
+          return Object.values(resp).filter((item) => item && typeof item === 'object' && item.id);
+        }
+        return [];
+      };
+
+      const normalizeTotal = (resp, listLen) =>
+        resp?.Count ||
+        resp?.count ||
+        resp?.total ||
+        resp?.pagination?.total ||
+        resp?.pagination?.totalCount ||
+        listLen;
+
+      // 1) Try primary products endpoint
+      const productsResp = await apiService.get(buildUrl(API_ENDPOINTS.products.getAll, { page, limit, ...rest }));
+      let productsList = extractList(productsResp);
+
+      // 2) If empty, try imports endpoint (many deployments store products there)
+      let importsResp = null;
+      if (!productsList || productsList.length === 0) {
+        importsResp = await apiService.get(buildUrl('/products/imports', { status: 'completed', page, limit, ...rest }));
+        productsList = extractList(importsResp);
+
+        // 3) Some backends ignore status; try without it
+        if (!productsList || productsList.length === 0) {
+          importsResp = await apiService.get(buildUrl('/products/imports', { page, limit, ...rest }));
+          productsList = extractList(importsResp);
+        }
       }
-      
-      // YOUR API returns direct array with Count field
-      // Extract the array (everything except Count)
-      let products = [];
-      
-      if (Array.isArray(response)) {
-        // Direct array
-        products = response;
-      } else if (response.data) {
-        // Wrapped in data field
-        products = response.data;
-      } else if (typeof response === 'object') {
-        // Object with array items (filter out Count and other non-product fields)
-        products = Object.values(response).filter(item => 
-          item && typeof item === 'object' && item.id
-        );
-      }
-      
-      // Map to standardized format
-      const mappedProducts = Array.isArray(products) ? mapProducts(products) : [];
+
+      const mappedProducts = Array.isArray(productsList) ? mapProducts(productsList) : [];
+      const total = normalizeTotal(importsResp || productsResp, mappedProducts.length);
       
       return {
         data: mappedProducts,
-        pagination: {
-          total: response.Count || mappedProducts.length,
-          page: 1,
-          limit: params.limit || 30
-        }
+        pagination: { total, page, limit },
       };
     } catch (error) {
       console.error('Error fetching products:', error);

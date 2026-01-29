@@ -24,12 +24,12 @@ const ProductCard = ({ product }) => {
     
     // If it starts with /uploads, prepend backend URL
     if (img.startsWith('/uploads/')) {
-      return `http://localhost:5000${img}`;
+      return img;
     }
     
     // If it's just a filename, add full backend path
     if (!img.startsWith('/') && !img.startsWith('src/')) {
-      return `http://localhost:5000/uploads/products/${img}`;
+      return `/uploads/products/${img}`;
     }
     
     // Otherwise return as is

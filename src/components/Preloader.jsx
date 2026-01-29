@@ -18,7 +18,7 @@ const Preloader = () => {
       <div className="preloader d-flex align-items-center justify-content-center">
         <div className="preloader-inner position-relative">
           <div className="text-center">
-            <img className="mb-10" src="/src/assets/V Cloud Logo final-01.svg" alt="V Cloud" style={{width: '200px', height: 'auto'}} />
+            <img className="mb-10" src="/assets/V Cloud Logo final-01.svg" alt="V Cloud" style={{width: '200px', height: 'auto'}} />
             <div className="mt-15" style={{display: 'flex', justifyContent: 'center', gap: '8px'}}>
               <div className="dot" style={{
                 width: '12px',

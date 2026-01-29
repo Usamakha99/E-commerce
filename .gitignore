@@ -1,18 +1,27 @@
+# Environment files (VERY IMPORTANT)
+.env
+.env.production
+.env.development
+.env.local
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# Public build files (optional)
+public/assets/js/
+
+# Editor & OS files
 .vscode/*
 !.vscode/extensions.json
 .idea

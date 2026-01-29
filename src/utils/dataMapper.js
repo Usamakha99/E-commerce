@@ -29,12 +29,12 @@ export const mapProduct = (externalProduct) => {
   else if (externalProduct.images && Array.isArray(externalProduct.images) && externalProduct.images.length > 0) {
     const firstImage = externalProduct.images[0];
     const imgUrl = firstImage.url || firstImage;
-    imageUrl = `http://localhost:5000/uploads/${imgUrl}`;
+    imageUrl = `/uploads/${imgUrl}`;
   }
   // 🎯 PRIORITY 3: Fallback to mainImage from backend
   else if (externalProduct.mainImage) {
     // Try without /products/ folder first (manual uploads)
-    imageUrl = `http://localhost:5000/uploads/${externalProduct.mainImage}`;
+    imageUrl = `/uploads/${externalProduct.mainImage}`;
   }
   
   // 🔍 Debug log (only for products with images array - manually created)

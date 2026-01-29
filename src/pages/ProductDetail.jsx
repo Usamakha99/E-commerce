@@ -107,7 +107,7 @@ const ProductDetail = () => {
           {/* Open Graph Meta Tags for Social Media */}
           <meta property="og:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
           <meta property="og:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online. High-quality products at competitive prices.`} />
-          <meta property="og:image" content={apiProduct.image || '/src/assets/V Cloud Logo final-01.svg'} />
+          <meta property="og:image" content={apiProduct.image || '/assets/V Cloud Logo final-01.svg'} />
           <meta property="og:url" content={`${window.location.origin}/product/${apiProduct.id}`} />
           <meta property="og:type" content="product" />
           <meta property="og:site_name" content="V Cloud Tech" />
@@ -123,7 +123,7 @@ const ProductDetail = () => {
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:title" content={`${apiProduct.name || apiProduct.title || 'Product'} - V Cloud Tech`} />
           <meta name="twitter:description" content={apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || `Buy ${apiProduct.name || apiProduct.title || 'Product'} online.`} />
-          <meta name="twitter:image" content={apiProduct.image || '/src/assets/V Cloud Logo final-01.svg'} />
+          <meta name="twitter:image" content={apiProduct.image || '/assets/V Cloud Logo final-01.svg'} />
 
           {/* Additional SEO Meta Tags */}
           <meta name="robots" content="index, follow" />
@@ -140,7 +140,7 @@ const ProductDetail = () => {
               "@type": "Product",
               "name": apiProduct.name || apiProduct.title || 'Product',
               "description": apiProduct.shortDescp || apiProduct.metaDescp || apiProduct.description || '',
-              "image": apiProduct.image || '/src/assets/V Cloud Logo final-01.svg',
+              "image": apiProduct.image || '/assets/V Cloud Logo final-01.svg',
               "brand": {
                 "@type": "Brand",
                 "name": typeof apiProduct.brand === 'object' && apiProduct.brand !== null ? apiProduct.brand.title : apiProduct.brand || 'V Cloud Tech'
@@ -313,10 +313,10 @@ const ProductDetail = () => {
                             onClick={() => {
                               const allImages = [
                                 product.image,
-                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `/uploads/products/${g.url}` : '')),
                                 ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
                                   const imgUrl = img.url || img.imageUrl || img;
-                                  return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                                  return typeof imgUrl === 'string' ? `/uploads/${imgUrl}` : '';
                                 }) : [])
                               ].filter(Boolean);
                               const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
@@ -360,9 +360,9 @@ const ProductDetail = () => {
                               // If it's already a full URL (http/https)
                               if (img.startsWith('http://') || img.startsWith('https://')) return img;
                               // If it starts with /uploads (from backend)
-                              if (img.startsWith('/uploads/')) return `http://localhost:5000${img}`;
+                              if (img.startsWith('/uploads/')) return img;
                               // If it's just a filename
-                              if (!img.startsWith('/') && !img.startsWith('src/')) return `http://localhost:5000/uploads/products/${img}`;
+                              if (!img.startsWith('/') && !img.startsWith('src/')) return `/uploads/products/${img}`;
                               // Otherwise return as is
                               return img;
                             })()
@@ -383,10 +383,10 @@ const ProductDetail = () => {
                             onClick={() => {
                               const allImages = [
                                 product.image,
-                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `http://localhost:5000/uploads/products/${g.url}` : '')),
+                                ...(product.galleries || []).map(g => g.pic500x500 || g.highPic || g.originalUrl || (typeof g.url === 'string' ? `/uploads/products/${g.url}` : '')),
                                 ...((!product.galleries || product.galleries.length === 0) && product.images ? product.images.map(img => {
                                   const imgUrl = img.url || img.imageUrl || img;
-                                  return typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '';
+                                  return typeof imgUrl === 'string' ? `/uploads/${imgUrl}` : '';
                                 }) : [])
                               ].filter(Boolean);
                               const currentIndex = selectedImage ? allImages.indexOf(selectedImage) : 0;
@@ -453,7 +453,7 @@ const ProductDetail = () => {
 
                         {/* Gallery Images */}
                         {product.galleries && Array.isArray(product.galleries) && product.galleries.length > 0 && product.galleries.slice(0, 4).map((gallery, index) => {
-                          const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `http://localhost:5000/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
+                          const imageUrl = gallery.pic500x500 || gallery.highPic || gallery.originalUrl || (typeof gallery.url === 'string' ? `/uploads/products/${gallery.url}` : '/src/assets/imgs/page/product/img-gallery-1.jpg');
                           return (
                             <div
                               key={index}
@@ -486,7 +486,7 @@ const ProductDetail = () => {
                         {(!product.galleries || product.galleries.length === 0) && product.images && Array.isArray(product.images) && product.images.length > 0 && product.images.slice(0, 4).map((img, index) => {
                           // Handle image URL - for manual uploads use /uploads/ without /products/
                           const imgUrl = img.url || img.imageUrl || img;
-                          const imageUrl = typeof imgUrl === 'string' ? `http://localhost:5000/uploads/${imgUrl}` : '/src/assets/imgs/page/product/img-gallery-1.jpg';
+                          const imageUrl = typeof imgUrl === 'string' ? `/uploads/${imgUrl}` : '/src/assets/imgs/page/product/img-gallery-1.jpg';
                           return (
                             <div
                               key={index}

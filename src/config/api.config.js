@@ -1,6 +1,8 @@
 // API Configuration
 export const API_CONFIG = {
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
+  // Prefer same-origin proxy to avoid CORS / Private Network Access issues in browsers.
+  // You can still override with VITE_API_BASE_URL (e.g. http://199.188.207.24:5000/api)
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 60000, // 60 seconds - allow time for large product lists (4000+ items)
   headers: {
     'Content-Type': 'application/json',
@@ -98,6 +100,13 @@ export const API_ENDPOINTS = {
     update: (id) => `/aiagents/${id}`,
     delete: (id) => `/aiagents/${id}`,
     categoriesWithCounts: '/aiagents/categories/counts',
+  },
+  
+  // FTP Products API
+  ftpProducts: {
+    login: '/auth/login',
+    getAll: '/ftp-products',
+    getById: (id) => `/ftp-products/${id}`,
   },
 };
 

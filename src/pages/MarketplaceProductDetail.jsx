@@ -16,7 +16,8 @@ const MarketplaceProductDetail = () => {
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [categories, setCategories] = useState([]);
+
   // Product Inquiry Modal state
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
@@ -72,7 +73,21 @@ const MarketplaceProductDetail = () => {
           console.error('❌ Could not extract agent data from response');
           throw new Error('No agent data received from API');
         }
-        
+
+        // Debug comparison data
+        console.log('=== COMPARISON DATA DEBUG ===');
+        console.log('productComparisonContent exists:', !!agentData.productComparisonContent);
+        if (agentData.productComparisonContent) {
+          console.log('productComparisonContent keys:', Object.keys(agentData.productComparisonContent));
+          console.log('updatedWeekly:', agentData.productComparisonContent.updatedWeekly);
+          console.log('comparisonData exists:', !!agentData.productComparisonContent.comparisonData);
+          if (agentData.productComparisonContent.comparisonData && agentData.productComparisonContent.comparisonData.products) {
+            console.log('comparisonProducts count:', agentData.productComparisonContent.comparisonData.products.length);
+            console.log('first comparison product:', agentData.productComparisonContent.comparisonData.products[0]);
+          }
+        }
+        console.log('=== END COMPARISON DATA DEBUG ===');
+
         setAgent(agentData);
       } catch (err) {
         console.error('❌ Error fetching AI agent:', err);
@@ -90,6 +105,35 @@ const MarketplaceProductDetail = () => {
 
     fetchAgent();
   }, [id]);
+
+  // Fetch categories for filtering
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        console.log('🔍 Fetching categories for product detail page...');
+        const response = await aiAgentService.getCategoriesWithCounts();
+        console.log('📋 Categories Response:', response);
+
+        // Handle different response structures
+        let categoriesList = [];
+        if (Array.isArray(response)) {
+          categoriesList = response;
+        } else if (response.data && Array.isArray(response.data)) {
+          categoriesList = response.data;
+        } else if (response.success && Array.isArray(response.data)) {
+          categoriesList = response.data;
+        }
+
+        console.log('📂 Processed categories:', categoriesList);
+        setCategories(categoriesList);
+      } catch (err) {
+        console.error('❌ Error fetching categories:', err);
+        setCategories([]);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Map API agent data to product structure for display
   // Comprehensive mapping to ensure all API fields are accessible
@@ -125,7 +169,7 @@ const MarketplaceProductDetail = () => {
       id: agent.id,
       name: agent.name || agent.title || 'Unnamed Agent',
       logo: agent.logo || agent.image || agent.mainImage || agent.thumbnail || agent.logoUrl || '/src/assets/imgs/page/homepage1/imgsp1.png',
-      seller: agent.provider || agent.seller || agent.vendor || agent.company || agent.publisher || 'Unknown Provider',
+      seller: agent.provider || agent.seller || agent.vendor || agent.company || (agent.publisher && typeof agent.publisher === 'object' ? agent.publisher.name : agent.publisher) || 'Unknown Provider',
       rating: agent.rating || agent.averageRating || agent.avgRating || 0,
       awsReviews: agent.awsReviews || agent.aws_reviews || 0,
       externalReviews: agent.externalReviews || agent.external_reviews || agent.reviews || agent.totalReviews || 0,
@@ -405,19 +449,30 @@ const MarketplaceProductDetail = () => {
       // Product Comparison - Extract from comparisonData array structure
       comparisonData: productComparisonContent, // Store full productComparisonContent object
       comparisonProducts: (() => {
-        // Check if comparisonData array exists with products
+        // Check if comparisonData is an array with product_comparison items FIRST
         if (productComparisonContent.comparisonData && Array.isArray(productComparisonContent.comparisonData) && productComparisonContent.comparisonData.length > 0) {
-          // Get products from first comparisonData item
+          // New format: comparisonData[0].product_comparison
           const firstComparison = productComparisonContent.comparisonData[0];
-          if (firstComparison.products && Array.isArray(firstComparison.products)) {
+          if (firstComparison.product_comparison && Array.isArray(firstComparison.product_comparison)) {
+            return firstComparison.product_comparison;
+          }
+          // Legacy format: comparisonData[0].products
+          else if (firstComparison.products && Array.isArray(firstComparison.products)) {
             return firstComparison.products;
           }
         }
+        // Check if comparisonData object exists with products array (legacy object format)
+        else if (productComparisonContent.comparisonData && typeof productComparisonContent.comparisonData === 'object' && !Array.isArray(productComparisonContent.comparisonData)) {
+          // If comparisonData is an object with products array
+          if (productComparisonContent.comparisonData.products && Array.isArray(productComparisonContent.comparisonData.products)) {
+            return productComparisonContent.comparisonData.products;
+          }
+        }
         // Fallback to other field names
-        return productComparisonContent.products || 
-               productComparisonContent.comparisonProducts || 
-               agent.comparisonProducts || 
-               agent.comparison_products || 
+        return productComparisonContent.products ||
+               productComparisonContent.comparisonProducts ||
+               agent.comparisonProducts ||
+               agent.comparison_products ||
                agent.similarProducts || [];
       })(),
       comparisonTitle: (() => {
@@ -1225,135 +1280,165 @@ const MarketplaceProductDetail = () => {
               <div className="col-lg-6">
                 <div style={{
                   border: '1px solid #D5D9D9',
-                  borderRadius: '8px',
-                  padding: '24px',
+                  borderRadius: '12px',
+                  padding: '40px',
                   backgroundColor: 'white',
                   height: '100%',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
                 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '20px',
                     fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '16px',
-                    fontFamily: 'inherit'
+                    marginBottom: '28px',
+                    fontFamily: 'inherit',
+                    letterSpacing: '-0.01em'
                   }}>
                     Details
                   </h3>
 
-                  {/* Row 1: Sold by & Categories */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '18px' }}>
+                  <div style={{ lineHeight: '1.8' }}>
                     {/* Sold by */}
-                    <div>
-                      <div style={{
+                    <div style={{
+                      padding: '18px 0',
+                      marginBottom: '20px',
+                      borderBottom: '1px solid #E5E7EB'
+                    }}>
+                      <span style={{
                         fontSize: '14px',
-                        color: '#16191f',
+                        color: '#6B7280',
                         fontFamily: 'inherit',
-                        fontWeight: '600',
-                        marginBottom: '8px'
+                        fontWeight: '500',
+                        display: 'inline-block',
+                        width: '130px',
+                        verticalAlign: 'top'
                       }}>
-                        Sold by
-                      </div>
-                      <div style={{
-                        fontSize: '15px',
+                        Sold by:
+                      </span>
+                      <span style={{
+                        fontSize: '14px',
                         color: '#16191f',
                         fontFamily: 'inherit',
                         fontWeight: '600'
                       }}>
                         {product.seller}
-                      </div>
+                      </span>
                     </div>
 
                     {/* Categories */}
-                    <div>
-                      <div style={{
-                        fontSize: '13px',
-                        color: '#16191f',
-                        marginBottom: '6px',
+                    <div style={{
+                      padding: '18px 0',
+                      marginBottom: '20px',
+                      borderBottom: '1px solid #E5E7EB'
+                    }}>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
                         fontFamily: 'inherit',
-                        fontWeight: '400'
+                        fontWeight: '500',
+                        display: 'inline-block',
+                        width: '130px',
+                        verticalAlign: 'top'
                       }}>
-                        Categories
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        {product.category ? (
-                          <a
-                            href={`/marketplace?category=${product.categoryId || ''}`}
-                            style={{
-                              fontSize: '14px',
-                              color: 'rgb(0, 113, 133)',
-                              textDecoration: 'none',
-                              fontFamily: 'inherit',
-                              fontWeight: '400',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              width: 'fit-content'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.color = 'rgb(0, 95, 115)';
-                              e.target.style.textDecoration = 'underline';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.color = 'rgb(0, 113, 133)';
-                              e.target.style.textDecoration = 'none';
-                            }}
-                          >
-                            {typeof product.category === 'string' ? product.category : (product.category.name || product.category.title || 'Category')}
-                            <span style={{ fontSize: '11px' }}>🔗</span>
-                          </a>
-                        ) : (
-                          <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>Not specified</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Row 2: Delivery method & Deployed on AWS */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    {/* Delivery method */}
-                    <div>
-                      <div style={{
-                        fontSize: '13px',
-                        color: '#16191f',
-                        fontFamily: 'inherit',
-                        fontWeight: '400',
-                        marginBottom: '6px'
-                      }}>
-                        Delivery method
-                      </div>
+                        Categories:
+                      </span>
                       <span style={{
                         fontSize: '14px',
                         color: '#16191f',
                         fontFamily: 'inherit',
-                        fontWeight: '400',
-                        borderBottom: '1px dotted #16191f',
-                        display: 'inline-block'
+                        fontWeight: '400'
                       }}>
-                        {product.deliveryMethod || 'Not specified'}
+                        {(() => {
+                          // Find the matching category from fetched categories
+                          const agentCategories = agent?.categories || [];
+                          const displayCategories = agentCategories.length > 0 ? agentCategories : categories;
+
+                          return displayCategories.length > 0 ? (
+                            displayCategories.map((cat, index) => {
+                              const categoryId = cat.id || cat.categoryId;
+                              const categoryName = cat.name || cat.title || cat.slug || `Category ${categoryId}`;
+                              const categorySlug = cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-') || categoryId;
+
+                              return (
+                                <a
+                                  key={categoryId || index}
+                                  href={`/marketplace?category=${categorySlug}`}
+                                  style={{
+                                    fontSize: '14px',
+                                    color: 'rgb(0, 113, 133)',
+                                    textDecoration: 'none',
+                                    fontFamily: 'inherit',
+                                    fontWeight: '600',
+                                    marginRight: '12px'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.textDecoration = 'underline';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.textDecoration = 'none';
+                                  }}
+                                >
+                                  {categoryName}
+                                </a>
+                              );
+                            })
+                          ) : (
+                            <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>Loading categories...</span>
+                          );
+                        })()}
+                      </span>
+                    </div>
+
+                    {/* Delivery method */}
+                    <div style={{
+                      padding: '18px 0',
+                      marginBottom: '20px',
+                      borderBottom: '1px solid #E5E7EB'
+                    }}>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
+                        fontFamily: 'inherit',
+                        fontWeight: '500',
+                        display: 'inline-block',
+                        width: '130px',
+                        verticalAlign: 'top'
+                      }}>
+                        Delivery method:
+                      </span>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#16191f',
+                        fontFamily: 'inherit',
+                        fontWeight: '600'
+                      }}>
+                        {typeof product.deliveryMethod === 'object' ? product.deliveryMethod.name : (product.deliveryMethod || 'Not specified')}
                       </span>
                     </div>
 
                     {/* Deployed on AWS */}
-                    <div>
-                      <div style={{
-                        fontSize: '13px',
-                        color: '#16191f',
+                    <div style={{
+                      padding: '18px 0'
+                    }}>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
                         fontFamily: 'inherit',
-                        fontWeight: '400',
-                        marginBottom: '6px'
+                        fontWeight: '500',
+                        display: 'inline-block',
+                        width: '130px',
+                        verticalAlign: 'top'
                       }}>
-                        Deployed on AWS
-                      </div>
+                        Deployed on AWS:
+                      </span>
                       <span style={{
                         fontSize: '14px',
                         color: '#16191f',
                         fontFamily: 'inherit',
-                        fontWeight: '400',
-                        borderBottom: '1px dotted #16191f',
-                        display: 'inline-block'
+                        fontWeight: '600'
                       }}>
-                        {product.deployedOnAWS ? 'Yes' : 'No'}
+                        Yes
                       </span>
                     </div>
                   </div>
@@ -2304,6 +2389,15 @@ const MarketplaceProductDetail = () => {
                 </div>
                 </div>
 
+              {/* Debug comparison data */}
+              {console.log('=== COMPARISON SECTION RENDER ===') ||
+               console.log('product.comparisonProducts exists:', !!product.comparisonProducts) ||
+               console.log('product.comparisonProducts length:', product.comparisonProducts?.length || 0) ||
+               console.log('product.updatedWeekly:', product.updatedWeekly) ||
+               console.log('product.comparisonTitle:', product.comparisonTitle) ||
+               console.log('product.comparisonProducts:', product.comparisonProducts) ||
+               console.log('=== END COMPARISON SECTION RENDER ===') || null}
+
               {/* Show message if no comparison data available */}
               {(!product.comparisonProducts || product.comparisonProducts.length === 0) ? (
                 <div style={{
@@ -2356,7 +2450,7 @@ const MarketplaceProductDetail = () => {
                         </div>
                   {/* Dynamic Product Headers from API */}
                   {product.comparisonProducts.map((compProduct, index) => {
-                    const brandInitials = (compProduct.brand || compProduct.name || 'N/A').substring(0, 2).toUpperCase();
+                    const brandInitials = (compProduct.provider || compProduct.product_name || compProduct.name || 'N/A').substring(0, 2).toUpperCase();
                     const brandColors = [
                       { bg: '#000', text: '#fff' },
                       { bg: '#4A90E2', text: '#fff' },
@@ -2405,7 +2499,7 @@ const MarketplaceProductDetail = () => {
                               fontFamily: 'inherit',
                               marginBottom: '4px'
                         }}>
-                              {compProduct.model || compProduct.name || compProduct.title || `Product ${index + 1}`}
+                              {compProduct.product_name || compProduct.model || compProduct.name || compProduct.title || `Product ${index + 1}`}
                         </div>
                         <div style={{
                           fontSize: '12px',
@@ -2423,8 +2517,15 @@ const MarketplaceProductDetail = () => {
 
                 {/* Price Row */}
                 {(() => {
-                  // Find best (lowest) price
-                  const prices = product.comparisonProducts.map(p => p.price).filter(p => p != null && !isNaN(p));
+                  // Find best (lowest) price - use pricing_model or price field
+                  const prices = product.comparisonProducts.map(p => {
+                    // Try to extract numeric price from pricing_model or use price field
+                    if (p.pricing_model) {
+                      const priceMatch = p.pricing_model.match(/\$?(\d+(?:\.\d+)?)/);
+                      return priceMatch ? parseFloat(priceMatch[1]) : null;
+                    }
+                    return p.price != null && !isNaN(p.price) ? p.price : null;
+                  }).filter(p => p != null);
                   const bestPrice = prices.length > 0 ? Math.min(...prices) : null;
                   
                   return (
@@ -2451,11 +2552,25 @@ const MarketplaceProductDetail = () => {
                         <span>Price</span>
                       </div>
                       {product.comparisonProducts.map((compProduct, index) => {
-                        const isBestPrice = bestPrice && compProduct.price === bestPrice;
+                        // Get price for comparison (extract from pricing_model or use price field)
+                        let displayPrice = null;
+                        let priceValue = null;
+
+                        if (compProduct.pricing_model) {
+                          displayPrice = compProduct.pricing_model;
+                          const priceMatch = compProduct.pricing_model.match(/\$?(\d+(?:\.\d+)?)/);
+                          priceValue = priceMatch ? parseFloat(priceMatch[1]) : null;
+                        } else if (compProduct.price) {
+                          displayPrice = `${compProduct.currency || 'USD'} ${compProduct.price}`;
+                          priceValue = compProduct.price;
+                        }
+
+                        const isBestPrice = bestPrice && priceValue === bestPrice;
+
                         return (
-                          <div key={index} style={{ 
-                            padding: '16px 20px', 
-                            borderLeft: '1px solid #D5D9D9', 
+                          <div key={index} style={{
+                            padding: '16px 20px',
+                            borderLeft: '1px solid #D5D9D9',
                           fontSize: '14px',
                             fontFamily: 'inherit',
                             backgroundColor: isBestPrice ? '#F0FDF4' : 'white',
@@ -2468,9 +2583,9 @@ const MarketplaceProductDetail = () => {
                               alignItems: 'center',
                               gap: '8px'
                             }}>
-                              {compProduct.price ? (
+                              {displayPrice ? (
                                 <>
-                                  <span>{compProduct.currency || 'USD'} {compProduct.price}</span>
+                                  <span>{displayPrice}</span>
                                   {isBestPrice && (
                                     <span style={{
                                       fontSize: '10px',
@@ -2527,17 +2642,17 @@ const MarketplaceProductDetail = () => {
                         fontWeight: '600',
                         color: '#374151'
                       }}>
-                        {compProduct.brand || 'N/A'}
+                        {compProduct.provider || compProduct.brand || 'N/A'}
                       </span>
                     </div>
                   ))}
                   </div>
 
-                {/* Model Row */}
+                {/* Free Trial Row */}
                     <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile 
-                    ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
+                  gridTemplateColumns: isMobile
+                    ? `150px repeat(${product.comparisonProducts.length}, 200px)`
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
                   borderBottom: '1px solid #E5E7EB'
@@ -2552,8 +2667,8 @@ const MarketplaceProductDetail = () => {
                     alignItems: 'center',
                     gap: '8px'
                     }}>
-                    <span style={{ fontSize: '16px' }}>📱</span>
-                    <span>Model</span>
+                    <span style={{ fontSize: '16px' }}>🎁</span>
+                    <span>Free Trial</span>
                     </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
@@ -2567,7 +2682,7 @@ const MarketplaceProductDetail = () => {
                         fontWeight: '600',
                         color: '#16191f'
                       }}>
-                        {compProduct.model || compProduct.name || 'N/A'}
+                        {compProduct.free_trial || 'N/A'}
                       </span>
                   </div>
                   ))}

@@ -10,7 +10,7 @@ const ApiStatus = () => {
   }, []);
 
   const checkApiStatus = async () => {
-    const url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+    const url = import.meta.env.VITE_API_BASE_URL || '/api';
     setApiUrl(url);
     
     try {
@@ -48,11 +48,8 @@ const ApiStatus = () => {
   }
 
   if (status === 'connected') {
-    return (
-      <div className="alert alert-success" role="alert">
-        <strong>✅ API Connected!</strong> Loading data from: {apiUrl}
-      </div>
-    );
+    // Hide the "API Connected" banner (keep the API check + disconnected warning).
+    return null;
   }
 
   return (

@@ -13,6 +13,7 @@ const Marketplace = () => {
   const [showDeliveryMethods, setShowDeliveryMethods] = useState(true);
   const [showPublishers, setShowPublishers] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
+  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
   
   // AI Agents API state
   const [agents, setAgents] = useState([]);
@@ -89,6 +90,15 @@ const Marketplace = () => {
           count: cat.count || cat.agentCount || cat.totalCount || cat.total || 0
         }));
         
+        // If API returned success but empty data, keep UX working with a safe fallback.
+        if (!mappedCategories || mappedCategories.length === 0) {
+          mappedCategories = [{
+            id: 'ai-agents-tools',
+            name: 'AI Agents & Tools',
+            count: 0
+          }];
+        }
+        
         // Remove "AI Agents & Tools" from the list since it's already shown as the selected category heading
         mappedCategories = mappedCategories.filter(cat => {
           const catName = cat.name?.toLowerCase() || '';
@@ -148,7 +158,18 @@ const Marketplace = () => {
         // Calculate delivery methods counts
         const deliveryMethodCounts = {};
         agentsList.forEach(agent => {
-          const method = agent.deliveryMethod || agent.deliveryType || agent.delivery || 'Unknown';
+          let method = 'Unknown';
+          if (agent.deliveryMethod) {
+            if (typeof agent.deliveryMethod === 'object' && agent.deliveryMethod.name) {
+              method = agent.deliveryMethod.name;
+            } else if (typeof agent.deliveryMethod === 'string') {
+              method = agent.deliveryMethod;
+            }
+          } else if (agent.deliveryType) {
+            method = agent.deliveryType;
+          } else if (agent.delivery) {
+            method = agent.delivery;
+          }
           deliveryMethodCounts[method] = (deliveryMethodCounts[method] || 0) + 1;
         });
         
@@ -161,7 +182,18 @@ const Marketplace = () => {
         // Calculate publishers counts
         const publisherCounts = {};
         agentsList.forEach(agent => {
-          const publisher = agent.provider || agent.seller || agent.publisher || 'Unknown';
+          let publisher = 'Unknown';
+          if (agent.provider) {
+            publisher = agent.provider;
+          } else if (agent.seller) {
+            publisher = agent.seller;
+          } else if (agent.publisher) {
+            if (typeof agent.publisher === 'object' && agent.publisher.name) {
+              publisher = agent.publisher.name;
+            } else if (typeof agent.publisher === 'string') {
+              publisher = agent.publisher;
+            }
+          }
           publisherCounts[publisher] = (publisherCounts[publisher] || 0) + 1;
         });
         
@@ -187,14 +219,19 @@ const Marketplace = () => {
       setLoading(true);
       setError(null);
       try {
-        // Map category name to categoryId (you may need to adjust this based on your category structure)
-        // For now, using categoryId=1 as shown in the user's example
-        const categoryId = 1; // You can map this based on selectedCategory if needed
+        // Only apply categoryId filter if we can confidently map it from the loaded categories list.
+        // Default "AI Agents & Tools" should show ALL agents (no category filter).
+        let categoryId = null;
+        const normalizedSelected = (selectedCategory || '').toLowerCase().trim();
+        if (normalizedSelected && normalizedSelected !== 'ai agents & tools') {
+          const match = (categories || []).find((c) => (c?.name || '').toLowerCase().trim() === normalizedSelected);
+          if (match?.id) categoryId = match.id;
+        }
         
         const response = await aiAgentService.getAllAgents({
           page: currentPage,
-          limit: 20,
-          categoryId: categoryId,
+          limit: 10,
+          ...(categoryId ? { categoryId } : {}),
         });
         
         // Log full API response
@@ -245,10 +282,19 @@ const Marketplace = () => {
     };
 
     fetchAgents();
-  }, [currentPage, selectedCategory]); // Re-fetch when page or category changes
+  }, [currentPage, selectedCategory, categories]); // Re-fetch when page or category changes
 
-  // Map API agents to product format for display
-  // Use API agents if available, otherwise fallback to empty array
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
+  // Reset to page 1 when sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy]);
+
+  // Map API agents to product format for display and apply sorting
   const products = agents.length > 0 
     ? agents.map(agent => ({
         id: agent.id,
@@ -259,8 +305,30 @@ const Marketplace = () => {
         externalReviews: agent.externalReviews || agent.reviews || 0,
         rating: agent.rating || 0,
         freeTrial: agent.freeTrial || false,
-        description: agent.description || agent.shortDescription || 'No description available.'
+        description: agent.description || agent.shortDescription || 'No description available.',
+        createdAt: agent.createdAt || agent.created_at || null,
+        updatedAt: agent.updatedAt || agent.updated_at || null,
+        price: agent.price || 0
       }))
+        .sort((a, b) => {
+          switch (sortBy) {
+            case 'Relevance':
+              // Default order (as returned from API)
+              return 0;
+            case 'Newest':
+              // Sort by createdAt/updatedAt descending, fallback to ID
+              if (a.createdAt || a.updatedAt || b.createdAt || b.updatedAt) {
+                return new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0);
+              }
+              return (b.id || 0) - (a.id || 0);
+            case 'Price: Low to High':
+              return (a.price || 0) - (b.price || 0);
+            case 'Price: High to Low':
+              return (b.price || 0) - (a.price || 0);
+            default:
+              return 0;
+          }
+        })
     : [];
 
   const handleDeliveryMethodToggle = (method) => {
@@ -487,7 +555,7 @@ const Marketplace = () => {
                     margin: 0,
                     fontFamily: 'DM Sans, sans-serif'
                   }}>
-                    {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}) showing {products.length > 0 ? `1-${products.length}` : '0'}
+                    {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}) showing {products.length > 0 ? `${(currentPage - 1) * 10 + 1}-${Math.min(currentPage * 10, totalAgents)}` : '0'}
                   </p>
                 </div>
 
@@ -495,34 +563,106 @@ const Marketplace = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '10px' : '20px', flexWrap: 'wrap' }}>
                   {/* Pagination */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <button style={{
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      style={{
                       border: 'none',
                       background: 'transparent',
-                      cursor: 'pointer',
-                      color: '#232F3E',
-                      fontSize: '18px'
-                    }}>
+                        cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                        color: currentPage === 1 ? '#CCCCCC' : '#232F3E',
+                        fontSize: '18px',
+                        opacity: currentPage === 1 ? 0.5 : 1
+                      }}
+                    >
                       ‹
                     </button>
-                    <span style={{
+                    {(() => {
+                      const totalPages = Math.ceil(totalAgents / 10);
+                      const pages = [];
+                      const maxVisiblePages = 5;
+                      
+                      if (totalPages <= maxVisiblePages) {
+                        for (let i = 1; i <= totalPages; i++) {
+                          pages.push(i);
+                        }
+                      } else {
+                        if (currentPage <= 3) {
+                          for (let i = 1; i <= 4; i++) {
+                            pages.push(i);
+                          }
+                          pages.push('...');
+                          pages.push(totalPages);
+                        } else if (currentPage >= totalPages - 2) {
+                          pages.push(1);
+                          pages.push('...');
+                          for (let i = totalPages - 3; i <= totalPages; i++) {
+                            pages.push(i);
+                          }
+                        } else {
+                          pages.push(1);
+                          pages.push('...');
+                          for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                            pages.push(i);
+                          }
+                          pages.push('...');
+                          pages.push(totalPages);
+                        }
+                      }
+                      
+                      return pages.map((page, index) => {
+                        if (page === '...') {
+                          return (
+                            <span key={`ellipsis-${index}`} style={{ color: '#565959', fontSize: '14px' }}>
+                              ...
+                            </span>
+                          );
+                        }
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            style={{
                       padding: '4px 10px',
-                      backgroundColor: '#F0F2F2',
+                              backgroundColor: currentPage === page ? '#F0F2F2' : 'transparent',
+                              border: 'none',
                       borderRadius: '4px',
                       fontSize: '14px',
-                      fontFamily: 'DM Sans, sans-serif'
-                    }}>
-                      1
-                    </span>
-                    <button style={{
+                              fontFamily: 'DM Sans, sans-serif',
+                              cursor: 'pointer',
+                              color: currentPage === page ? '#232F3E' : '#565959',
+                              fontWeight: currentPage === page ? '600' : '400'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (currentPage !== page) {
+                                e.target.style.backgroundColor = '#F7F8F8';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (currentPage !== page) {
+                                e.target.style.backgroundColor = 'transparent';
+                              }
+                            }}
+                          >
+                            {page}
+                          </button>
+                        );
+                      });
+                    })()}
+                    <button 
+                      onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalAgents / 10), prev + 1))}
+                      disabled={currentPage >= Math.ceil(totalAgents / 10)}
+                      style={{
                       border: 'none',
                       background: 'transparent',
-                      cursor: 'pointer',
-                      color: '#232F3E',
-                      fontSize: '18px'
-                    }}>
+                        cursor: currentPage >= Math.ceil(totalAgents / 10) ? 'not-allowed' : 'pointer',
+                        color: currentPage >= Math.ceil(totalAgents / 10) ? '#CCCCCC' : '#232F3E',
+                        fontSize: '18px',
+                        opacity: currentPage >= Math.ceil(totalAgents / 10) ? 0.5 : 1
+                      }}
+                    >
                       ›
                     </button>
-                    <span style={{ color: '#565959', fontSize: '14px' }}>...</span>
                   </div>
 
                   {/* Sort Dropdown */}
@@ -591,8 +731,38 @@ const Marketplace = () => {
               {/* Products List */}
               <div>
                 {loading && (
-                  <div style={{ textAlign: 'center', padding: '40px', color: '#565959' }}>
-                    Loading AI agents...
+                  <div style={{ textAlign: 'center', padding: '80px 20px' }}>
+                    <img 
+                      src="/assets/V Cloud Logo final-01.svg" 
+                      alt="V Cloud" 
+                      style={{
+                        width: '150px', 
+                        height: 'auto',
+                        marginBottom: '30px',
+                        animation: 'pulse 2s ease-in-out infinite'
+                      }} 
+                    />
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      border: '4px solid #f3f3f3',
+                      borderTop: '4px solid #df2020',
+                      borderRadius: '50%',
+                      margin: '0 auto',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    <style>
+                      {`
+                        @keyframes spin { 
+                          0% { transform: rotate(0deg); } 
+                          100% { transform: rotate(360deg); } 
+                        }
+                        @keyframes pulse {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0.6; }
+                        }
+                      `}
+                    </style>
                   </div>
                 )}
                 
@@ -660,7 +830,7 @@ const Marketplace = () => {
                         style={{
                           fontSize: isMobile ? '16px' : '18px',
                           fontWeight: '600',
-                          color: '#007185',
+                          color: '#111A45',
                           textDecoration: 'none',
                           fontFamily: 'DM Sans, sans-serif',
                           display: 'block',
@@ -672,7 +842,7 @@ const Marketplace = () => {
                           e.target.style.textDecoration = 'underline';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.color = '#007185';
+                          e.target.style.color = '#111A45';
                           e.target.style.textDecoration = 'none';
                         }}
                       >
@@ -687,7 +857,82 @@ const Marketplace = () => {
                         margin: 0,
                         fontFamily: 'DM Sans, sans-serif'
                       }}>
+                        {expandedDescriptions.has(product.id) ? (
+                          <>
                         {product.description}
+                            {product.description && product.description.length > 120 && (
+                                <button
+                                  onClick={() => {
+                                    const newExpanded = new Set(expandedDescriptions);
+                                    newExpanded.delete(product.id);
+                                    setExpandedDescriptions(newExpanded);
+                                  }}
+                                  style={{
+                                    marginLeft: '4px',
+                                    padding: 0,
+                                    backgroundColor: 'transparent',
+                                    border: 'none',
+                                    color: '#111A45',
+                                    cursor: 'pointer',
+                                    fontSize: 'inherit',
+                                    fontFamily: 'inherit',
+                                    fontWeight: '500',
+                                    textDecoration: 'underline'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.color = '#df2020';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.color = '#111A45';
+                                  }}
+                                >
+                                  Show less
+                                </button>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {product.description && product.description.length > 120 ? (
+                              <>
+                                <span style={{
+                                  display: 'inline'
+                                }}>
+                                  {product.description.substring(0, 150)}...
+                                </span>
+                                <button
+                                  onClick={() => {
+                                    const newExpanded = new Set(expandedDescriptions);
+                                    newExpanded.add(product.id);
+                                    setExpandedDescriptions(newExpanded);
+                                  }}
+                                  style={{
+                                    marginLeft: '4px',
+                                    padding: 0,
+                                    backgroundColor: 'transparent',
+                                    border: 'none',
+                                    color: '#111A45',
+                                    cursor: 'pointer',
+                                    fontSize: 'inherit',
+                                    fontFamily: 'inherit',
+                                    fontWeight: '500',
+                                    textDecoration: 'underline',
+                                    display: 'inline'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.color = '#df2020';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.color = '#111A45';
+                                  }}
+                                >
+                                  See more
+                                </button>
+                              </>
+                            ) : (
+                              product.description
+                            )}
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -695,6 +940,7 @@ const Marketplace = () => {
               </div>
 
               {/* Bottom Pagination */}
+              {totalAgents > 10 && (
               <div style={{
                 marginTop: '30px',
                 paddingTop: '20px',
@@ -704,36 +950,108 @@ const Marketplace = () => {
                 alignItems: 'center',
                 gap: '10px'
               }}>
-                <button style={{
+                  <button 
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    style={{
                   border: 'none',
                   background: 'transparent',
-                  cursor: 'pointer',
-                  color: '#232F3E',
-                  fontSize: '18px'
-                }}>
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      color: currentPage === 1 ? '#CCCCCC' : '#232F3E',
+                      fontSize: '18px',
+                      opacity: currentPage === 1 ? 0.5 : 1
+                    }}
+                  >
                   ‹
                 </button>
-                <span style={{
+                  {(() => {
+                    const totalPages = Math.ceil(totalAgents / 10);
+                    const pages = [];
+                    const maxVisiblePages = 5;
+                    
+                    if (totalPages <= maxVisiblePages) {
+                      for (let i = 1; i <= totalPages; i++) {
+                        pages.push(i);
+                      }
+                    } else {
+                      if (currentPage <= 3) {
+                        for (let i = 1; i <= 4; i++) {
+                          pages.push(i);
+                        }
+                        pages.push('...');
+                        pages.push(totalPages);
+                      } else if (currentPage >= totalPages - 2) {
+                        pages.push(1);
+                        pages.push('...');
+                        for (let i = totalPages - 3; i <= totalPages; i++) {
+                          pages.push(i);
+                        }
+                      } else {
+                        pages.push(1);
+                        pages.push('...');
+                        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                          pages.push(i);
+                        }
+                        pages.push('...');
+                        pages.push(totalPages);
+                      }
+                    }
+                    
+                    return pages.map((page, index) => {
+                      if (page === '...') {
+                        return (
+                          <span key={`ellipsis-bottom-${index}`} style={{ color: '#565959', fontSize: '14px' }}>
+                            ...
+                          </span>
+                        );
+                      }
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          style={{
                   padding: '6px 12px',
-                  backgroundColor: '#F0F2F2',
+                            backgroundColor: currentPage === page ? '#F0F2F2' : 'transparent',
+                            border: 'none',
                   borderRadius: '4px',
                   fontSize: '14px',
                   fontFamily: 'DM Sans, sans-serif',
-                  fontWeight: '500'
-                }}>
-                  1
-                </span>
-                <button style={{
+                            cursor: 'pointer',
+                            color: currentPage === page ? '#232F3E' : '#565959',
+                            fontWeight: currentPage === page ? '600' : '400'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== page) {
+                              e.target.style.backgroundColor = '#F7F8F8';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== page) {
+                              e.target.style.backgroundColor = 'transparent';
+                            }
+                          }}
+                        >
+                          {page}
+                        </button>
+                      );
+                    });
+                  })()}
+                  <button 
+                    onClick={() => setCurrentPage(prev => Math.min(Math.ceil(totalAgents / 10), prev + 1))}
+                    disabled={currentPage >= Math.ceil(totalAgents / 10)}
+                    style={{
                   border: 'none',
                   background: 'transparent',
-                  cursor: 'pointer',
-                  color: '#232F3E',
-                  fontSize: '18px'
-                }}>
+                      cursor: currentPage >= Math.ceil(totalAgents / 10) ? 'not-allowed' : 'pointer',
+                      color: currentPage >= Math.ceil(totalAgents / 10) ? '#CCCCCC' : '#232F3E',
+                      fontSize: '18px',
+                      opacity: currentPage >= Math.ceil(totalAgents / 10) ? 0.5 : 1
+                    }}
+                  >
                   ›
                 </button>
-                <span style={{ color: '#565959', fontSize: '14px' }}>...</span>
               </div>
+              )}
             </div>
           </div>
         </div>

@@ -36,7 +36,7 @@ const NavigationPreloader = () => {
           <div className="text-center">
             <img 
               className="mb-10" 
-              src="/src/assets/V Cloud Logo final-01.svg" 
+              src="/assets/V Cloud Logo final-01.svg" 
               alt="V Cloud" 
               style={{
                 width: '150px', 

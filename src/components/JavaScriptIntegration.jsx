@@ -18,25 +18,25 @@ const JavaScriptIntegration = () => {
     // Load required JavaScript files
     const loadScripts = async () => {
       try {
-        await loadScript('/src/assets/js/vendors/jquery-3.6.0.min.js');
-        await loadScript('/src/assets/js/vendors/bootstrap.bundle.min.js');
-        await loadScript('/src/assets/js/vendors/swiper-bundle.min.js');
-        await loadScript('/src/assets/js/vendors/select2.min.js');
-        await loadScript('/src/assets/js/vendors/slick.js');
-        await loadScript('/src/assets/js/vendors/wow.js');
-        await loadScript('/src/assets/js/vendors/waypoints.js');
-        await loadScript('/src/assets/js/vendors/counterup.js');
-        await loadScript('/src/assets/js/vendors/isotope.js');
-        await loadScript('/src/assets/js/vendors/noUISlider.js');
-        await loadScript('/src/assets/js/vendors/perfect-scrollbar.min.js');
-        await loadScript('/src/assets/js/vendors/magnific-popup.js');
-        await loadScript('/src/assets/js/vendors/scrollup.js');
-        await loadScript('/src/assets/js/vendors/jquery.countdown.min.js');
-        await loadScript('/src/assets/js/vendors/jquery.elevatezoom.js');
-        await loadScript('/src/assets/js/vendors/jquery.theia.sticky.js');
-        await loadScript('/src/assets/js/vendors/slider.js');
-        await loadScript('/src/assets/js/main.js');
-        await loadScript('/src/assets/js/shop.js');
+        await loadScript('/assets/js/vendors/jquery-3.6.0.min.js');
+        await loadScript('/assets/js/vendors/bootstrap.bundle.min.js');
+        await loadScript('/assets/js/vendors/swiper-bundle.min.js');
+        await loadScript('/assets/js/vendors/select2.min.js');
+        await loadScript('/assets/js/vendors/slick.js');
+        await loadScript('/assets/js/vendors/wow.js');
+        await loadScript('/assets/js/vendors/waypoints.js');
+        await loadScript('/assets/js/vendors/counterup.js');
+        await loadScript('/assets/js/vendors/isotope.js');
+        await loadScript('/assets/js/vendors/noUISlider.js');
+        await loadScript('/assets/js/vendors/perfect-scrollbar.min.js');
+        await loadScript('/assets/js/vendors/magnific-popup.js');
+        await loadScript('/assets/js/vendors/scrollup.js');
+        await loadScript('/assets/js/vendors/jquery.countdown.min.js');
+        await loadScript('/assets/js/vendors/jquery.elevatezoom.js');
+        await loadScript('/assets/js/vendors/jquery.theia.sticky.js');
+        await loadScript('/assets/js/vendors/slider.js');
+        await loadScript('/assets/js/main.js');
+        await loadScript('/assets/js/shop.js');
       } catch (error) {
         console.error('Error loading scripts:', error);
       }

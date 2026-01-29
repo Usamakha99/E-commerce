@@ -339,11 +339,11 @@ const ShopGrid = () => {
       <div className="section-box shop-template mt-30">
         <div className="container">
           {/* API Status Indicator */}
-          <div className="row mb-3">
-            <div className="col-12">
-              <ApiStatus />
+            <div className="row mb-3">
+              <div className="col-12">
+                <ApiStatus />
+              </div>
             </div>
-          </div>
 
           <div className="row">
             <div className="col-lg-9 order-first order-lg-last">

@@ -6,7 +6,7 @@ export const productInquiryService = {
   createInquiry: async (inquiryData) => {
     try {
       const endpoint = API_ENDPOINTS.productInquiries.create;
-      const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
       const fullURL = `${baseURL}${endpoint}`;
       
       console.log('=== Product Inquiry API Call ===');

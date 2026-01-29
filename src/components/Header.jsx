@@ -226,7 +226,7 @@ const Header = () => {
               <Link to="/" style={{ display: 'flex', alignItems:"center", textDecoration: 'none' }}>
                 <img 
                   alt="V Cloud" 
-                  src="/src/assets/V Cloud Logo final-01.svg" 
+                  src="/assets/V Cloud Logo final-01.svg" 
                   style={{ 
                     width: isMobile ? '120px' : '200px', 
                     position: 'relative',
@@ -259,6 +259,7 @@ const Header = () => {
               }}>
                 AI Store 
               </Link>
+
 
               {/* Vendors Dropdown - COMMENTED OUT */}
               {/* <div 
@@ -725,8 +726,8 @@ const Header = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {!isLoggedIn ? (
                 <>
-                  {/* Sign In Button */}
-                  <Link 
+                  {/* Sign In Button - COMMENTED OUT */}
+                  {/* <Link 
                     to="/login"
                     style={{
                       padding: '6px 14px',
@@ -750,10 +751,10 @@ const Header = () => {
                     }}
                   >
                     Sign In
-                  </Link>
+                  </Link> */}
 
-                  {/* Sign Up Button */}
-                  <Link 
+                  {/* Sign Up Button - COMMENTED OUT */}
+                  {/* <Link 
                     to="/register"
                     style={{
                       padding: '6px 14px',
@@ -780,7 +781,7 @@ const Header = () => {
                     }}
                   >
                     Sign Up
-                  </Link>
+                  </Link> */}
 
                   {/* Cart Icon - When Not Logged In */}
                   <button 
@@ -1006,7 +1007,7 @@ const Header = () => {
           <Link to="/" onClick={() => setIsMobileMenuOpen(false)} style={{ display: 'block', marginBottom: '30px', marginTop: '10px' }}>
             <img 
               alt="V Cloud" 
-              src="/src/assets/V Cloud Logo final-01.svg" 
+              src="/assets/V Cloud Logo final-01.svg" 
               style={{ width: '150px', height: 'auto' }} 
             />
           </Link>
@@ -1174,8 +1175,8 @@ const Header = () => {
               </div>
             )}
 
-            {/* Mobile Account Links */}
-            <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #f0f0f0' }}>
+            {/* Mobile Account Links - COMMENTED OUT */}
+            {/* <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '2px solid #f0f0f0' }}>
               <Link 
                 to="/login" 
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -1214,7 +1215,7 @@ const Header = () => {
               >
                 Sign Up
               </Link>
-            </div>
+            </div> */}
           </nav>
         </div>
       </div>

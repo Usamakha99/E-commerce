@@ -78,7 +78,9 @@ export const useProducts = (options = {}) => {
 
   useEffect(() => {
     if (autoFetch) {
-      fetchProducts().catch(err => {
+      // Shop page expects "all products" and does client-side pagination/filtering.
+      // Default to a large limit unless caller overrides.
+      fetchProducts({ limit: 1000 }).catch(err => {
         // Silently handle error - fallback data will be used
         console.log('API not available, using fallback data');
       });
