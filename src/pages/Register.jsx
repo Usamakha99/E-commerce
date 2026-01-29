@@ -166,9 +166,6 @@ const Register = () => {
 
       const response = await authService.register(registrationData);
       
-      // Debug: Log response
-      console.log('📥 Registration response:', response);
-      
       // ALWAYS redirect to email verification page
       // Your backend uses email verification system
       setSuccessMessage('Registration successful! Check your email for verification code.');
@@ -179,8 +176,6 @@ const Register = () => {
                        response.verificationToken || 
                        response.token || 
                        response.data?.token;
-      
-      console.log('🔑 Token extracted:', tempToken || 'NO TOKEN RECEIVED');
       
       // Redirect to verification page after 1.5 seconds
       setTimeout(() => {
@@ -194,9 +189,6 @@ const Register = () => {
       }, 1500);
       
     } catch (error) {
-      console.error('Registration error:', error);
-      console.log('📝 Error response:', error.response?.data);
-      
       // Handle different error responses
       if (error.response) {
         const errorData = error.response.data;
@@ -209,12 +201,7 @@ const Register = () => {
             (errorMessage.includes('email') || errorMessage.includes('verification'))) {
           
           // User was created but email failed
-          console.log('ℹ️ User created but email failed. Redirecting to verify page.');
-          
-          // Extract token from error response if available
           const tempToken = errorData?.token || errorData?.verificationToken || errorData?.tempToken;
-          
-          console.log('🔑 Token from error response:', tempToken || 'NO TOKEN IN ERROR RESPONSE');
           
           // Show warning that email service is down
           setApiError('⚠️ User created but email service is down. Click OK to continue to verification page. Use "Resend Code" there to get your verification code.');

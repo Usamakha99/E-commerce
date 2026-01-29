@@ -37,17 +37,6 @@ export const mapProduct = (externalProduct) => {
     imageUrl = `/uploads/${externalProduct.mainImage}`;
   }
   
-  // 🔍 Debug log (only for products with images array - manually created)
-  if (externalProduct.images && externalProduct.images.length > 0) {
-    console.log('📦 Data Mapper (Manual Product):', {
-      productId: externalProduct.id,
-      mainImage: externalProduct.mainImage,
-      hasGalleries: externalProduct.galleries?.length > 0,
-      hasImages: externalProduct.images?.length > 0,
-      constructedImageUrl: imageUrl
-    });
-  }
-  
   // Parse price (it's a string like "0.00")
   const productPrice = parseFloat(externalProduct.price) || 0;
   
@@ -119,10 +108,7 @@ export const mapProduct = (externalProduct) => {
  * @returns {Array} - Array of standardized products
  */
 export const mapProducts = (products) => {
-  if (!Array.isArray(products)) {
-    console.warn('Expected array of products, got:', typeof products);
-    return [];
-  }
+  if (!Array.isArray(products)) return [];
   return products.map(mapProduct).filter(p => p !== null);
 };
 

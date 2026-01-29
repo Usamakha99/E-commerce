@@ -172,7 +172,6 @@ const Checkout = () => {
         setClientSecret(response.clientSecret);
         setLoading(false);
       } catch (err) {
-        console.error('Error creating payment intent:', err);
         setError('Failed to initialize checkout. Please try again.');
         setLoading(false);
       }
@@ -193,13 +192,11 @@ const Checkout = () => {
 
       // Clear cart
       await clearCart();
-    } catch (err) {
-      console.error('Error creating order:', err);
+    } catch (_err) {
     }
   };
 
-  const handlePaymentError = (error) => {
-    console.error('Payment error:', error);
+  const handlePaymentError = (_error) => {
   };
 
   if (loading) {

@@ -21,34 +21,21 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
       setLoadingCategories(true);
       try {
         const response = await productService.getAllCategories();
-        console.log('Categories Response in Sidebar:', response);
         
-        // Handle different response structures
         if (response) {
           if (Array.isArray(response)) {
-            console.log('Categories are array:', response);
-            console.log('First category structure:', response[0]);
             setCategories(response);
           } else if (response.data && Array.isArray(response.data)) {
-            console.log('Categories in response.data:', response.data);
-            console.log('First category structure:', response.data[0]);
             setCategories(response.data);
           } else if (response.categories && Array.isArray(response.categories)) {
-            console.log('Categories in response.categories:', response.categories);
-            console.log('First category structure:', response.categories[0]);
             setCategories(response.categories);
           } else {
-            console.log('Unknown response structure:', response);
-            console.log('Response keys:', Object.keys(response));
             setCategories([]);
           }
         } else {
-          console.log('No response received');
           setCategories([]);
         }
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        // Fallback to empty array if API fails
+      } catch (_error) {
         setCategories([]);
       } finally {
         setLoadingCategories(false);

@@ -44,7 +44,6 @@ export const useProducts = (options = {}) => {
       }
     } catch (err) {
       setError(err.message || 'Failed to fetch products');
-      console.error('Error fetching products:', err);
     } finally {
       setLoading(false);
     }
@@ -66,7 +65,6 @@ export const useProducts = (options = {}) => {
       }
     } catch (err) {
       setError(err.message || 'Failed to search products');
-      console.error('Error searching products:', err);
     } finally {
       setLoading(false);
     }
@@ -80,9 +78,8 @@ export const useProducts = (options = {}) => {
     if (autoFetch) {
       // Shop page expects "all products" and does client-side pagination/filtering.
       // Default to a large limit unless caller overrides.
-      fetchProducts({ limit: 1000 }).catch(err => {
+      fetchProducts({ limit: 1000 }).catch(() => {
         // Silently handle error - fallback data will be used
-        console.log('API not available, using fallback data');
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

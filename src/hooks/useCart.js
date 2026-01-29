@@ -24,7 +24,6 @@ export const useCart = () => {
       }
     } catch (err) {
       setError(err.message || 'Failed to fetch cart');
-      console.error('Error fetching cart:', err);
     } finally {
       setLoading(false);
     }
@@ -49,7 +48,6 @@ export const useCart = () => {
       return response;
     } catch (err) {
       setError(err.message || 'Failed to add to cart');
-      console.error('Error adding to cart:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -72,7 +70,6 @@ export const useCart = () => {
       return response;
     } catch (err) {
       setError(err.message || 'Failed to update cart item');
-      console.error('Error updating cart item:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -95,7 +92,6 @@ export const useCart = () => {
       return response;
     } catch (err) {
       setError(err.message || 'Failed to remove from cart');
-      console.error('Error removing from cart:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -111,7 +107,6 @@ export const useCart = () => {
       setCart({ items: [], total: 0 });
     } catch (err) {
       setError(err.message || 'Failed to clear cart');
-      console.error('Error clearing cart:', err);
       throw err;
     } finally {
       setLoading(false);

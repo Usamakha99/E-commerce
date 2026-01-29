@@ -63,7 +63,6 @@ const ShopGrid = () => {
         const cats = Array.isArray(response) ? response : (response?.data || []);
         setCategories(cats);
       } catch (error) {
-        console.error('Error fetching categories:', error);
       }
     };
     fetchCategories();
@@ -98,7 +97,6 @@ const ShopGrid = () => {
         
         setProductTagsMap(tagsMap);
       } catch (error) {
-        console.error('Error fetching product tags:', error);
         setProductTags([]);
         setProductTagsMap({});
       }

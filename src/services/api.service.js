@@ -39,23 +39,18 @@ apiClient.interceptors.response.use(
           // window.location.href = '/login';
           break;
         case 403:
-          console.error('Access forbidden');
           break;
         case 404:
-          console.error('Resource not found');
           break;
         case 500:
-          console.error('Internal server error');
           break;
         default:
-          console.error('An error occurred:', error.response.data.message);
+          break;
       }
     } else if (error.request) {
       // Request was made but no response received
-      console.error('No response from server');
     } else {
       // Something else happened
-      console.error('Error:', error.message);
     }
     return Promise.reject(error);
   }

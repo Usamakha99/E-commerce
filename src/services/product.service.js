@@ -6,18 +6,13 @@ export const productService = {
   // Get all categories with subcategories
   getAllCategories: async () => {
     try {
-      // Fetch categories
-      console.log('Fetching categories from:', API_ENDPOINTS.categories.getAll);
       const categoriesResponse = await apiService.get(API_ENDPOINTS.categories.getAll);
-      console.log('Categories API Response:', categoriesResponse);
       
       let categories = Array.isArray(categoriesResponse) ? categoriesResponse : (categoriesResponse?.data || []);
       
       // Fetch products to extract subcategories
       try {
-        console.log('Fetching products to extract subcategories...');
         const productsResponse = await apiService.get('/products/imports?status=completed&page=1&limit=1000');
-        console.log('Products Response for subcategories:', productsResponse);
         
         const products = productsResponse?.data || [];
         
@@ -45,8 +40,6 @@ export const productService = {
             }
           });
           
-          console.log('Extracted subcategories:', Array.from(subcategoriesMap.values()));
-          
           // Instead of showing categories with subcategories, 
           // flatten and show subcategories directly as main categories
           const allSubcategories = Array.from(subcategoriesMap.values());
@@ -59,16 +52,12 @@ export const productService = {
             productCount: subcat.productCount,
             parentId: subcat.parentId
           }));
-          
-          console.log('Flattened categories (from subcategories):', categories);
         }
-      } catch (productsError) {
-        console.log('Could not fetch products for subcategories:', productsError.message);
+      } catch (_productsError) {
       }
       
       return { data: categories };
     } catch (error) {
-      console.error('Error fetching categories:', error);
       throw error;
     }
   },
@@ -134,7 +123,6 @@ export const productService = {
         pagination: { total, page, limit },
       };
     } catch (error) {
-      console.error('Error fetching products:', error);
       throw error;
     }
   },
@@ -180,7 +168,6 @@ export const productService = {
         data: mappedProduct
       };
     } catch (error) {
-      console.error(`Error fetching product ${id}:`, error);
       throw error;
     }
   },
@@ -192,7 +179,6 @@ export const productService = {
       const queryString = new URLSearchParams(params).toString();
       return await apiService.get(`${API_ENDPOINTS.products.search}?${queryString}`);
     } catch (error) {
-      console.error('Error searching products:', error);
       throw error;
     }
   },
@@ -202,7 +188,6 @@ export const productService = {
     try {
       return await apiService.post(API_ENDPOINTS.products.filter, filters);
     } catch (error) {
-      console.error('Error filtering products:', error);
       throw error;
     }
   },
@@ -212,7 +197,6 @@ export const productService = {
     try {
       return await apiService.get(API_ENDPOINTS.products.categories);
     } catch (error) {
-      console.error('Error fetching categories:', error);
       throw error;
     }
   },
@@ -222,7 +206,6 @@ export const productService = {
     try {
       return await apiService.get(API_ENDPOINTS.reviews.getByProduct(productId));
     } catch (error) {
-      console.error(`Error fetching reviews for product ${productId}:`, error);
       throw error;
     }
   },

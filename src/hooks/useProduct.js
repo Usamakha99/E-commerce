@@ -29,7 +29,6 @@ export const useProduct = (productId, autoFetch = true) => {
       }
     } catch (err) {
       setError(err.message || 'Failed to fetch product');
-      console.error(`Error fetching product ${id}:`, err);
     } finally {
       setLoading(false);
     }
@@ -39,7 +38,6 @@ export const useProduct = (productId, autoFetch = true) => {
     if (autoFetch && productId) {
       fetchProduct().catch(err => {
         // Silently handle error - fallback data will be used
-        console.log('API not available for product, using fallback data');
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

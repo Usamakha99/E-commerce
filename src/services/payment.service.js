@@ -19,7 +19,6 @@ const paymentService = {
       const response = await apiClient.post('/payments/create-intent', paymentData);
       return response.data;
     } catch (error) {
-      console.error('Error creating payment intent:', error);
       throw error;
     }
   },
@@ -34,7 +33,6 @@ const paymentService = {
       const response = await apiClient.post(`/payments/confirm/${paymentIntentId}`);
       return response.data;
     } catch (error) {
-      console.error('Error confirming payment:', error);
       throw error;
     }
   },
@@ -49,7 +47,6 @@ const paymentService = {
       const response = await apiClient.get(`/payments/status/${paymentIntentId}`);
       return response.data;
     } catch (error) {
-      console.error('Error getting payment status:', error);
       throw error;
     }
   },
@@ -64,7 +61,6 @@ const paymentService = {
       const response = await apiClient.post('/orders', orderData);
       return response.data;
     } catch (error) {
-      console.error('Error creating order:', error);
       throw error;
     }
   },

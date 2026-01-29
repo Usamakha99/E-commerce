@@ -22,28 +22,15 @@ app.use(
     secure: true, // For HTTPS
     // Rewrite /ftp-api/* to /api/*
     // Use req.originalUrl to get full path including /ftp-api
-    pathRewrite: (path, req) => {
-      // req.originalUrl = /ftp-api/auth/login
-      // path = /auth/login (stripped by Express)
-      // We need /api/auth/login
-      const newPath = '/api' + path;
-      console.log(`[FTP Proxy] ${req.method} ${req.originalUrl}`);
-      console.log(`[FTP Proxy] Rewriting: ${path} -> ${newPath}`);
-      return newPath;
+    pathRewrite: (path) => {
+      return '/api' + path;
     },
     logLevel: process.env.PROXY_LOG_LEVEL || 'info',
-    onProxyReq: (proxyReq, req, res) => {
-      // Modify the proxy request path directly
-      const originalPath = req.path; // /auth/login
-      proxyReq.path = '/api' + originalPath; // /api/auth/login
-      console.log(`[FTP Proxy] Final proxy path: ${proxyReq.path}`);
-      console.log(`[FTP Proxy] Target URL: ${FTP_API_TARGET}${proxyReq.path}`);
-    },
-    onProxyRes: (proxyRes, req, res) => {
-      console.log(`[FTP Proxy] Response: ${proxyRes.statusCode} for ${req.originalUrl}`);
+    onProxyReq: (proxyReq, req) => {
+      const originalPath = req.path;
+      proxyReq.path = '/api' + originalPath;
     },
     onError: (err, req, res) => {
-      console.error('[FTP Proxy Error]', err.message);
       if (!res.headersSent) {
         res.status(500).json({ error: 'Proxy error', message: err.message });
       }
@@ -83,8 +70,5 @@ app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📦 Serving files from: ${join(__dirname, 'dist')}`);
-});
+app.listen(PORT);
 

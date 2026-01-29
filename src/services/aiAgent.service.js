@@ -33,7 +33,6 @@ export const aiAgentService = {
       const url = `${API_ENDPOINTS.aiAgents.getAll}?${queryParams.toString()}`;
       return await apiService.get(url);
     } catch (error) {
-      console.error('Error fetching AI agents:', error);
       throw error;
     }
   },
@@ -43,7 +42,6 @@ export const aiAgentService = {
     try {
       return await apiService.get(API_ENDPOINTS.aiAgents.getById(id));
     } catch (error) {
-      console.error(`Error fetching AI agent ${id}:`, error);
       throw error;
     }
   },
@@ -53,7 +51,6 @@ export const aiAgentService = {
     try {
       return await apiService.post(API_ENDPOINTS.aiAgents.create, agentData);
     } catch (error) {
-      console.error('Error creating AI agent:', error);
       throw error;
     }
   },
@@ -63,7 +60,6 @@ export const aiAgentService = {
     try {
       return await apiService.put(API_ENDPOINTS.aiAgents.update(id), agentData);
     } catch (error) {
-      console.error(`Error updating AI agent ${id}:`, error);
       throw error;
     }
   },
@@ -73,7 +69,6 @@ export const aiAgentService = {
     try {
       return await apiService.delete(API_ENDPOINTS.aiAgents.delete(id));
     } catch (error) {
-      console.error(`Error deleting AI agent ${id}:`, error);
       throw error;
     }
   },
@@ -83,7 +78,6 @@ export const aiAgentService = {
     try {
       return await apiService.get(API_ENDPOINTS.aiAgents.categoriesWithCounts);
     } catch (error) {
-      console.error('Error fetching categories with counts:', error);
       throw error;
     }
   },

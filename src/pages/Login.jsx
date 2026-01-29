@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/auth.service';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -97,13 +99,12 @@ const Login = () => {
       
       setSuccessMessage('Login successful! Redirecting...');
       
-      // Redirect to home after 1 second
+      // Redirect to intended page (e.g. /checkout) or home after 1 second
       setTimeout(() => {
-        navigate('/');
+        navigate(from, { replace: true });
       }, 1000);
       
     } catch (error) {
-      console.error('Login error:', error);
       
       // Handle different error responses
       if (error.response) {

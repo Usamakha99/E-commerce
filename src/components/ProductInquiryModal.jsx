@@ -75,8 +75,6 @@ const ProductInquiryModal = ({ isOpen, onClose, productName, productId }) => {
       }, 2000);
 
     } catch (err) {
-      console.error('Error submitting inquiry:', err);
-
       // Better error messages based on status code
       let errorMessage = 'Failed to submit inquiry. Please try again.';
 

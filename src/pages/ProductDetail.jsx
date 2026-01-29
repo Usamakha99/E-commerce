@@ -64,19 +64,6 @@ const ProductDetail = () => {
     }
   }, [product]);
 
-  // Debug: Check bulletsPoint data
-  useEffect(() => {
-    if (product) {
-      console.log('📌 Bullet Points Data:', {
-        bulletsPoint: product.bulletsPoint,
-        type: typeof product.bulletsPoint,
-        isArray: Array.isArray(product.bulletsPoint),
-        isString: typeof product.bulletsPoint === 'string',
-        length: Array.isArray(product.bulletsPoint) ? product.bulletsPoint.length : product.bulletsPoint?.length
-      });
-    }
-  }, [product]);
-
   const handleAddToCart = async () => {
     try {
       await addToCart(product.id, quantity, {
@@ -90,7 +77,6 @@ const ProductDetail = () => {
       // Scroll to top to see cart icon update
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      console.error('Failed to add to cart:', err);
       alert('❌ Failed to add to cart. Please try again.');
     }
   };

@@ -47,9 +47,6 @@ const MarketplaceProductDetail = () => {
         // This calls: GET http://localhost:5000/api/aiagents/:id
         const response = await aiAgentService.getAgentById(id);
         
-        // Full API Response
-        console.log(JSON.stringify(response, null, 2));
-        
         // Extract agent data from API response
         // Handle different response formats: { success: true, data: {...} } or direct object
         let agentData = null;
@@ -70,32 +67,11 @@ const MarketplaceProductDetail = () => {
         }
         
         if (!agentData) {
-          console.error('❌ Could not extract agent data from response');
           throw new Error('No agent data received from API');
         }
 
-        // Debug comparison data
-        console.log('=== COMPARISON DATA DEBUG ===');
-        console.log('productComparisonContent exists:', !!agentData.productComparisonContent);
-        if (agentData.productComparisonContent) {
-          console.log('productComparisonContent keys:', Object.keys(agentData.productComparisonContent));
-          console.log('updatedWeekly:', agentData.productComparisonContent.updatedWeekly);
-          console.log('comparisonData exists:', !!agentData.productComparisonContent.comparisonData);
-          if (agentData.productComparisonContent.comparisonData && agentData.productComparisonContent.comparisonData.products) {
-            console.log('comparisonProducts count:', agentData.productComparisonContent.comparisonData.products.length);
-            console.log('first comparison product:', agentData.productComparisonContent.comparisonData.products[0]);
-          }
-        }
-        console.log('=== END COMPARISON DATA DEBUG ===');
-
         setAgent(agentData);
       } catch (err) {
-        console.error('❌ Error fetching AI agent:', err);
-        console.error('Error details:', {
-          message: err.message,
-          response: err.response?.data,
-          status: err.response?.status
-        });
         setError(err.message || 'Failed to fetch AI agent details');
         setAgent(null);
       } finally {
@@ -110,11 +86,8 @@ const MarketplaceProductDetail = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        console.log('🔍 Fetching categories for product detail page...');
         const response = await aiAgentService.getCategoriesWithCounts();
-        console.log('📋 Categories Response:', response);
 
-        // Handle different response structures
         let categoriesList = [];
         if (Array.isArray(response)) {
           categoriesList = response;
@@ -124,10 +97,8 @@ const MarketplaceProductDetail = () => {
           categoriesList = response.data;
         }
 
-        console.log('📂 Processed categories:', categoriesList);
         setCategories(categoriesList);
       } catch (err) {
-        console.error('❌ Error fetching categories:', err);
         setCategories([]);
       }
     };
@@ -2388,15 +2359,6 @@ const MarketplaceProductDetail = () => {
                   </p>
                 </div>
                 </div>
-
-              {/* Debug comparison data */}
-              {console.log('=== COMPARISON SECTION RENDER ===') ||
-               console.log('product.comparisonProducts exists:', !!product.comparisonProducts) ||
-               console.log('product.comparisonProducts length:', product.comparisonProducts?.length || 0) ||
-               console.log('product.updatedWeekly:', product.updatedWeekly) ||
-               console.log('product.comparisonTitle:', product.comparisonTitle) ||
-               console.log('product.comparisonProducts:', product.comparisonProducts) ||
-               console.log('=== END COMPARISON SECTION RENDER ===') || null}
 
               {/* Show message if no comparison data available */}
               {(!product.comparisonProducts || product.comparisonProducts.length === 0) ? (

@@ -54,32 +54,19 @@ const Marketplace = () => {
         // Fetch categories with counts from dedicated endpoint
         const categoriesResponse = await aiAgentService.getCategoriesWithCounts();
         
-        // Log full API response
-        console.log('==========================================');
-        console.log('🔍 CATEGORIES WITH COUNTS API RESPONSE:');
-        console.log('==========================================');
-        console.log('Full Response:', JSON.stringify(categoriesResponse, null, 2));
-        console.log('==========================================');
-        
         let categoriesList = [];
         
-        // Handle different response structures
         if (categoriesResponse && typeof categoriesResponse === 'object') {
           if (Array.isArray(categoriesResponse)) {
             categoriesList = categoriesResponse;
-            console.log('✅ Categories are direct array:', categoriesList);
           } else if (categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
             categoriesList = categoriesResponse.data;
-            console.log('✅ Categories found in response.data:', categoriesList);
           } else if (categoriesResponse.categories && Array.isArray(categoriesResponse.categories)) {
             categoriesList = categoriesResponse.categories;
-            console.log('✅ Categories found in response.categories:', categoriesList);
           } else if (categoriesResponse.success && categoriesResponse.data && Array.isArray(categoriesResponse.data)) {
             categoriesList = categoriesResponse.data;
-            console.log('✅ Categories found in response.success.data:', categoriesList);
           } else if (categoriesResponse.result && Array.isArray(categoriesResponse.result)) {
             categoriesList = categoriesResponse.result;
-            console.log('✅ Categories found in response.result:', categoriesList);
           }
         }
         
@@ -108,11 +95,8 @@ const Marketplace = () => {
         // Sort by count descending
         mappedCategories.sort((a, b) => b.count - a.count);
         
-        console.log('📋 Final Categories (AI Agents & Tools removed from list):', mappedCategories);
-        
         setCategories(mappedCategories);
       } catch (err) {
-        console.error('Error fetching categories with counts:', err);
         // Fallback: set empty array or default category
         setCategories([{
           id: 'ai-agents-tools',
@@ -203,8 +187,7 @@ const Marketplace = () => {
         
         setPublishers(publishersList);
         
-      } catch (err) {
-        console.error('Error fetching all agents for filters:', err);
+      } catch (_err) {
       } finally {
         setLoadingFilters(false);
       }
@@ -233,13 +216,6 @@ const Marketplace = () => {
           limit: 10,
           ...(categoryId ? { categoryId } : {}),
         });
-        
-        // Log full API response
-        console.log('==========================================');
-        console.log('🔍 MARKETPLACE API RESPONSE:');
-        console.log('==========================================');
-        console.log('Full Response:', JSON.stringify(response, null, 2));
-        console.log('==========================================');
         
         // Handle API response structure according to documentation:
         // Expected: { success: true, data: [...], pagination: {...} }
@@ -272,7 +248,6 @@ const Marketplace = () => {
         setAgents(agentsList);
         setTotalAgents(total);
       } catch (err) {
-        console.error('Error fetching AI agents:', err);
         setError(err.message || 'Failed to fetch AI agents');
         // Fallback to empty array on error
         setAgents([]);

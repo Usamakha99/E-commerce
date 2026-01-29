@@ -50,15 +50,10 @@ const Header = () => {
 
   // Handle language change
   const handleLanguageChange = (language) => {
-    console.log('Changing language from', selectedLanguage, 'to', language);
     setSelectedLanguage(language);
     setShowLanguageDropdown(false);
     
-    // You can add more language change logic here
-    // For example: change document language, update translations, etc.
-    console.log('Language changed to:', language);
-    
-    // Example: Change document language attribute
+    // Change document language attribute
     document.documentElement.lang = language === 'English' ? 'en' : 
                                    language === 'Français' ? 'fr' : 
                                    language === 'Español' ? 'es' : 
@@ -71,10 +66,8 @@ const Header = () => {
       setLoadingCategories(true);
       try {
         const response = await productService.getAllCategories();
-        console.log('Categories fetched for header:', response);
         setCategories(response?.data || []);
-      } catch (error) {
-        console.error('Error fetching categories for header:', error);
+      } catch (_error) {
         setCategories([]);
       } finally {
         setLoadingCategories(false);
@@ -122,8 +115,7 @@ const Header = () => {
         
         setSearchResults(filtered);
         setShowSearchDropdown(filtered.length > 0);
-      } catch (error) {
-        console.error('Error searching products:', error);
+      } catch (_error) {
         setSearchResults([]);
         setShowSearchDropdown(false);
       }

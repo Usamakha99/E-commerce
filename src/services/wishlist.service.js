@@ -7,7 +7,6 @@ export const wishlistService = {
     try {
       return await apiService.get(API_ENDPOINTS.wishlist.getAll);
     } catch (error) {
-      console.error('Error fetching wishlist:', error);
       throw error;
     }
   },
@@ -19,7 +18,6 @@ export const wishlistService = {
         productId,
       });
     } catch (error) {
-      console.error('Error adding to wishlist:', error);
       throw error;
     }
   },
@@ -29,7 +27,6 @@ export const wishlistService = {
     try {
       return await apiService.delete(API_ENDPOINTS.wishlist.remove(itemId));
     } catch (error) {
-      console.error('Error removing from wishlist:', error);
       throw error;
     }
   },
@@ -40,7 +37,6 @@ export const wishlistService = {
       const wishlist = await wishlistService.getWishlist();
       return wishlist.items.some(item => item.productId === productId);
     } catch (error) {
-      console.error('Error checking wishlist:', error);
       return false;
     }
   },

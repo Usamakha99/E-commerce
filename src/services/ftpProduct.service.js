@@ -37,16 +37,13 @@ ftpApiClient.interceptors.response.use(
   async (error) => {
     // If 401 Unauthorized, try to re-authenticate
     if (error.response?.status === 401) {
-      console.log('FTP API token expired, attempting re-authentication...');
       try {
         const newToken = await ftpProductService.authenticate();
         if (newToken) {
-          // Retry original request with new token
           error.config.headers.Authorization = `Bearer ${newToken}`;
           return ftpApiClient.request(error.config);
         }
-      } catch (authError) {
-        console.error('Re-authentication failed:', authError);
+      } catch (_authError) {
       }
     }
     return Promise.reject(error);
@@ -78,13 +75,11 @@ export const ftpProductService = {
       if (response.data?.success && response.data?.token) {
         // Store token in localStorage
         localStorage.setItem('ftpApiToken', response.data.token);
-        console.log('✅ FTP API authenticated successfully');
         return response.data.token;
       } else {
         throw new Error('Authentication failed: Invalid response');
       }
     } catch (error) {
-      console.error('❌ FTP API authentication error:', error);
       localStorage.removeItem('ftpApiToken');
       throw error;
     }
@@ -145,7 +140,6 @@ export const ftpProductService = {
         filters: response.data?.filters || {},
       };
     } catch (error) {
-      console.error('Error fetching FTP products:', error);
       throw error;
     }
   },
@@ -179,7 +173,6 @@ export const ftpProductService = {
         data: response.data?.data || null,
       };
     } catch (error) {
-      console.error(`Error fetching FTP product ${id}:`, error);
       throw error;
     }
   },

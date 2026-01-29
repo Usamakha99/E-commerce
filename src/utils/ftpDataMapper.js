@@ -83,7 +83,6 @@ export const mapFtpProduct = (ftpProduct) => {
  */
 export const mapFtpProducts = (products) => {
   if (!Array.isArray(products)) {
-    console.warn('Expected array of FTP products, got:', typeof products);
     return [];
   }
   return products.map(mapFtpProduct).filter(p => p !== null);

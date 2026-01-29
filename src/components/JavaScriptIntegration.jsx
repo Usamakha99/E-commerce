@@ -37,8 +37,7 @@ const JavaScriptIntegration = () => {
         await loadScript('/assets/js/vendors/slider.js');
         await loadScript('/assets/js/main.js');
         await loadScript('/assets/js/shop.js');
-      } catch (error) {
-        console.error('Error loading scripts:', error);
+      } catch (_error) {
       }
     };
 

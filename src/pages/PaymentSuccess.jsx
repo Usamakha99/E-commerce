@@ -25,9 +25,8 @@ const PaymentSuccess = () => {
         } else {
           setPaymentStatus('failed');
         }
-      } catch (error) {
-        console.error('Error verifying payment:', error);
-        setPaymentStatus('success'); // Default to success if can't verify
+      } catch (_error) {
+        setPaymentStatus('success');
       }
     };
 

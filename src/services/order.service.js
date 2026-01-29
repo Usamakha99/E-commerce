@@ -7,7 +7,6 @@ export const orderService = {
     try {
       return await apiService.post(API_ENDPOINTS.orders.create, orderData);
     } catch (error) {
-      console.error('Error creating order:', error);
       throw error;
     }
   },
@@ -22,7 +21,6 @@ export const orderService = {
       
       return await apiService.get(url);
     } catch (error) {
-      console.error('Error fetching orders:', error);
       throw error;
     }
   },
@@ -32,7 +30,6 @@ export const orderService = {
     try {
       return await apiService.get(API_ENDPOINTS.orders.getById(id));
     } catch (error) {
-      console.error(`Error fetching order ${id}:`, error);
       throw error;
     }
   },
@@ -42,7 +39,6 @@ export const orderService = {
     try {
       return await apiService.post(API_ENDPOINTS.orders.cancel(id));
     } catch (error) {
-      console.error(`Error canceling order ${id}:`, error);
       throw error;
     }
   },

@@ -78,12 +78,6 @@ const VerifyEmail = () => {
       return;
     }
 
-    // Debug: Check what we're sending
-    console.log('🔍 Verification Request:');
-    console.log('   Email:', email);
-    console.log('   Code:', code);
-    console.log('   Token:', token || 'NOT PROVIDED');
-
     setIsLoading(true);
     setApiError('');
 
@@ -97,9 +91,6 @@ const VerifyEmail = () => {
       }, 2000);
       
     } catch (error) {
-      console.error('Verification error:', error);
-      console.log('📝 Error details:', error.response?.data);
-      
       if (error.response) {
         const errorMessage = error.response.data?.message || 
                            error.response.data?.error || 
@@ -124,8 +115,6 @@ const VerifyEmail = () => {
     try {
       const response = await authService.resendVerificationCode(email);
       
-      console.log('📥 Resend response:', response);
-      
       // Extract token from resend response
       // Backend sends: { data: { verificationToken } }
       const newToken = response.data?.verificationToken || 
@@ -135,9 +124,6 @@ const VerifyEmail = () => {
       
       if (newToken) {
         setToken(newToken);
-        console.log('✅ Token received from resend:', newToken);
-      } else {
-        console.log('⚠️ No token in resend response');
       }
       
       setResendSuccess(true);
@@ -147,9 +133,6 @@ const VerifyEmail = () => {
       }, 3000);
       
     } catch (error) {
-      console.error('Resend error:', error);
-      console.log('📝 Resend error details:', error.response?.data);
-      
       const errorMessage = error.response?.data?.message || 
                           error.response?.data?.error || 
                           'Failed to resend code. Please try again.';

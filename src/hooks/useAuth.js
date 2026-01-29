@@ -17,8 +17,7 @@ export const useAuth = () => {
     if (userData) {
       try {
         setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
+      } catch (_error) {
         setUser(null);
       }
     } else {

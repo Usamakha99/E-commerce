@@ -13,7 +13,6 @@ export const productTagsService = {
       const response = await apiService.get(url);
       return Array.isArray(response) ? response : (response?.data || []);
     } catch (error) {
-      console.error('Error fetching product tags:', error);
       throw error;
     }
   },
@@ -24,7 +23,6 @@ export const productTagsService = {
       const response = await apiService.get(API_ENDPOINTS.productTags.getById(id));
       return response?.data || response;
     } catch (error) {
-      console.error(`Error fetching product tag ${id}:`, error);
       throw error;
     }
   },
@@ -35,7 +33,6 @@ export const productTagsService = {
       const response = await apiService.post(API_ENDPOINTS.productTags.create, tagData);
       return response?.data || response;
     } catch (error) {
-      console.error('Error creating product tag:', error);
       throw error;
     }
   },
@@ -46,7 +43,6 @@ export const productTagsService = {
       const response = await apiService.put(API_ENDPOINTS.productTags.update(id), tagData);
       return response?.data || response;
     } catch (error) {
-      console.error(`Error updating product tag ${id}:`, error);
       throw error;
     }
   },
@@ -57,7 +53,6 @@ export const productTagsService = {
       const response = await apiService.delete(API_ENDPOINTS.productTags.delete(id));
       return response;
     } catch (error) {
-      console.error(`Error deleting product tag ${id}:`, error);
       throw error;
     }
   },
@@ -71,7 +66,6 @@ export const productTagsService = {
       );
       return response?.data || response;
     } catch (error) {
-      console.error(`Error adding products to tag ${tagId}:`, error);
       throw error;
     }
   },
@@ -84,7 +78,6 @@ export const productTagsService = {
       const response = await apiService.get(`${API_ENDPOINTS.productTags.getAll}?productId=${productId}`);
       return Array.isArray(response) ? response : (response?.data || []);
     } catch (error) {
-      console.error(`Error fetching tags for product ${productId}:`, error);
       return []; // Return empty array on error
     }
   },

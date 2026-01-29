@@ -29,7 +29,6 @@ export const authService = {
       
       return response;
     } catch (error) {
-      console.error('Error logging in:', error);
       throw error;
     }
   },
@@ -58,7 +57,6 @@ export const authService = {
       
       return response;
     } catch (error) {
-      console.error('Error registering:', error);
       throw error;
     }
   },
@@ -98,7 +96,6 @@ export const authService = {
       
       return response;
     } catch (error) {
-      console.error('Error verifying email:', error);
       throw error;
     }
   },
@@ -111,7 +108,6 @@ export const authService = {
       });
       return response;
     } catch (error) {
-      console.error('Error resending verification code:', error);
       throw error;
     }
   },
@@ -143,7 +139,6 @@ export const authService = {
     try {
       return await apiService.get(API_ENDPOINTS.users.profile);
     } catch (error) {
-      console.error('Error fetching profile:', error);
       throw error;
     }
   },
@@ -153,7 +148,6 @@ export const authService = {
     try {
       return await apiService.put(API_ENDPOINTS.users.updateProfile, userData);
     } catch (error) {
-      console.error('Error updating profile:', error);
       throw error;
     }
   },
