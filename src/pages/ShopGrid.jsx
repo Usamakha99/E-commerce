@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Sidebar from '../components/Sidebar';
@@ -27,13 +27,21 @@ const ShopGrid = () => {
   // ✅ Check if user is logged in (reactive to auth changes)
   const { isLoggedIn } = useAuth();
 
-  // Fetch ALL products from API once
-  const { products: allProducts, loading, error, fetchProducts } = useProducts({
-    filters: {
-      sort: sortBy
-    },
-    autoFetch: true,
+  // Server-side pagination: GET /api/products?page=&limit=20
+  const { products: pageProducts, loading, error, fetchProducts, pagination } = useProducts({
+    autoFetch: false,
   });
+
+  // Fetch current page when page, sort, or items-per-page changes
+  useEffect(() => {
+    fetchProducts({
+      page: currentPage,
+      limit: showPerPage,
+      sort: sortBy,
+      ...(selectedCategory != null && { categoryId: selectedCategory, subCategoryId: selectedCategory }),
+      ...(selectedBrands.length > 0 && { brands: selectedBrands.join(',') }),
+    }).catch(() => {});
+  }, [currentPage, sortBy, showPerPage, selectedCategory, selectedBrands]);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -136,75 +144,45 @@ const ShopGrid = () => {
     }
   }, [selectedCategory, categories]);
 
-  // CLIENT-SIDE FILTERING AND PAGINATION: Filter by search, category and brands then sort and paginate
-  const filteredProducts = allProducts ? allProducts.filter(product => {
-    // Filter by search query
+  // Use API pagination: total and pages from API (not data.length)
+  const totalProducts = pagination?.total ?? 0;
+  const totalPages = Math.max(1, pagination?.pages ?? pagination?.totalPages ?? 1);
+  const limit = pagination?.limit ?? 20;
+  const startIndex = totalProducts === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const endIndex = Math.min(currentPage * limit, totalProducts);
+  // Products for this page = response.data, filter by search/brand/category/tag, then sort
+  const filteredProducts = (pageProducts || []).filter((product) => {
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      const productName = (product.name || product.title || '').toLowerCase();
-      const productShortDesc = (product.shortDescp || '').toLowerCase();
-      const productSku = (product.sku || '').toString().toLowerCase();
-      
-      if (!productName.includes(query) && !productShortDesc.includes(query) && !productSku.includes(query)) {
-        return false;
-      }
+      const q = searchQuery.toLowerCase();
+      const name = (product.name || product.title || '').toLowerCase();
+      const desc = (product.shortDescp || '').toLowerCase();
+      const sku = (product.sku || '').toString().toLowerCase();
+      if (!name.includes(q) && !desc.includes(q) && !sku.includes(q)) return false;
     }
-
-    // Filter by category (using subCategoryId since we're showing subcategories)
-    if (selectedCategory !== null) {
-      if (product.subCategoryId !== selectedCategory) return false;
-    }
-
-    // Filter by brands - only apply if brands are selected
+    if (selectedCategory != null && product.subCategoryId !== selectedCategory) return false;
     if (selectedBrands.length > 0) {
-      const productBrand = product.brand?.title || 'Unknown';
-      if (!selectedBrands.includes(productBrand)) return false;
+      const brandTitle = product.brand?.title || product.brandTitle || 'Unknown';
+      if (!selectedBrands.includes(brandTitle)) return false;
     }
-
-    // Filter by tags - only apply if tags are selected
     if (selectedTags.length > 0) {
-      const productTags = productTagsMap[product.id] || [];
-      const productTagIds = productTags.map(tag => tag.id);
-      const hasSelectedTag = selectedTags.some(tagId => productTagIds.includes(tagId));
-      if (!hasSelectedTag) return false;
+      const tags = productTagsMap[product.id] || [];
+      const tagIds = tags.map((t) => t.id);
+      if (!selectedTags.some((id) => tagIds.includes(id))) return false;
     }
-
-    // If we reach here, the product matches all applied filters
     return true;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case 'latest':
-        // Try createdAt/updatedAt first, then fallback to ID (higher ID = newer)
-        if (a.createdAt || a.updatedAt || b.createdAt || b.updatedAt) {
-          return new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0);
-        }
-        // Fallback: Sort by ID descending (higher ID = newer product)
-        return (b.id || 0) - (a.id || 0);
-      
-      case 'oldest':
-        // Try createdAt/updatedAt first, then fallback to ID (lower ID = older)
-        if (a.createdAt || a.updatedAt || b.createdAt || b.updatedAt) {
-          return new Date(a.createdAt || a.updatedAt || 0) - new Date(b.createdAt || b.updatedAt || 0);
-        }
-        // Fallback: Sort by ID ascending (lower ID = older product)
-        return (a.id || 0) - (b.id || 0);
-      
-      case 'price-low':
-        return (a.price || 0) - (b.price || 0);
-      
-      case 'price-high':
-        return (b.price || 0) - (a.price || 0);
-      
-      default:
-        return 0;
-    }
-  }) : [];
+  });
 
-  const totalProducts = filteredProducts.length;
-  const totalPages = Math.ceil(totalProducts / showPerPage);
-  const startIndex = (currentPage - 1) * showPerPage;
-  const endIndex = startIndex + showPerPage;
-  const products = filteredProducts.slice(startIndex, endIndex);
+  // Client-side sort so Sort by dropdown always works (latest = newest id first, oldest = oldest id, price low/high)
+  const products = useMemo(() => {
+    const list = [...filteredProducts];
+    const price = (p) => Number(p.price ?? p.originalPrice ?? 0) || 0;
+    const idNum = (p) => Number(p.id) || 0;
+    if (sortBy === 'latest') list.sort((a, b) => idNum(b) - idNum(a));
+    else if (sortBy === 'oldest') list.sort((a, b) => idNum(a) - idNum(b));
+    else if (sortBy === 'price-low') list.sort((a, b) => price(a) - price(b));
+    else if (sortBy === 'price-high') list.sort((a, b) => price(b) - price(a));
+    return list;
+  }, [filteredProducts, sortBy]);
 
   // Reset to page 1 when sort changes
   useEffect(() => {
@@ -350,7 +328,7 @@ const ShopGrid = () => {
                 <div className="row">
                                      <div className="col-xl-10 col-lg-9 mb-10 text-lg-end text-center">
                      <span className="font-sm  font-medium border-1-right span">
-                       Showing: {startIndex + 1}-{Math.min(endIndex, totalProducts)} of {totalProducts} results
+                       Showing: {startIndex}-{endIndex} of {totalProducts} results
                      </span>
                     <div className="d-inline-block">
                       <span className="font-sm font-medium">Sort by :</span>
@@ -502,24 +480,36 @@ const ShopGrid = () => {
               {/* Products Grid */}
               <div className={`row mt-20 ${viewType === 'list' ? 'list-view' : 'grid-view'}`}>
                 {loading && (
-                  <div className="col-12 text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Loading...</span>
+                  <div className="col-12" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div id="preloader-active">
+                      <div className="preloader d-flex align-items-center justify-content-center">
+                        <div className="preloader-inner position-relative">
+                          <div className="text-center">
+                            <img className="mb-10" src="/assets/V Cloud Logo final-01.svg" alt="V Cloud" style={{ width: '200px', height: 'auto' }} />
+                            <div className="mt-15" style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                              <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0s' }} />
+                              <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.2s' }} />
+                              <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.4s' }} />
+                              <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.6s' }} />
+                              <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.8s' }} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <p className="mt-3">Loading products from API...</p>
                   </div>
                 )}
 
                 {!loading && (!products || products.length === 0) && (
                   <div className="col-12 text-center py-5">
                     <div className="alert alert-info" role="alert">
-                      <h4 className="alert-heading">No Products Available</h4>
+                      <h4 className="alert-heading">{error ? 'Could not load products' : 'No Products Available'}</h4>
                       <p className="mb-0">
                         {error ? (
                           <>
                             <strong>API Error:</strong> {error}
                             <br />
-                            <small>Please make sure your backend API is running on http://localhost:5000</small>
+                            <small>Please make sure your backend API is running (e.g. /api/products).</small>
                           </>
                         ) : (
                           <>
@@ -529,6 +519,15 @@ const ShopGrid = () => {
                           </>
                         )}
                       </p>
+                      {error && (
+                        <button
+                          type="button"
+                          className="btn btn-primary mt-3"
+                          onClick={() => fetchProducts({ page: currentPage, limit: showPerPage, sort: sortBy })}
+                        >
+                          Retry
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
@@ -590,7 +589,7 @@ const ShopGrid = () => {
                                 objectFit: 'contain',
                                 marginBottom: '10px'
                               }}
-                              onError={(e) => { e.target.src = '/src/assets/imgs/page/homepage1/imgsp1.png' }}
+                              onError={(e) => { e.target.src = '/assets/V Cloud Logo final-01.svg'; e.target.onerror = null; }}
                             />
                           </div>
 

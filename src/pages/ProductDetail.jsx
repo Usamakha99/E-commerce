@@ -152,11 +152,21 @@ const ProductDetail = () => {
 
       <main className="main" style={{ paddingTop: '60px' }}>
         {loading && (
-          <div className="container text-center py-5">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+          <div id="preloader-active" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="preloader d-flex align-items-center justify-content-center">
+              <div className="preloader-inner position-relative">
+                <div className="text-center">
+                  <img className="mb-10" src="/assets/V Cloud Logo final-01.svg" alt="V Cloud" style={{ width: '200px', height: 'auto' }} />
+                  <div className="mt-15" style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.2s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.4s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.6s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.8s' }} />
+                  </div>
+                </div>
+              </div>
             </div>
-            <p className="mt-3">Loading product...</p>
           </div>
         )}
 
@@ -875,11 +885,15 @@ const ProductDetail = () => {
                     {activeTab === 'description' && (
                       <div className="tab-pane fade active show" id="tab-description" role="tabpanel">
                         <div className="display-text-short">
-                          {/* Long Description from API */}
+                          {/* Long Description from API – render as HTML so <b>, <br>, etc. display correctly */}
                           {product.longDescp && (
                             <div className="mb-15">
                               <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
-                              {/* <p className="font-md ">{product.longDescp}</p> */}
+                              <div
+                                className="font-md product-description-html"
+                                style={{ color: '#000', lineHeight: 1.6 }}
+                                dangerouslySetInnerHTML={{ __html: product.longDescp }}
+                              />
                             </div>
                           )}
 
@@ -887,11 +901,15 @@ const ProductDetail = () => {
                           {!product.longDescp && product.shortDescp && (
                             <div className="mb-15">
                               <h5 className="mb-15" style={{ color: '#000', fontSize: '14px' }}>Product Description</h5>
-                              <p className="font-md " style={{ color: '#000' }}>{product.shortDescp}</p>
+                              <div
+                                className="font-md product-description-html"
+                                style={{ color: '#000', lineHeight: 1.6 }}
+                                dangerouslySetInnerHTML={{ __html: product.shortDescp }}
+                              />
                             </div>
                           )}
-                          {/* Meta Description */}
-                          {product.metaDescp && product.metaDescp !== product.shortDescp && (
+                          {/* Meta Description (plain text) */}
+                          {product.metaDescp && product.metaDescp !== product.shortDescp && !product.longDescp && (
                             <div className="mb-30">
                               <p className="font-sm 0" style={{ color: '#000' }}>{product.metaDescp}</p>
                             </div>

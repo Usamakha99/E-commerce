@@ -18,15 +18,30 @@ export const API_ENDPOINTS = {
     search: '/products/search',
     filter: '/products/filter',
     categories: '/products/categories',
+    getCount: '/products/count',
   },
   
   // Categories
   categories: {
+    list: '/categories/list',
     getAll: '/categories',
     getAllWithSubcategories: '/categories?includeSubcategories=true',
     getById: (id) => `/categories/${id}`,
+    getCount: '/categories/count',
   },
-  
+
+  // Subcategories (children of categories)
+  subcategories: {
+    list: '/subcategories/list',
+    getById: (id) => `/subcategories/${id}`,
+  },
+
+  // Brands (list all for sidebar without loading all products)
+  brands: {
+    getAll: '/brands',
+    getCount: '/brands/count',
+  },
+
   // Cart
   cart: {
     get: '/carts',

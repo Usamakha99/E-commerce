@@ -16,9 +16,10 @@ export const useProducts = (options = {}) => {
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 30,
+    limit: 20,
     total: 0,
     totalPages: 0,
+    pages: 0,
   });
 
   const fetchProducts = async (params = {}) => {
@@ -35,7 +36,14 @@ export const useProducts = (options = {}) => {
       if (response.data) {
         setProducts(response.data);
         if (response.pagination) {
-          setPagination(response.pagination);
+          const p = response.pagination;
+          setPagination({
+            page: p.page ?? 1,
+            limit: p.limit ?? 20,
+            total: p.total ?? 0,
+            totalPages: p.pages ?? p.totalPages ?? 0,
+            pages: p.pages ?? p.totalPages ?? 0,
+          });
         }
       } else if (Array.isArray(response)) {
         setProducts(response);
@@ -76,11 +84,7 @@ export const useProducts = (options = {}) => {
 
   useEffect(() => {
     if (autoFetch) {
-      // Shop page expects "all products" and does client-side pagination/filtering.
-      // Default to a large limit unless caller overrides.
-      fetchProducts({ limit: 1000 }).catch(() => {
-        // Silently handle error - fallback data will be used
-      });
+      fetchProducts({ page: 1, limit: 20 }).catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

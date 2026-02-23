@@ -22,7 +22,7 @@ app.use(
     secure: true, // For HTTPS
     // Rewrite /ftp-api/* to /api/*
     // Use req.originalUrl to get full path including /ftp-api
-    pathRewrite: (path) => {
+    pathRewrite: (path) => {s
       return '/api' + path;
     },
     logLevel: process.env.PROXY_LOG_LEVEL || 'info',

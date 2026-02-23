@@ -14,6 +14,26 @@
   overflow: hidden;
 }
 
+/* Product description HTML from API (<b>, <br>, etc.) */
+.product-description-html {
+  word-wrap: break-word;
+}
+.product-description-html b,
+.product-description-html strong {
+  font-weight: 700;
+}
+.product-description-html br {
+  display: block;
+  content: '';
+  margin-bottom: 0.5em;
+}
+.product-description-html p {
+  margin-bottom: 0.75em;
+}
+.product-description-html p:last-child {
+  margin-bottom: 0;
+}
+
 /* Smooth transitions */
 * {
   transition: all 0.2s ease-in-out;

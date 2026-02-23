@@ -17,24 +17,37 @@ export const mapProduct = (externalProduct) => {
   // Extract brand name (it's nested as brand.title)
   const brandName = externalProduct.brand?.title || externalProduct.brand || 'Unknown';
   
-  // Build image URL - Priority: Galleries (working URLs) > images > mainImage (backend)
-  let imageUrl = '/src/assets/imgs/page/homepage1/imgsp1.png'; // Default fallback
-  
-  // 🎯 PRIORITY 1: Use galleries pic500x500 (direct Icecat URLs - always work!)
-  if (externalProduct.galleries && Array.isArray(externalProduct.galleries) && externalProduct.galleries.length > 0) {
-    const firstGallery = externalProduct.galleries[0];
-    imageUrl = firstGallery.pic500x500 || firstGallery.highPic || firstGallery.originalUrl || imageUrl;
+  // Build image URL – same as ProductDetail page: use /uploads/products/ for filenames
+  const placeholder = '/assets/V Cloud Logo final-01.svg';
+  const uploadsPrefix = (import.meta.env.VITE_UPLOADS_PATH || 'uploads/products').replace(/^\/|\/$/g, '');
+  const buildUpload = (path) => {
+    if (!path || typeof path !== 'string') return null;
+    const s = path.trim();
+    if (!s) return null;
+    if (s.startsWith('http://') || s.startsWith('https://')) return s;
+    if (s.startsWith('/')) return s;
+    const clean = s.replace(/^\/?uploads\/?/, '').replace(/^products\/?/, '');
+    return `/${uploadsPrefix}/${clean}`;
+  };
+  let imageUrl = placeholder;
+
+  // 🎯 1) mainImage from backend (aapke upload folder) – try as-is then under /uploads/products/
+  if (externalProduct.mainImage) {
+    const url = buildUpload(externalProduct.mainImage);
+    if (url) imageUrl = url;
   }
-  // 🎯 PRIORITY 2: Use images array (manually uploaded products)
-  else if (externalProduct.images && Array.isArray(externalProduct.images) && externalProduct.images.length > 0) {
-    const firstImage = externalProduct.images[0];
-    const imgUrl = firstImage.url || firstImage;
-    imageUrl = `/uploads/${imgUrl}`;
+  // 🎯 2) images array from API
+  if (imageUrl === placeholder && externalProduct.images?.length > 0) {
+    const first = externalProduct.images[0];
+    const path = first?.url ?? first?.path ?? (typeof first === 'string' ? first : null);
+    const url = buildUpload(path);
+    if (url) imageUrl = url;
   }
-  // 🎯 PRIORITY 3: Fallback to mainImage from backend
-  else if (externalProduct.mainImage) {
-    // Try without /products/ folder first (manual uploads)
-    imageUrl = `/uploads/${externalProduct.mainImage}`;
+  // 🎯 3) Gallery full URLs (Icecat CDN) only if no backend image
+  if (imageUrl === placeholder && externalProduct.galleries?.length > 0) {
+    const g = externalProduct.galleries[0];
+    const raw = g.pic500x500 || g.highPic || g.originalUrl || g.url;
+    if (typeof raw === 'string' && (raw.startsWith('http://') || raw.startsWith('https://'))) imageUrl = raw;
   }
   
   // Parse price (it's a string like "0.00")

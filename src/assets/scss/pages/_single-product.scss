@@ -409,10 +409,10 @@ a {
     font-weight: 500;
 }
 .display-text-short {
-    display: inline-block;
+    display: block;
     width: 100%;
-    height: 125px;
-    overflow: hidden;
+    min-height: 0;
+    overflow: visible;
     p {
         margin-bottom: 15px;
     }

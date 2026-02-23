@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useProducts } from '../hooks/useProducts';
 import { productService } from '../services/product.service';
 
 const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, onClearAllTags, selectedTags = [], productTags = [] }) => {
@@ -8,65 +7,39 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
   const [loadingBrands, setLoadingBrands] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  
-  const CATEGORIES_TO_SHOW = 10; // Show first 10 categories
-
-  // Fetch all products to extract unique brands
-  const { products } = useProducts({ autoFetch: true });
-
-  // Fetch categories from API
+  // Fetch all categories (with subcategories) from API – lightweight, no full product list
   useEffect(() => {
     const fetchCategories = async () => {
       setLoadingCategories(true);
       try {
         const response = await productService.getAllCategories();
-        
-        if (response) {
-          if (Array.isArray(response)) {
-            setCategories(response);
-          } else if (response.data && Array.isArray(response.data)) {
-            setCategories(response.data);
-          } else if (response.categories && Array.isArray(response.categories)) {
-            setCategories(response.categories);
-          } else {
-            setCategories([]);
-          }
-        } else {
-          setCategories([]);
-        }
+        const list = response?.data ?? (Array.isArray(response) ? response : []);
+        setCategories(Array.isArray(list) ? list : []);
       } catch (_error) {
         setCategories([]);
       } finally {
         setLoadingCategories(false);
       }
     };
-
     fetchCategories();
   }, []);
 
-  // Extract unique brands from products
+  // Fetch all brands from API (GET /brands or lightweight product sampling) – not just current page
   useEffect(() => {
-    if (products && products.length > 0) {
-      const brandMap = new Map();
-      
-      products.forEach(product => {
-        const brandName = product.brand?.title || 'Unknown';
-        if (brandMap.has(brandName)) {
-          brandMap.set(brandName, brandMap.get(brandName) + 1);
-        } else {
-          brandMap.set(brandName, 1);
-        }
-      });
-      
-      const brandsList = Array.from(brandMap.entries()).map(([name, count]) => ({
-        name,
-        count
-      })).sort((a, b) => a.name.localeCompare(b.name));
-      
-      setBrands(brandsList);
-    }
-  }, [products]);
+    const fetchBrands = async () => {
+      setLoadingBrands(true);
+      try {
+        const response = await productService.getAllBrands();
+        const list = response?.data ?? (Array.isArray(response) ? response : []);
+        setBrands(Array.isArray(list) ? list : []);
+      } catch (_error) {
+        setBrands([]);
+      } finally {
+        setLoadingBrands(false);
+      }
+    };
+    fetchBrands();
+  }, []);
 
   const toggleCategory = (categoryName) => {
     setExpandedCategories(prev => ({
@@ -146,94 +119,69 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               <p className="small text-muted mt-2">Loading categories...</p>
             </div>
           ) : (
-            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-              {categories.length > 0 ? (
-                <>
-                  {/* Show first 10 categories or all if showAllCategories is true */}
-                  {(showAllCategories ? categories : categories.slice(0, CATEGORIES_TO_SHOW)).map((category, index) => (
-                    <li key={category.id || index} style={{marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                      <a 
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (onCategoryFilter) {
-                            onCategoryFilter(category.id);
-                          }
-                        }}
+            <div
+              style={{
+                maxHeight: '280px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                paddingRight: '4px',
+                marginRight: '-4px',
+              }}
+              className="sidebar-categories-scroll"
+            >
+              <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                {(() => {
+                // Flatten: show parent categories and their subcategories (children)
+                const flatList = [];
+                categories.forEach((cat) => {
+                  flatList.push({ ...cat, isSub: false });
+                  (cat.children || []).forEach((sub) => {
+                    flatList.push({ ...sub, isSub: true, parentId: cat.id });
+                  });
+                });
+                const displayList = flatList.length > 0 ? flatList : categories;
+                return displayList.length > 0 ? (
+                  <>
+                    {displayList.map((category, index) => (
+                      <li
+                        key={category.id != null ? category.id : index}
                         style={{
-                          cursor: 'pointer',
-                          fontWeight: 'normal',
-                          color: selectedCategory === category.id ? '#000' : '#000',
-                          textDecoration: 'underline',
-                          fontSize: '1em',
-                          flex: 1
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = '#000';
-                          // Find the count span and add underline
-                          const countSpan = e.target.parentElement.querySelector('.category-count');
-                          if (countSpan) {
-                            countSpan.style.textDecoration = 'underline';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = selectedCategory === category.id ? '#000' : '#000';
-                          // Find the count span and remove underline
-                          const countSpan = e.target.parentElement.querySelector('.category-count');
-                          if (countSpan) {
-                            countSpan.style.textDecoration = 'none';
-                          }
+                          marginBottom: '8px',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          paddingLeft: category.isSub ? '16px' : 0,
                         }}
                       >
-                        {category.name || category.title}
-                      </a>
-                      <span 
-                        className="category-count"
-                        style={{
-                          color: '#000',
-                          fontSize: '1em',
-                          fontWeight: '600',
-                          marginLeft: '10px',
-                          textDecoration: 'none',
-                          cursor: 'pointer'
-                        }}>
-                        {category.productCount || category.count || 0}
-                      </span>
-                    </li>
-                  ))}
-                  
-                  {/* Show "See More" button if there are more than CATEGORIES_TO_SHOW */}
-                  {categories.length > CATEGORIES_TO_SHOW && (
-                    <li style={{marginTop: '10px'}}>
-                      <a 
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowAllCategories(!showAllCategories);
-                        }}
-                        style={{
-                          color: '#000',
-                          fontWeight: '500',
-                          cursor: 'pointer',
-                          textDecoration: 'underline',
-                          fontSize: '1em'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.color = '#000';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.color = '#000';
-                        }}
-                      >
-                        {showAllCategories ? '← See Less' : 'See More →'}
-                      </a>
-                    </li>
-                  )}
-                </>
-              ) : (
-                <li className="text-muted small">No categories found</li>
-              )}
-            </ul>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (onCategoryFilter) onCategoryFilter(category.id);
+                          }}
+                          style={{
+                            cursor: 'pointer',
+                            fontWeight: 'normal',
+                            color: selectedCategory === category.id ? '#df2020' : '#000',
+                            textDecoration: 'underline',
+                            fontSize: category.isSub ? '0.9em' : '1em',
+                            flex: 1,
+                          }}
+                        >
+                          {category.name || category.title}
+                        </a>
+                        <span className="category-count" style={{ color: '#000', fontSize: '1em', fontWeight: '600', marginLeft: '10px' }}>
+                          {category.productCount ?? category.count ?? 0}
+                        </span>
+                      </li>
+                    ))}
+                  </>
+                ) : (
+                  <li className="text-muted small">No categories found</li>
+                );
+              })()}
+              </ul>
+            </div>
           )}
       </div>
 
@@ -332,50 +280,57 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
               <p className="small text-muted mt-2">Loading brands...</p>
             </div>
           ) : (
-            <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-              {brands.length > 0 ? (
-                brands.map((brand, index) => (
-                  <li key={index} style={{marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <label className="cb-container" style={{flex: 1}}>
-                      <input 
-                        type="checkbox" 
-                        checked={selectedBrands.includes(brand.name)}
-                        onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
-                      />
-                      <span 
-                        className="text-small brand-name" 
-                        style={{color: '#000', fontSize: '14px', textDecoration: 'underline'}}
-                        onMouseEnter={(e) => {
-                          // Find the count span and add underline
-                          const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
-                          if (countSpan) {
-                            countSpan.style.textDecoration = 'underline';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          // Find the count span and remove underline
-                          const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
-                          if (countSpan) {
-                            countSpan.style.textDecoration = 'none';
-                          }
-                        }}
-                      >
-                        {brand.name}
-                      </span>
-                      <span className="checkmark"></span>
-                    </label>
-                    <span 
-                      className="number-item brand-count" 
-                      style={{color: '#000', fontSize: '1em', fontWeight: '600', marginLeft: '10px', textDecoration: 'none'}}
-                    >
-                      {brand.count}
-                    </span>
-                  </li>
-                ))
-              ) : (
-                <li className="text-muted small">No brands found</li>
-              )}
-            </ul>
+            <div
+              style={{
+                maxHeight: '280px',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                paddingRight: '4px',
+                marginRight: '-4px',
+              }}
+              className="sidebar-brands-scroll"
+            >
+              <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
+                {brands.length > 0 ? (
+                  <>
+                    {brands.map((brand, index) => (
+                      <li key={index} style={{marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <label className="cb-container" style={{flex: 1}}>
+                          <input 
+                            type="checkbox" 
+                            checked={selectedBrands.includes(brand.name)}
+                            onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
+                          />
+                          <span 
+                            className="text-small brand-name" 
+                            style={{color: '#000', fontSize: '14px', textDecoration: 'underline'}}
+                            onMouseEnter={(e) => {
+                              const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
+                              if (countSpan) countSpan.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              const countSpan = e.target.parentElement.parentElement.querySelector('.brand-count');
+                              if (countSpan) countSpan.style.textDecoration = 'none';
+                            }}
+                          >
+                            {brand.name}
+                          </span>
+                          <span className="checkmark"></span>
+                        </label>
+                        <span 
+                          className="number-item brand-count" 
+                          style={{color: '#000', fontSize: '1em', fontWeight: '600', marginLeft: '10px', textDecoration: 'none'}}
+                        >
+                          {brand.count}
+                        </span>
+                      </li>
+                    ))}
+                  </>
+                ) : (
+                  <li className="text-muted small">No brands found</li>
+                )}
+              </ul>
+            </div>
           )}
       </div>
 
