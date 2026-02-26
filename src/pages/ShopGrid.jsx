@@ -23,7 +23,8 @@ const ShopGrid = () => {
   const [productTags, setProductTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [productTagsMap, setProductTagsMap] = useState({}); // Map productId -> tags
-  
+  const [sidebarReady, setSidebarReady] = useState(false); // true when brands + categories have loaded (for preloader)
+
   // ✅ Check if user is logged in (reactive to auth changes)
   const { isLoggedIn } = useAuth();
 
@@ -309,10 +310,42 @@ const ShopGrid = () => {
 
   return (
     <main className="main" style={{ paddingTop: '60px' }}>
-
-
       {/* Main Content */}
-      <div className="section-box shop-template mt-30">
+      <div className="section-box shop-template mt-30" style={{ position: 'relative' }}>
+        {/* VCloud preloader: show until brands and categories are loaded */}
+        {!sidebarReady && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#fff',
+              minHeight: '60vh',
+            }}
+          >
+            <div className="preloader d-flex align-items-center justify-content-center">
+              <div className="preloader-inner position-relative">
+                <div className="text-center">
+                  <img className="mb-10" src="/assets/V Cloud Logo final-01.svg" alt="V Cloud" style={{ width: '200px', height: 'auto' }} />
+                  <div className="mt-15" style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.2s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.4s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#141b44', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.6s' }} />
+                    <div className="dot" style={{ width: '12px', height: '12px', backgroundColor: '#e32726', borderRadius: '50%', animation: 'bounce 1.4s ease-in-out infinite both', animationDelay: '0.8s' }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="container">
           {/* API Status Indicator */}
             <div className="row mb-3">
@@ -752,6 +785,7 @@ const ShopGrid = () => {
               onClearAllTags={handleClearAllTags}
               selectedTags={selectedTags}
               productTags={productTags}
+              onSidebarReady={() => setSidebarReady(true)}
             />
           </div>
         </div>

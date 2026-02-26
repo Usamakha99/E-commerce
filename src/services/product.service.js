@@ -12,8 +12,47 @@ export const productService = {
     return [];
   },
 
-  // Get all categories with subcategories (for sidebar). Prefer /categories/list + /subcategories/list so subcategories show.
+  // Get all categories with subcategories (sidebar). Minimal load: 1 request preferred, cache 5 min.
+  _categoriesCache: null,
+  _categoriesCacheTime: 0,
+  _categoriesCacheTtlMs: 5 * 60 * 1000,
+
+  // Single endpoint: all brands + all subcategories, no pagination. Cache 5 min so getAllCategories + getAllBrands share one request.
+  _filtersCache: null,
+  _filtersCacheTime: 0,
+  _filtersCacheTtlMs: 5 * 60 * 1000,
+
+  getBrandsAndSubcategories: async () => {
+    const now = Date.now();
+    if (productService._filtersCache && now - productService._filtersCacheTime < productService._filtersCacheTtlMs) {
+      return productService._filtersCache;
+    }
+    try {
+      const url = API_ENDPOINTS.filters?.brandsAndSubcategories;
+      if (!url) return null;
+      const res = await apiService.get(url);
+      // Support multiple response shapes: { brands, subcategories } or { data: { brands, subcategories } }
+      const raw = res?.data || res;
+      const brands = Array.isArray(raw?.brands) ? raw.brands : Array.isArray(res?.brands) ? res.brands : [];
+      const subcategories = Array.isArray(raw?.subcategories) ? raw.subcategories : Array.isArray(res?.subcategories) ? res.subcategories : [];
+      productService._filtersCache = { brands, subcategories };
+      productService._filtersCacheTime = Date.now();
+      if (brands.length > 0 || subcategories.length > 0) {
+        console.log('[Filters] GET /filters/brands-and-subcategories:', { brands: brands.length, subcategories: subcategories.length });
+      }
+      return productService._filtersCache;
+    } catch (_e) {
+      console.warn('[Filters] /filters/brands-and-subcategories failed, using fallbacks:', _e?.message || _e);
+      return null;
+    }
+  },
+
   getAllCategories: async () => {
+    const now = Date.now();
+    if (productService._categoriesCache && now - productService._categoriesCacheTime < productService._categoriesCacheTtlMs) {
+      return productService._categoriesCache;
+    }
+
     const extractList = (r, key = 'data') => {
       if (!r) return [];
       if (Array.isArray(r?.[key])) return r[key];
@@ -34,68 +73,68 @@ export const productService = {
 
     try {
       let list = [];
-      // 1) Prefer GET /categories/list + GET /subcategories/list (so we get subcategories like "Computer Monitors")
-      if (API_ENDPOINTS.categories?.list && API_ENDPOINTS.subcategories?.list) {
-        try {
-          const [catRes, subRes] = await Promise.all([
-            apiService.get(API_ENDPOINTS.categories.list),
-            apiService.get(API_ENDPOINTS.subcategories.list),
-          ]);
-          const cats = extractList(catRes);
-          const subs = extractList(subRes);
-          if (cats.length > 0 || subs.length > 0) {
-            const byId = new Map((cats || []).map((c) => [c.id, { ...norm(c), parentId: null, children: [] }]));
-            (subs || []).forEach((s) => {
-              const parentId = s.categoryId ?? s.parentId ?? s.category_id ?? s.parent_id ?? null;
-              const child = { ...norm(s), parentId, children: [] };
-              if (parentId != null && byId.has(parentId)) {
-                byId.get(parentId).children.push(child);
-              } else {
-                byId.set(s.id, { ...child, children: [] });
-              }
-            });
-            list = Array.from(byId.values());
-          }
-        } catch (_e) {}
+
+      // Prefer single endpoint: GET /api/filters/brands-and-subcategories → { brands, subcategories } (full lists, no pagination)
+      const filtersData = await productService.getBrandsAndSubcategories();
+      if (filtersData?.subcategories?.length > 0) {
+        const norm = (c) => ({
+          id: c.id,
+          title: c.title ?? c.name,
+          name: c.title ?? c.name,
+          productCount: c.productCount ?? c.count ?? c.product_count ?? 0,
+          parentId: c.parentId ?? c.categoryId ?? null,
+          children: [],
+        });
+        const result = filtersData.subcategories.map((s) => norm(s));
+        // Sort by product count descending (most products at top)
+        result.sort((a, b) => (Number(b.productCount) || 0) - (Number(a.productCount) || 0));
+        console.log('[Categories] From /filters/brands-and-subcategories:', { totalSubcategories: result.length });
+        const out = { data: result };
+        productService._categoriesCache = out;
+        productService._categoriesCacheTime = Date.now();
+        return out;
       }
-      // 2) Try GET /categories?includeSubcategories=true (may have nested subcategories)
+
+      // Fetch ALL category pages and merge so we get all 15k+ subcategories in one load (sidebar gets full list)
+      const LIMIT = 1000; // backend max
+      const paginatedUrl = API_ENDPOINTS.categories.getAllWithSubcategoriesPaginated;
+      try {
+        const url = API_ENDPOINTS.categories.getAllWithSubcategoriesFull || API_ENDPOINTS.categories.getAllWithSubcategories;
+        const res = await apiService.get(url);
+        let cats = productService._extractList(res);
+        const totalPages = res?.pagination?.pages ?? res?.pages ?? 1;
+
+        // If backend returned pagination and more pages, fetch every page and merge into one list
+        if (totalPages > 1 && typeof paginatedUrl === 'function') {
+          for (let page = 2; page <= totalPages; page++) {
+            const nextRes = await apiService.get(paginatedUrl(page, LIMIT));
+            const nextList = productService._extractList(nextRes);
+            if (nextList.length) cats = [...(cats || []), ...nextList];
+          }
+        }
+
+        // Backend: each category in data includes subcategories array (id, title, parentId)
+        list = cats?.length ? cats : [];
+        if (list.length === 0 && res?.subcategories && Array.isArray(res.subcategories)) {
+          const parentCats = productService._extractList({ categories: res.categories ?? res.data });
+          const subs = res.subcategories;
+          const byId = new Map((parentCats || []).map((c) => [c.id, { ...norm(c), parentId: null, children: [] }]));
+          (subs || []).forEach((s) => {
+            const parentId = s.parentId ?? s.categoryId ?? null;
+            if (parentId != null && byId.has(parentId)) byId.get(parentId).children.push({ ...norm(s), parentId, children: [] });
+          });
+          list = Array.from(byId.values());
+        }
+      } catch (_e) {}
+      // Fallback: GET /api/categories (all in one, no pagination)
       if (list.length === 0) {
-        try {
-          const res = await apiService.get(API_ENDPOINTS.categories.getAllWithSubcategories);
-          list = productService._extractList(res);
-          if (list.length === 0 && res?.subcategories && Array.isArray(res.subcategories)) {
-            const cats = productService._extractList({ categories: res.categories ?? res.data });
-            const subs = res.subcategories;
-            const byId = new Map((cats || []).map((c) => [c.id, { ...norm(c), parentId: null, children: [] }]));
-            (subs || []).forEach((s) => {
-              const parentId = s.parentId ?? s.categoryId ?? null;
-              if (parentId != null && byId.has(parentId)) byId.get(parentId).children.push({ ...norm(s), parentId, children: [] });
-            });
-            list = Array.from(byId.values());
-          }
-        } catch (_e) {}
-      }
-      // 3) Fallback: GET /categories only – then try to attach subcategories from GET /subcategories/list
-      if (list.length === 0 || list.every((c) => (c.children || []).length === 0)) {
         try {
           const res = await apiService.get(API_ENDPOINTS.categories.getAll);
           const cats = productService._extractList(res);
-          if (cats.length > 0 && API_ENDPOINTS.subcategories?.list) {
-            try {
-              const subRes = await apiService.get(API_ENDPOINTS.subcategories.list);
-              const subs = extractList(subRes);
-              const byId = new Map(cats.map((c) => [c.id, { ...norm(c), parentId: null, children: [] }]));
-              subs.forEach((s) => {
-                const parentId = s.categoryId ?? s.parentId ?? null;
-                if (parentId != null && byId.has(parentId)) byId.get(parentId).children.push({ ...norm(s), parentId, children: [] });
-              });
-              list = Array.from(byId.values());
-            } catch (_e2) {}
-          }
-          if (list.length === 0) list = cats.map((c) => ({ ...norm(c), parentId: null, children: [] }));
+          list = (cats || []).map((c) => ({ ...norm(c), parentId: null, children: [] }));
         } catch (_e) {}
       }
-      // 4) If no list or no subcategories yet, build from products (parent + subCategory from each product)
+      // 3) Last resort: build from product pages – sample many pages so 15k+ products → more subcategories/brands
       const hasAnySubs = list.some((c) => (c.children || []).length > 0);
       if (list.length === 0 || !hasAnySubs) {
         try {
@@ -105,10 +144,16 @@ export const productService = {
             if (Array.isArray(r)) return r;
             return [];
           };
-          const pages = await Promise.all([1, 2, 3, 4, 5].map((page) =>
-            apiService.get(`/products?page=${page}&limit=100`).then(extractListProd).catch(() => [])
-          ));
-          const products = pages.flat();
+          const productPagesToFetch = 80; // 80 × 100 = 8000 products from 15k+ to get more unique subcategories
+          const CHUNK = 10;
+          const products = [];
+          for (let chunkStart = 1; chunkStart <= productPagesToFetch; chunkStart += CHUNK) {
+            const pageNumbers = Array.from({ length: CHUNK }, (_, i) => chunkStart + i).filter((p) => p <= productPagesToFetch);
+            const chunks = await Promise.all(
+              pageNumbers.map((page) => apiService.get(`/products?page=${page}&limit=100`).then(extractListProd).catch(() => []))
+            );
+            chunks.forEach((c) => products.push(...c));
+          }
           const byId = new Map();
           products.forEach((p) => {
             const parentCat = p.category;
@@ -143,6 +188,7 @@ export const productService = {
             par.children = subs.filter((s) => s.parentId === par.id).map((s) => ({ ...s, children: [] }));
           });
           list = parents.length > 0 ? parents : allItems;
+          console.log('[Categories] Built from products fallback:', { productsSampled: products.length, totalSubcategories: subs.length });
         } catch (_e3) {}
       }
       // Normalize: same shape for children (from API subcategories or our built tree)
@@ -178,10 +224,18 @@ export const productService = {
       // Sidebar: show only subcategories (e.g. Computer Monitors), never parents like General
       const generalTitle = (c) => String((c?.name ?? c?.title ?? '')).toLowerCase().trim();
       const allSubcategories = normalized.flatMap((parent) => (parent.children || []).map((ch) => ({ ...ch, children: [] })));
-      const result = allSubcategories.length > 0
+      let result = allSubcategories.length > 0
         ? allSubcategories
         : normalized.filter((c) => generalTitle(c) !== 'general');
-      return { data: result };
+      // Sort by product count descending (most products at top)
+      result = [...result].sort((a, b) => (Number(b.productCount) || 0) - (Number(a.productCount) || 0));
+      const totalCategories = normalized.length;
+      const totalSubcategories = allSubcategories.length;
+      console.log('[Categories] Loaded:', { totalCategories, totalSubcategories, sidebarShowing: result.length });
+      const out = { data: result };
+      productService._categoriesCache = out;
+      productService._categoriesCacheTime = Date.now();
+      return out;
     } catch (error) {
       throw error;
     }
@@ -324,7 +378,7 @@ export const productService = {
     }
   },
 
-  // Get all brands for sidebar with correct product count (use GET /brands if counts present, else build from products)
+  // Get all brands for sidebar. Prefer GET /api/filters/brands-and-subcategories (full list, no pagination).
   getAllBrands: async () => {
     const extractList = (r) => {
       if (!r) return [];
@@ -336,6 +390,17 @@ export const productService = {
       b.productCount ?? b.count ?? b.product_count ?? b.productsCount ?? b.total ?? b.totalProducts ?? b.total_products ?? 0
     ) || 0;
     try {
+      const filtersData = await productService.getBrandsAndSubcategories();
+      if (filtersData?.brands?.length > 0) {
+        const brands = filtersData.brands.map((b) => ({
+          id: b.id,
+          name: b.title ?? b.name ?? b.brandTitle ?? String(b.id ?? ''),
+          count: countFrom(b),
+        })).filter((b) => b.name).sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
+        return { data: brands, total: brands.length };
+      }
+    } catch (_e) {}
+    try {
       if (API_ENDPOINTS.brands?.getAll) {
         const res = await apiService.get(API_ENDPOINTS.brands.getAll);
         const list = extractList(res);
@@ -346,25 +411,34 @@ export const productService = {
           })).filter((b) => b.name);
           const hasAnyCount = brands.some((b) => b.count > 0);
           if (hasAnyCount) {
-            return { data: brands.sort((a, b) => a.name.localeCompare(b.name)) };
+            return { data: brands.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0)) };
           }
         }
       }
     } catch (_e) {}
-    // Fallback: build from product pages so count = actual number of products per brand
+    // Fallback: build from product pages so 15k+ products → full brand list (sample many pages)
     const brandMap = new Map();
-    for (let page = 1; page <= 5; page++) {
-      try {
-        const resp = await apiService.get(`/products?page=${page}&limit=100`);
-        const list = extractList(resp);
-        list.forEach((p) => {
-          const name = p.brand?.title ?? p.brandTitle ?? p.brandName ?? (typeof p.brand === 'string' ? p.brand : null) ?? 'Unknown';
-          const n = String(name);
-          brandMap.set(n, (brandMap.get(n) || 0) + 1);
-        });
-      } catch (_err) { break; }
+    const extractListProd = (r) => {
+      if (!r) return [];
+      if (Array.isArray(r?.data)) return r.data;
+      if (Array.isArray(r)) return r;
+      return [];
+    };
+    const BRAND_PAGES = 80; // 80 × 100 = 8000 products to get more unique brands
+    const CHUNK = 10;
+    for (let chunkStart = 1; chunkStart <= BRAND_PAGES; chunkStart += CHUNK) {
+      const pageNumbers = Array.from({ length: CHUNK }, (_, i) => chunkStart + i).filter((p) => p <= BRAND_PAGES);
+      const chunks = await Promise.all(
+        pageNumbers.map((page) => apiService.get(`/products?page=${page}&limit=100`).then(extractListProd).catch(() => []))
+      );
+      chunks.flat().forEach((p) => {
+        const name = p.brand?.title ?? p.brandTitle ?? p.brandName ?? (typeof p.brand === 'string' ? p.brand : null) ?? 'Unknown';
+        const n = String(name);
+        if (n) brandMap.set(n, (brandMap.get(n) || 0) + 1);
+      });
     }
-    const data = Array.from(brandMap.entries()).map(([name, count]) => ({ name, count: Number(count) })).sort((a, b) => a.name.localeCompare(b.name));
+    const data = Array.from(brandMap.entries()).map(([name, count]) => ({ name, count: Number(count) })).sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
+    console.log('[Brands] Built from products fallback:', { totalBrands: data.length });
     return { data };
   },
 

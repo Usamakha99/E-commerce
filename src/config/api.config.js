@@ -21,18 +21,19 @@ export const API_ENDPOINTS = {
     getCount: '/products/count',
   },
   
-  // Categories
+  // Categories (avoid /categories/list if backend has /categories/:id first – "list" would be parsed as integer)
   categories: {
-    list: '/categories/list',
     getAll: '/categories',
     getAllWithSubcategories: '/categories?includeSubcategories=true',
+    // Max per request (backend cap 1000). Paginated URL to fetch all pages and get 15k+ subcategories
+    getAllWithSubcategoriesFull: '/categories?includeSubcategories=true&limit=1000',
+    getAllWithSubcategoriesPaginated: (page = 1, limit = 1000) => `/categories?includeSubcategories=true&page=${page}&limit=${limit}`,
     getById: (id) => `/categories/${id}`,
     getCount: '/categories/count',
   },
 
-  // Subcategories (children of categories)
+  // Subcategories (avoid /subcategories/list if backend has /subcategories/:id first)
   subcategories: {
-    list: '/subcategories/list',
     getById: (id) => `/subcategories/${id}`,
   },
 
@@ -40,6 +41,11 @@ export const API_ENDPOINTS = {
   brands: {
     getAll: '/brands',
     getCount: '/brands/count',
+  },
+
+  // Single endpoint: all brands + all subcategories, no pagination (sidebar load in one request)
+  filters: {
+    brandsAndSubcategories: '/filters/brands-and-subcategories',
   },
 
   // Cart

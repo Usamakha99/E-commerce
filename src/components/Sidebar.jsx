@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { productService } from '../services/product.service';
 
-const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, onClearAllTags, selectedTags = [], productTags = [] }) => {
+const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selectedCategory = null, onTagFilter, onClearAllTags, selectedTags = [], productTags = [], onSidebarReady }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [brands, setBrands] = useState([]);
   const [loadingBrands, setLoadingBrands] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const categoriesDoneRef = useRef(false);
+  const brandsDoneRef = useRef(false);
+
+  const tryNotifySidebarReady = () => {
+    if (categoriesDoneRef.current && brandsDoneRef.current && typeof onSidebarReady === 'function') {
+      onSidebarReady();
+    }
+  };
+
   // Fetch all categories (with subcategories) from API – lightweight, no full product list
   useEffect(() => {
     const fetchCategories = async () => {
@@ -19,6 +28,8 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
         setCategories([]);
       } finally {
         setLoadingCategories(false);
+        categoriesDoneRef.current = true;
+        tryNotifySidebarReady();
       }
     };
     fetchCategories();
@@ -36,6 +47,8 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
         setBrands([]);
       } finally {
         setLoadingBrands(false);
+        brandsDoneRef.current = true;
+        tryNotifySidebarReady();
       }
     };
     fetchBrands();
