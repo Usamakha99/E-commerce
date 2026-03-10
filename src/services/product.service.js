@@ -245,7 +245,7 @@ export const productService = {
   getAllProducts: async (params = {}) => {
     const page = params.page || 1;
     const limit = params.limit ?? 20;
-    const { page: _p, limit: _l, sort, categoryId, subCategoryId, subCategoryName, categoryName, brands, brandIds, ...rest } = params;
+    const { page: _p, limit: _l, sort, categoryId, subCategoryId, subCategoryName, categoryName, brands, brandIds, brandNames, ...rest } = params;
 
     const extractList = (resp) => {
       if (!resp) return [];
@@ -285,9 +285,26 @@ export const productService = {
         p.set('category', String(subName).trim());
       }
       const ids = opts.brandIds ?? brandIds;
-      if (Array.isArray(ids) && ids.length > 0) ids.forEach((id) => p.append('brandId', String(id)));
-      else if (opts.brands != null && String(opts.brands).trim() !== '') p.set('brands', String(opts.brands).trim());
-      else if (brands != null && String(brands).trim() !== '') p.set('brands', String(brands).trim());
+      const names = opts.brandNames ?? brandNames;
+      if (Array.isArray(ids) && ids.length > 0) {
+        ids.forEach((id) => {
+          const s = String(id);
+          p.append('brandId', s);
+          p.append('brand_id', s);
+        });
+        if (names != null && String(names).trim() !== '') {
+          p.set('brands', String(names).trim());
+          p.set('brand', String(names).trim());
+        }
+      } else if (opts.brands != null && String(opts.brands).trim() !== '') {
+        const b = String(opts.brands).trim();
+        p.set('brands', b);
+        p.set('brand', b);
+      } else if (brands != null && String(brands).trim() !== '') {
+        const b = String(brands).trim();
+        p.set('brands', b);
+        p.set('brand', b);
+      }
       const qs = p.toString();
       return qs ? `${path}?${qs}` : path;
     };
@@ -302,8 +319,12 @@ export const productService = {
       const resp = await apiService.get(url);
       let list = extractList(resp);
       let pag = resp?.pagination;
-      // When category filter is on, do NOT replace with unfiltered list – show only category products (or empty).
-      const skipUnfilteredFallback = (subCategoryId != null && subCategoryId !== '') || (categoryId != null && categoryId !== '');
+      // When category or brand filter is on, do NOT replace with unfiltered list – show only filtered products (or empty).
+      const hasBrandFilter = (Array.isArray(brandIds) && brandIds.length > 0) || (brands != null && String(brands).trim() !== '');
+      const skipUnfilteredFallback =
+        (subCategoryId != null && subCategoryId !== '') ||
+        (categoryId != null && categoryId !== '') ||
+        hasBrandFilter;
       if (hasFilterParams && !skipUnfilteredFallback && (!list || list.length === 0)) {
         const fallbackQs = new URLSearchParams({ page, limit });
         if (sort != null && sort !== '') fallbackQs.set('sort', sort);

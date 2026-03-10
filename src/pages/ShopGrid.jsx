@@ -47,7 +47,10 @@ const ShopGrid = () => {
         subCategoryId: selectedCategory,
         ...(selectedCategoryName && { subCategoryName: selectedCategoryName }),
       }),
-      ...(selectedBrands.length > 0 && { brandIds: selectedBrands.map((b) => (typeof b === 'object' && b != null ? b.id : b)).filter(Boolean) }),
+      ...(selectedBrands.length > 0 && {
+        brandIds: selectedBrands.map((b) => (typeof b === 'object' && b != null ? b.id : b)).filter(Boolean),
+        brandNames: selectedBrands.map((b) => (typeof b === 'object' && b != null ? b.name : b)).filter(Boolean).join(','),
+      }),
     }).catch(() => {});
   }, [currentPage, sortBy, showPerPage, selectedCategory, selectedBrands]);
 

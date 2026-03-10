@@ -356,7 +356,11 @@ For the Shop page category and brand filters to work for **every** category (not
    - `categoryId` if that is your subcategory/leaf category id.
 
 3. **Optional: support other query params**  
-   The frontend also sends `brandId`, `subCategoryName`/`category` (for title). Return filtered `total` and pagination so “page 2” stays in the same category.
+   The frontend also sends **brand** filter in several forms so the backend can use whichever it supports:
+   - **By id:** `brandId` and `brand_id` (multiple allowed, e.g. `brandId=1&brandId=2`). Backend should filter products where `brandId` (or `brand_id`) is in the list.
+   - **By name:** `brands` and `brand` (comma-separated names when multiple brands selected, e.g. `brands=HP,Dell`). Backend can match by brand name/title if it doesn’t use ids.
+   If the backend only filters by one of these, some brands may show no results; supporting both id and name improves compatibility.  
+   Return filtered `total` and pagination so “page 2” stays in the same category/brand.
 
 | `/api/carts` | GET/POST | Cart operations |
 | `/api/orders` | GET/POST | Order operations |
