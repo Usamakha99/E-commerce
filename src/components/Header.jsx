@@ -249,7 +249,7 @@ const Header = () => {
                 fontFamily: 'Space Grotesk, sans-serif',
                 fontWeight: '600'
               }}>
-                AI Store 
+                AI Products 
               </Link>
 
 

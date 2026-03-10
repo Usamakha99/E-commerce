@@ -333,7 +333,22 @@ Your project uses these main API endpoints:
 | `/api/aiagents/:id` | DELETE | Delete AI agent |
 | `/api/aiagents/categories/counts` | GET | Get categories with counts |
 | `/api/products` | GET | Get all products |
+| `/api/products/:id` | GET | **Single product by ID** – detail page pehle yahi try karta hai; agar 404 to `GET /api/products?id=X` use hota hai. Agar `?id=X` sirf page 1 return kare to page 2+ ke products ka detail nahi dikhega, isliye `GET /api/products/:id` implement karein. |
 | `/api/productinquiries` | POST | Create product inquiry |
+
+### **Shop category/brand filter (GET /api/products)**
+
+For the Shop page category and brand filters to show products:
+
+1. **Include category on each product**  
+   Each product in the list response should have one of:
+   - `subCategoryId` (number or string), or  
+   - `subCategory` with `id` (e.g. `subCategory: { id: 123, title: "Networking Cables" }`), or  
+   - `categoryId` if that is your subcategory/leaf category id.
+
+2. **Optional: support query params**  
+   The frontend sends `subcategory_id`, `subCategoryId`, `category_id`, `categoryId`, and `brands` (comma‑separated names). If your backend supports these, return only matching products; otherwise the frontend will request a batch and filter client-side (only works if each product includes the fields above).
+
 | `/api/carts` | GET/POST | Cart operations |
 | `/api/orders` | GET/POST | Order operations |
 | `/api/users/login` | POST | User authentication |

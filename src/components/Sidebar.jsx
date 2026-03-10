@@ -61,12 +61,13 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
     }));
   };
 
-  const handleBrandChange = (brandName, isChecked) => {
+  const handleBrandChange = (brand, isChecked) => {
     if (onBrandFilter) {
+      const item = { id: brand.id, name: brand.name || brand.title || String(brand.id) };
       if (isChecked) {
-        onBrandFilter([...selectedBrands, brandName]);
+        onBrandFilter([...selectedBrands, item]);
       } else {
-        onBrandFilter(selectedBrands.filter(brand => brand !== brandName));
+        onBrandFilter(selectedBrands.filter((b) => (typeof b === 'object' && b ? b.id : b) !== brand.id));
       }
     }
   };
@@ -116,11 +117,11 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
         </div>
         
         {/* Active Category Filter Display */}
-        {selectedCategory && (
+        {selectedCategory != null && (
           <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
             <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter:</span>
             <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
-              {categories.find(cat => cat.id === selectedCategory)?.name || categories.find(cat => cat.id === selectedCategory)?.title || 'Category'}
+              {categories.find(cat => Number(cat.id) === Number(selectedCategory))?.name || categories.find(cat => Number(cat.id) === Number(selectedCategory))?.title || 'Category'}
             </span>
           </div>
         )}
@@ -175,7 +176,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
                           style={{
                             cursor: 'pointer',
                             fontWeight: 'normal',
-                            color: selectedCategory === category.id ? '#df2020' : '#000',
+                            color: (selectedCategory != null && Number(selectedCategory) === Number(category.id)) ? '#df2020' : '#000',
                             textDecoration: 'underline',
                             fontSize: category.isSub ? '0.9em' : '1em',
                             flex: 1,
@@ -281,7 +282,7 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
             <div style={{ marginBottom: '10px', padding: '8px 12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
               <span style={{ fontSize: '12px', color: '#666', fontWeight: '500' }}>Active Filter{selectedBrands.length > 1 ? 's' : ''}:</span>
               <span style={{ fontSize: '12px', color: '#df2020', fontWeight: '600', marginLeft: '5px' }}>
-                {selectedBrands.join(', ')}
+                {selectedBrands.map((b) => (typeof b === 'object' && b ? b.name : b)).join(', ')}
               </span>
             </div>
           )}
@@ -311,8 +312,8 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
                         <label className="cb-container" style={{flex: 1}}>
                           <input 
                             type="checkbox" 
-                            checked={selectedBrands.includes(brand.name)}
-                            onChange={(e) => handleBrandChange(brand.name, e.target.checked)}
+                            checked={selectedBrands.some((b) => (typeof b === 'object' && b ? b.id : b) === brand.id || (typeof b === 'object' && b ? b.name : b) === (brand.name || brand.title))}
+                            onChange={(e) => handleBrandChange(brand, e.target.checked)}
                           />
                           <span 
                             className="text-small brand-name" 

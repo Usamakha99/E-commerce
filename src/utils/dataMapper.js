@@ -85,14 +85,14 @@ export const mapProduct = (externalProduct) => {
     
     // Relationships
     brandId: externalProduct.brandId,
-    categoryId: externalProduct.categoryId,
-    subCategoryId: externalProduct.subCategoryId,
+    categoryId: externalProduct.categoryId ?? externalProduct.category_id,
+    subCategoryId: externalProduct.subCategoryId ?? externalProduct.sub_category_id,
     endOfLifeDate: externalProduct.endOfLifeDate,
-    
-    // Nested Objects (preserved)
+
+    // Nested Objects (preserved - list endpoint may omit these, single product may include them)
     brand: externalProduct.brand,
     category: externalProduct.category,
-    subCategory: externalProduct.subCategory,
+    subCategory: externalProduct.subCategory ?? externalProduct.sub_category,
     images: externalProduct.images,
     galleries: externalProduct.galleries,
     

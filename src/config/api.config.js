@@ -14,7 +14,9 @@ export const API_ENDPOINTS = {
   // Products
   products: {
     getAll: '/products',
-    getById: (id) => `/products?id=${id}`, // Your backend uses query params, not path params
+    getBySubcategory: (subcategoryId) => `/products/subcategory/${subcategoryId}`,
+    getById: (id) => `/products?id=${id}`,
+    getByIdPath: (id) => `/products/${id}`, // Single product by path – use when ?id= returns only page 1
     search: '/products/search',
     filter: '/products/filter',
     categories: '/products/categories',

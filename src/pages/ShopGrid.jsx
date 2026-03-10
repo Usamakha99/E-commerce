@@ -33,14 +33,21 @@ const ShopGrid = () => {
     autoFetch: false,
   });
 
-  // Fetch current page when page, sort, or items-per-page changes
+  // Backend now supports subCategoryId, categoryId, brandId – use server-side filtering with normal pagination (Option A)
+  const hasCategoryOrBrandFilter = selectedCategory != null || selectedBrands.length > 0;
+
+  // Single fetch: when category or brand selected, send subCategoryId (and optional subCategoryName) so backend filters; same request that sends brandId.
   useEffect(() => {
     fetchProducts({
       page: currentPage,
       limit: showPerPage,
       sort: sortBy,
-      ...(selectedCategory != null && { categoryId: selectedCategory, subCategoryId: selectedCategory }),
-      ...(selectedBrands.length > 0 && { brands: selectedBrands.join(',') }),
+      ...(selectedCategory != null && {
+        categoryId: selectedCategory,
+        subCategoryId: selectedCategory,
+        ...(selectedCategoryName && { subCategoryName: selectedCategoryName }),
+      }),
+      ...(selectedBrands.length > 0 && { brandIds: selectedBrands.map((b) => (typeof b === 'object' && b != null ? b.id : b)).filter(Boolean) }),
     }).catch(() => {});
   }, [currentPage, sortBy, showPerPage, selectedCategory, selectedBrands]);
 
@@ -133,25 +140,21 @@ const ShopGrid = () => {
     }
   }, [window.location.search]);
 
-  // Update selected category name when category changes
+  // Update selected category name when category changes (match by id number or string)
   useEffect(() => {
-    if (selectedCategory && categories.length > 0) {
-      const category = categories.find(cat => cat.id === selectedCategory);
+    if (selectedCategory != null && categories.length > 0) {
+      const category = categories.find((cat) => Number(cat.id) === Number(selectedCategory));
       if (category) {
         setSelectedCategoryName(category.name || category.title || '');
+      } else {
+        setSelectedCategoryName('');
       }
     } else {
       setSelectedCategoryName('');
     }
   }, [selectedCategory, categories]);
 
-  // Use API pagination: total and pages from API (not data.length)
-  const totalProducts = pagination?.total ?? 0;
-  const totalPages = Math.max(1, pagination?.pages ?? pagination?.totalPages ?? 1);
-  const limit = pagination?.limit ?? 20;
-  const startIndex = totalProducts === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const endIndex = Math.min(currentPage * limit, totalProducts);
-  // Products for this page = response.data, filter by search/brand/category/tag, then sort
+  // Products for this page: filter so we show ONLY the selected subcategory's products and selected brands' products
   const filteredProducts = (pageProducts || []).filter((product) => {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -160,10 +163,23 @@ const ShopGrid = () => {
       const sku = (product.sku || '').toString().toLowerCase();
       if (!name.includes(q) && !desc.includes(q) && !sku.includes(q)) return false;
     }
-    if (selectedCategory != null && product.subCategoryId !== selectedCategory) return false;
+    // Subcategory filter: show only products that belong to the selected subcategory (support subCategoryId, subCategory.id, or categoryId)
+    if (selectedCategory != null) {
+      const productSubId = product.subCategoryId ?? product.subCategory?.id ?? product.sub_category_id ?? product.categoryId;
+      if (Number(productSubId) !== Number(selectedCategory)) return false;
+    }
+    // Brand filter: match by brandId (when backend sends it) or by brand name
     if (selectedBrands.length > 0) {
-      const brandTitle = product.brand?.title || product.brandTitle || 'Unknown';
-      if (!selectedBrands.includes(brandTitle)) return false;
+      const brandTitle = String(
+        product.brand?.title ?? product.brandTitle ?? product.brand?.name ?? (typeof product.brand === 'string' ? product.brand : '')
+      ).trim();
+      const productBrandId = product.brandId ?? product.brand?.id;
+      const matchesBrand = selectedBrands.some((b) => {
+        const id = typeof b === 'object' && b ? b.id : null;
+        const name = String(typeof b === 'object' && b ? b.name : b).trim();
+        return (id != null && productBrandId != null && Number(productBrandId) === Number(id)) || name === brandTitle;
+      });
+      if (!matchesBrand) return false;
     }
     if (selectedTags.length > 0) {
       const tags = productTagsMap[product.id] || [];
@@ -173,7 +189,7 @@ const ShopGrid = () => {
     return true;
   });
 
-  // Client-side sort so Sort by dropdown always works (latest = newest id first, oldest = oldest id, price low/high)
+  // Client-side sort so Sort by dropdown always works
   const products = useMemo(() => {
     const list = [...filteredProducts];
     const price = (p) => Number(p.price ?? p.originalPrice ?? 0) || 0;
@@ -184,6 +200,28 @@ const ShopGrid = () => {
     else if (sortBy === 'price-high') list.sort((a, b) => price(b) - price(a));
     return list;
   }, [filteredProducts, sortBy]);
+
+  // When we have a category/brand filter but 0 matches from client filter yet API returned products (e.g. fallback unfiltered batch or list missing category fields), show those products so the user sees something
+  const showUnfilteredFallback = hasCategoryOrBrandFilter && filteredProducts.length === 0 && (pageProducts || []).length > 0;
+  const fallbackList = useMemo(() => {
+    if (!showUnfilteredFallback || !pageProducts?.length) return [];
+    const list = [...pageProducts];
+    const price = (p) => Number(p.price ?? p.originalPrice ?? 0) || 0;
+    const idNum = (p) => Number(p.id) || 0;
+    if (sortBy === 'latest') list.sort((a, b) => idNum(b) - idNum(a));
+    else if (sortBy === 'oldest') list.sort((a, b) => idNum(a) - idNum(b));
+    else if (sortBy === 'price-low') list.sort((a, b) => price(a) - price(b));
+    else if (sortBy === 'price-high') list.sort((a, b) => price(b) - price(a));
+    return list;
+  }, [showUnfilteredFallback, pageProducts, sortBy]);
+
+  // Use API pagination (backend returns filtered total/pages when subCategoryId/brandId are sent)
+  const totalProducts = pagination?.total ?? 0;
+  const totalPages = Math.max(1, pagination?.pages ?? pagination?.totalPages ?? 1);
+  const limit = pagination?.limit ?? showPerPage;
+  const startIndex = totalProducts === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const endIndex = Math.min(currentPage * limit, totalProducts);
+  const productsToShow = showUnfilteredFallback ? fallbackList : products;
 
   // Reset to page 1 when sort changes
   useEffect(() => {
@@ -533,16 +571,24 @@ const ShopGrid = () => {
                   </div>
                 )}
 
-                {!loading && (!products || products.length === 0) && (
+                {!loading && (!productsToShow || productsToShow.length === 0) && (
                   <div className="col-12 text-center py-5">
                     <div className="alert alert-info" role="alert">
-                      <h4 className="alert-heading">{error ? 'Could not load products' : 'No Products Available'}</h4>
+                      <h4 className="alert-heading">
+                        {error ? 'Could not load products' : (hasCategoryOrBrandFilter ? 'No matches for this filter' : 'No Products Available')}
+                      </h4>
                       <p className="mb-0">
                         {error ? (
                           <>
                             <strong>API Error:</strong> {error}
                             <br />
                             <small>Please make sure your backend API is running (e.g. /api/products).</small>
+                          </>
+                        ) : hasCategoryOrBrandFilter ? (
+                          <>
+                            No products match the selected category or brand.
+                            <br />
+                            <small>Backend filtering is active. If you expect results, ensure <strong>GET /api/products</strong> accepts <code>subCategoryId</code> and <code>brandId</code> and returns matching products with correct pagination.</small>
                           </>
                         ) : (
                           <>
@@ -566,7 +612,15 @@ const ShopGrid = () => {
                 )}
 
 
-                {!loading && products && products.map((product, index) => (
+                {showUnfilteredFallback && (
+                  <div className="col-12 mb-3">
+                    <div className="alert alert-warning py-2 mb-0" role="alert" style={{ fontSize: '14px' }}>
+                      <strong>Category/brand filter is on</strong> but the API returned a general list. Showing these results. Clear the filter (✕) to browse all, or ensure your backend returns only matching products when <code>subCategoryId</code> is sent.
+                    </div>
+                  </div>
+                )}
+
+                {!loading && productsToShow && productsToShow.map((product, index) => (
                   <React.Fragment key={product.id}>
                     <div className={viewType === 'list' ? 'col-12 mb-20' : 'col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 mb-20'}>
                       <div className="product-card" style={{

@@ -66,7 +66,7 @@ export const productService = {
       id: c.id,
       title: c.title ?? c.name,
       name: c.title ?? c.name,
-      productCount: c.productCount ?? c.count ?? c.product_count ?? 0,
+      productCount: c.productCount ?? c.count ?? c.product_count ?? c.productsCount ?? c.totalProducts ?? c.total_products ?? 0,
       parentId: c.parentId ?? c.categoryId ?? null,
       children: [],
     });
@@ -81,7 +81,7 @@ export const productService = {
           id: c.id,
           title: c.title ?? c.name,
           name: c.title ?? c.name,
-          productCount: c.productCount ?? c.count ?? c.product_count ?? 0,
+          productCount: c.productCount ?? c.count ?? c.product_count ?? c.productsCount ?? c.totalProducts ?? c.total_products ?? 0,
           parentId: c.parentId ?? c.categoryId ?? null,
           children: [],
         });
@@ -241,22 +241,18 @@ export const productService = {
     }
   },
 
-  // Get all products with pagination (20 per page). Uses GET /api/products?page=&limit=20.
+  // Get all products with pagination. Backend supports subCategoryId/subcategory_id, categoryId, brandId for filtering.
   getAllProducts: async (params = {}) => {
     const page = params.page || 1;
     const limit = params.limit ?? 20;
-    const { page: _p, limit: _l, ...rest } = params;
-
-    const buildUrl = (path, queryObj) => {
-      const qs = new URLSearchParams(queryObj).toString();
-      return qs ? `${path}?${qs}` : path;
-    };
+    const { page: _p, limit: _l, sort, categoryId, subCategoryId, subCategoryName, categoryName, brands, brandIds, ...rest } = params;
 
     const extractList = (resp) => {
       if (!resp) return [];
       if (Array.isArray(resp)) return resp;
       if (Array.isArray(resp.data)) return resp.data;
       if (resp.success === true && Array.isArray(resp.data)) return resp.data;
+      if (Array.isArray(resp.products)) return resp.products;
       if (Array.isArray(resp.result)) return resp.result;
       if (resp.result?.data && Array.isArray(resp.result.data)) return resp.result.data;
       if (typeof resp === 'object') {
@@ -265,11 +261,56 @@ export const productService = {
       return [];
     };
 
-    // 1) Prefer primary GET /api/products with pagination shape: { success, data, pagination: { page, limit, total, pages } }
+    // Build URL with explicit params. Backend accepts: subCategoryId, subcategoryId, sub_category_id; also subCategoryName/category for title fallback.
+    // Same request that sends brandId for brand filter also sends subCategoryId when a subcategory (e.g. Laptops) is selected.
+    const buildProductsUrl = (path, opts = {}) => {
+      const p = new URLSearchParams();
+      p.set('page', opts.page ?? page);
+      p.set('limit', opts.limit ?? limit);
+      if (opts.sort != null && opts.sort !== '') p.set('sort', opts.sort);
+      if (opts.sort == null && sort != null && sort !== '') p.set('sort', sort);
+      const catId = opts.categoryId ?? categoryId;
+      const subId = opts.subCategoryId ?? subCategoryId;
+      if (catId != null && catId !== '') {
+        p.set('categoryId', String(catId));
+        p.set('category_id', String(catId));
+      }
+      if (subId != null && subId !== '') {
+        p.set('subCategoryId', String(subId));
+        p.set('subcategoryId', String(subId));
+        p.set('subcategory_id', String(subId));
+      }
+      const subName = opts.subCategoryName ?? subCategoryName;
+      if (subName != null && String(subName).trim() !== '') {
+        p.set('subCategoryName', String(subName).trim());
+        p.set('category', String(subName).trim());
+      }
+      const ids = opts.brandIds ?? brandIds;
+      if (Array.isArray(ids) && ids.length > 0) ids.forEach((id) => p.append('brandId', String(id)));
+      else if (opts.brands != null && String(opts.brands).trim() !== '') p.set('brands', String(opts.brands).trim());
+      else if (brands != null && String(brands).trim() !== '') p.set('brands', String(brands).trim());
+      const qs = p.toString();
+      return qs ? `${path}?${qs}` : path;
+    };
+
+    const hasFilterParams = categoryId != null || subCategoryId != null || (Array.isArray(brandIds) && brandIds.length > 0) || (brands != null && String(brands).trim() !== '');
+
+    // Use GET /api/products with query params (subCategoryId, brandId, etc.). Backend does not have GET /api/products/subcategory/:id (returns 404).
+    const url = buildProductsUrl(API_ENDPOINTS.products.getAll);
+
+    // 1) GET /api/products with pagination and filters (subCategoryId, brandId, etc.)
     try {
-      const resp = await apiService.get(buildUrl(API_ENDPOINTS.products.getAll, { page, limit, ...rest }));
-      const list = extractList(resp);
-      const pag = resp?.pagination;
+      const resp = await apiService.get(url);
+      let list = extractList(resp);
+      let pag = resp?.pagination;
+      if (hasFilterParams && (!list || list.length === 0)) {
+        const fallbackQs = new URLSearchParams({ page, limit });
+        if (sort != null && sort !== '') fallbackQs.set('sort', sort);
+        const urlNoFilter = `${API_ENDPOINTS.products.getAll}?${fallbackQs.toString()}`;
+        const respFallback = await apiService.get(urlNoFilter);
+        list = extractList(respFallback);
+        pag = respFallback?.pagination;
+      }
       const total = pag?.total ?? resp?.total ?? list?.length ?? 0;
       const pages = pag?.pages ?? (total > 0 && limit > 0 ? Math.ceil(total / limit) : 1);
       return {
@@ -281,14 +322,20 @@ export const productService = {
           totalPages: pages,
           pages,
         },
+        ...(resp?.appliedFilter && { appliedFilter: resp.appliedFilter }),
       };
     } catch (primaryErr) {
       // 2) Fallback: /products/imports when /products fails (e.g. 500)
       try {
-        let productsResp = await apiService.get(buildUrl('/products/imports', { status: 'completed', page, limit, ...rest }));
+        const importsQuery = { page, limit, status: 'completed' };
+        if (sort != null && sort !== '') importsQuery.sort = sort;
+        const importsUrl = `${'/products/imports'}?${new URLSearchParams(importsQuery).toString()}`;
+        let productsResp = await apiService.get(importsUrl);
         let productsList = extractList(productsResp);
         if (!productsList?.length) {
-          productsResp = await apiService.get(buildUrl('/products/imports', { page, limit }));
+          const fallbackImports = { page, limit };
+          if (sort != null && sort !== '') fallbackImports.sort = sort;
+          productsResp = await apiService.get(`/products/imports?${new URLSearchParams(fallbackImports).toString()}`);
           productsList = extractList(productsResp);
         }
         const mappedProducts = Array.isArray(productsList) ? mapProducts(productsList) : [];
@@ -304,46 +351,43 @@ export const productService = {
     }
   },
 
+  /**
+   * Get products filtered by subcategory. Uses GET /api/products?subCategoryId=... (backend does not have /api/products/subcategory/:id).
+   */
+  getProductsBySubcategory: async (subcategoryId, params = {}) => {
+    return productService.getAllProducts({
+      ...params,
+      subCategoryId: subcategoryId,
+    });
+  },
+
   // Get single product by ID
+  // Pehle GET /api/products/:id try karo; agar 404 to GET /api/products?id=X. Page 2 ke products ke liye ?id= sirf page 1 return karta hai.
   getProductById: async (id) => {
+    const extractProduct = (response) => {
+      if (!response) return null;
+      if (Array.isArray(response)) return response.find(p => p.id == id) ?? null;
+      if (response.data && Array.isArray(response.data)) return response.data.find(p => p.id == id) ?? null;
+      if (response.data?.product) return response.data.product;
+      if (response.data) return response.data;
+      if (response.id) return response;
+      if (response.product) return response.product;
+      return null;
+    };
+
+    const pathUrl = API_ENDPOINTS.products.getByIdPath?.(id) ?? `/products/${id}`;
+    try {
+      const pathResponse = await apiService.get(pathUrl);
+      const product = extractProduct(pathResponse);
+      if (product) return { data: mapProduct(product) };
+    } catch (pathErr) {
+      if (pathErr?.response?.status !== 404) throw pathErr;
+    }
+
     try {
       const response = await apiService.get(API_ENDPOINTS.products.getById(id));
-      
-      // Handle null/undefined response
-      if (!response) {
-        return { data: null };
-      }
-      
-      let product = null;
-      
-      // Check if response is an array (backend returns all products)
-      if (Array.isArray(response)) {
-        // Find the specific product by ID
-        product = response.find(p => p.id == id);
-      } 
-      // Check if response.data is an array
-      else if (response.data && Array.isArray(response.data)) {
-        product = response.data.find(p => p.id == id);
-      }
-      // Single product in response.data
-      else if (response.data) {
-        product = response.data;
-      } 
-      // Direct product object
-      else if (response.id) {
-        product = response;
-      } 
-      // Product in response.product
-      else if (response.product) {
-        product = response.product;
-      }
-      
-      // Map to standardized format
-      const mappedProduct = product ? mapProduct(product) : null;
-      
-      return {
-        data: mappedProduct
-      };
+      const product = extractProduct(response);
+      return { data: product ? mapProduct(product) : null };
     } catch (error) {
       throw error;
     }
@@ -389,6 +433,29 @@ export const productService = {
     const countFrom = (b) => Number(
       b.productCount ?? b.count ?? b.product_count ?? b.productsCount ?? b.total ?? b.totalProducts ?? b.total_products ?? 0
     ) || 0;
+    // Only hide 0-count brands when we have at least one brand with count > 0 (so API sends counts). Else show all brands.
+    const filterByCount = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return arr;
+      const hasAnyCount = arr.some((b) => (Number(b.count) || 0) > 0);
+      return hasAnyCount ? arr.filter((b) => (Number(b.count) || 0) > 0) : arr;
+    };
+    // Sort brands: HP first, then Dell, then rest by count descending (zyada count wale top pe)
+    const sortBrandsHPFirst = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return arr;
+      const isHP = (n) => /^hp\b/i.test(n) || n.toLowerCase() === 'hp';
+      const isDell = (n) => /^dell\b/i.test(n) || n.toLowerCase() === 'dell';
+      return [...arr].sort((a, b) => {
+        const nameA = String(a.name ?? a.title ?? '').trim();
+        const nameB = String(b.name ?? b.title ?? '').trim();
+        const countA = Number(a.count) || 0;
+        const countB = Number(b.count) || 0;
+        const priority = (n) => (isHP(n) ? 0 : isDell(n) ? 1 : 2); // HP=0, Dell=1, rest=2
+        const pA = priority(nameA);
+        const pB = priority(nameB);
+        if (pA !== pB) return pA - pB;
+        return countB - countA; // same group: higher count first
+      });
+    };
     try {
       const filtersData = await productService.getBrandsAndSubcategories();
       if (filtersData?.brands?.length > 0) {
@@ -396,8 +463,9 @@ export const productService = {
           id: b.id,
           name: b.title ?? b.name ?? b.brandTitle ?? String(b.id ?? ''),
           count: countFrom(b),
-        })).filter((b) => b.name).sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
-        return { data: brands, total: brands.length };
+        })).filter((b) => b.name);
+        const filtered = filterByCount(brands);
+        return { data: sortBrandsHPFirst(filtered), total: filtered.length };
       }
     } catch (_e) {}
     try {
@@ -406,13 +474,16 @@ export const productService = {
         const list = extractList(res);
         if (list.length > 0) {
           const brands = list.map((b) => ({
+            id: b.id,
             name: b.title ?? b.name ?? b.brandTitle ?? String(b.id ?? ''),
             count: countFrom(b),
           })).filter((b) => b.name);
-          const hasAnyCount = brands.some((b) => b.count > 0);
+          const filtered = filterByCount(brands);
+          const hasAnyCount = filtered.some((b) => b.count > 0);
           if (hasAnyCount) {
-            return { data: brands.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0)) };
+            return { data: sortBrandsHPFirst(filtered.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0))) };
           }
+          return { data: sortBrandsHPFirst(filtered) };
         }
       }
     } catch (_e) {}
@@ -437,9 +508,11 @@ export const productService = {
         if (n) brandMap.set(n, (brandMap.get(n) || 0) + 1);
       });
     }
-    const data = Array.from(brandMap.entries()).map(([name, count]) => ({ name, count: Number(count) })).sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
-    console.log('[Brands] Built from products fallback:', { totalBrands: data.length });
-    return { data };
+    const data = Array.from(brandMap.entries()).map(([name, count], i) => ({ id: name || `brand-${i}`, name, count: Number(count) }));
+    const filtered = filterByCount(data);
+    const byCount = filtered.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0));
+    console.log('[Brands] Built from products fallback:', { totalBrands: byCount.length });
+    return { data: sortBrandsHPFirst(byCount) };
   },
 
   getCategoriesCount: async () => {

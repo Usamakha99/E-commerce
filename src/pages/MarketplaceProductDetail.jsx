@@ -417,34 +417,30 @@ const MarketplaceProductDetail = () => {
       awsSupportButtonText: supportContent?.awsSupport?.buttonText || supportContent?.awsSupport?.button_text || 'Get support',
       awsSupportUrl: supportContent?.awsSupport?.buttonLink || supportContent?.awsSupport?.button_link || supportContent?.awsSupport?.url || supportContent?.awsSupportUrl || supportContent?.aws_support_url || supportContent?.awsUrl || supportContent?.aws_url || agent.awsSupportUrl || agent.aws_support_url || null,
       supportData: supportContent, // Store full supportContent object
-      // Product Comparison - Extract from comparisonData array structure
-      comparisonData: productComparisonContent, // Store full productComparisonContent object
+      // Product Comparison – API shape: products[], comparisonData[] (rows with category, feature, values), categoryDescriptions{}
+      comparisonData: productComparisonContent,
+      comparisonDataRows: (() => {
+        const raw = productComparisonContent.comparisonData;
+        if (!raw || !Array.isArray(raw)) return [];
+        // Doc shape: each item is { id, category, feature, values: { thisProduct, product_<id>, ... } }
+        return raw.filter((r) => r && (r.feature || r.category) && r.values && typeof r.values === 'object');
+      })(),
+      comparisonCategoryDescriptions: productComparisonContent.categoryDescriptions || productComparisonContent.category_descriptions || {},
       comparisonProducts: (() => {
-        // Check if comparisonData is an array with product_comparison items FIRST
+        // Doc shape: productComparisonContent.products is top-level array of competitors (id, name, provider, icon, iconColor, logoUrl)
+        if (Array.isArray(productComparisonContent.products) && productComparisonContent.products.length > 0) {
+          return productComparisonContent.products;
+        }
+        // Legacy: comparisonData[0].product_comparison or comparisonData[0].products
         if (productComparisonContent.comparisonData && Array.isArray(productComparisonContent.comparisonData) && productComparisonContent.comparisonData.length > 0) {
-          // New format: comparisonData[0].product_comparison
-          const firstComparison = productComparisonContent.comparisonData[0];
-          if (firstComparison.product_comparison && Array.isArray(firstComparison.product_comparison)) {
-            return firstComparison.product_comparison;
-          }
-          // Legacy format: comparisonData[0].products
-          else if (firstComparison.products && Array.isArray(firstComparison.products)) {
-            return firstComparison.products;
-          }
+          const first = productComparisonContent.comparisonData[0];
+          if (first.product_comparison && Array.isArray(first.product_comparison)) return first.product_comparison;
+          if (first.products && Array.isArray(first.products)) return first.products;
         }
-        // Check if comparisonData object exists with products array (legacy object format)
-        else if (productComparisonContent.comparisonData && typeof productComparisonContent.comparisonData === 'object' && !Array.isArray(productComparisonContent.comparisonData)) {
-          // If comparisonData is an object with products array
-          if (productComparisonContent.comparisonData.products && Array.isArray(productComparisonContent.comparisonData.products)) {
-            return productComparisonContent.comparisonData.products;
-          }
+        if (productComparisonContent.comparisonData && typeof productComparisonContent.comparisonData === 'object' && !Array.isArray(productComparisonContent.comparisonData)) {
+          if (Array.isArray(productComparisonContent.comparisonData.products)) return productComparisonContent.comparisonData.products;
         }
-        // Fallback to other field names
-        return productComparisonContent.products ||
-               productComparisonContent.comparisonProducts ||
-               agent.comparisonProducts ||
-               agent.comparison_products ||
-               agent.similarProducts || [];
+        return productComparisonContent.comparisonProducts || agent.comparisonProducts || agent.comparison_products || agent.similarProducts || [];
       })(),
       comparisonTitle: (() => {
         // Get comparison title from comparisonData
@@ -2361,7 +2357,7 @@ const MarketplaceProductDetail = () => {
                 </div>
 
               {/* Show message if no comparison data available */}
-              {(!product.comparisonProducts || product.comparisonProducts.length === 0) ? (
+              {(!product.comparisonProducts || product.comparisonProducts.length === 0) && (!product.comparisonDataRows || product.comparisonDataRows.length === 0) ? (
                 <div style={{
                     border: '1px solid #D5D9D9',
                     borderRadius: '8px',
@@ -2378,8 +2374,84 @@ const MarketplaceProductDetail = () => {
                     Product comparison data is not available at this time.
                   </p>
                 </div>
+              ) : product.comparisonDataRows && product.comparisonDataRows.length > 0 ? (
+              (() => {
+                const rows = product.comparisonDataRows;
+                const compProducts = product.comparisonProducts || [];
+                const catDescs = product.comparisonCategoryDescriptions || {};
+                const grouped = {};
+                rows.forEach((r) => {
+                  const c = r.category || 'General';
+                  if (!grouped[c]) grouped[c] = [];
+                  grouped[c].push(r);
+                });
+                const nCols = compProducts.length;
+                const gridCols = isMobile ? `150px repeat(${nCols + 1}, 200px)` : `250px repeat(${nCols + 1}, 1fr)`;
+                const minW = isMobile ? 150 + (nCols + 1) * 200 : 'auto';
+                const getSentiment = (v) => (v != null && typeof v === 'string' ? (v.toLowerCase().includes('positive') ? 'positive' : v.toLowerCase().includes('mixed') ? 'mixed' : v.toLowerCase().includes('negative') ? 'negative' : null) : null);
+                const renderCell = (val) => {
+                  const text = val != null ? String(val).trim() : '—';
+                  const s = getSentiment(text);
+                  if (s) {
+                    const w = s === 'positive' ? 85 : s === 'mixed' ? 50 : 20;
+                    const color = s === 'positive' ? '#10b981' : s === 'mixed' ? '#6B7280' : '#EF4444';
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <span style={{ fontSize: 14, fontWeight: 500 }}>{s === 'positive' ? '↑' : '↓'} {text}</span>
+                        <div style={{ height: 6, background: '#E5E7EB', borderRadius: 3, overflow: 'hidden' }}>
+                          <div style={{ width: `${w}%`, height: '100%', background: color, borderRadius: 3 }} />
+                        </div>
+                      </div>
+                    );
+                  }
+                  return <span style={{ fontSize: 14 }}>{text || '—'}</span>;
+                };
+                return (
+                  <div style={{ border: '1px solid #D5D9D9', borderRadius: 8, backgroundColor: 'white', overflow: isMobile ? 'auto' : 'hidden' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: gridCols, borderBottom: '2px solid rgb(0, 113, 133)', backgroundColor: '#F7F8F8', minWidth: minW }}>
+                      <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 18 }}>📊</span>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: '#16191f' }}>Compare</span>
+                      </div>
+                      <div style={{ padding: 20, borderLeft: '1px solid #D5D9D9', backgroundColor: '#FFF' }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#16191f', marginBottom: 4 }}>This product</div>
+                        <div style={{ fontSize: 12, color: '#6B7280' }}>by {agent?.provider || product?.seller || '—'}</div>
+                      </div>
+                      {compProducts.map((p, idx) => (
+                        <div key={p.id || idx} style={{ padding: 20, borderLeft: '1px solid #D5D9D9', backgroundColor: '#FAFAFA' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            {p.logoUrl ? <img src={p.logoUrl} alt="" style={{ width: 50, height: 50, objectFit: 'contain' }} /> : <div style={{ width: 50, height: 50, background: '#4A90E2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff', fontWeight: 'bold' }}>{p.icon || (p.provider || p.name || '?').substring(0, 2).toUpperCase()}</div>}
+                            <div>
+                              <div style={{ fontSize: 15, fontWeight: 700, color: '#16191f' }}>{p.name || p.product_name || p.title || `Product ${idx + 1}`}</div>
+                              <div style={{ fontSize: 12, color: '#6B7280' }}>by {p.provider || p.brand || '—'}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {Object.entries(grouped).map(([cat, catRows]) => (
+                      <React.Fragment key={cat}>
+                        <div style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB', padding: '12px 20px' }}>
+                          <div style={{ fontWeight: 600, fontSize: 14, color: '#16191f' }}>{cat}</div>
+                          <div style={{ borderLeft: '1px solid #D5D9D9', fontSize: 13, color: '#6B7280', paddingLeft: 20 }}>{catDescs[cat] || ''}</div>
+                          {compProducts.map((_, i) => <div key={i} style={{ borderLeft: '1px solid #D5D9D9' }} />)}
+                        </div>
+                        {catRows.map((row) => (
+                          <div key={row.id || row.feature} style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #E5E7EB', backgroundColor: '#FAFAFA' }}>
+                            <div style={{ padding: '16px 20px', fontWeight: 600, fontSize: 14, color: '#16191f' }}>{row.feature || '—'}</div>
+                            <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>{renderCell(row.values?.thisProduct)}</div>
+                            {compProducts.map((p) => (
+                              <div key={p.id} style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>{renderCell(row.values?.[`product_${p.id}`] ?? row.values?.[p.id])}</div>
+                            ))}
+                          </div>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                );
+              })()
               ) : (
-              /* Comparison Table - Display actual products from API */
+              /* Comparison Table - Display actual products from API (legacy) */
               <div style={{
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
