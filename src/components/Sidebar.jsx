@@ -173,6 +173,14 @@ const Sidebar = ({ onBrandFilter, selectedBrands = [], onCategoryFilter, selecte
                             e.preventDefault();
                             if (onCategoryFilter) onCategoryFilter(category.id);
                           }}
+                          onMouseEnter={(e) => {
+                            const countSpan = e.target.parentElement.querySelector('.category-count');
+                            if (countSpan) countSpan.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                            const countSpan = e.target.parentElement.querySelector('.category-count');
+                            if (countSpan) countSpan.style.textDecoration = 'none';
+                          }}
                           style={{
                             cursor: 'pointer',
                             fontWeight: 'normal',

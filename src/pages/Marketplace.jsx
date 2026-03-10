@@ -9,10 +9,8 @@ const Marketplace = () => {
   const [sortBy, setSortBy] = useState('Relevance');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedDeliveryMethods, setSelectedDeliveryMethods] = useState([]);
-  const [selectedPublishers, setSelectedPublishers] = useState([]);
   const [showCategories, setShowCategories] = useState(true);
   const [showDeliveryMethods, setShowDeliveryMethods] = useState(true);
-  const [showPublishers, setShowPublishers] = useState(true);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 768);
   const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
   
@@ -26,7 +24,6 @@ const Marketplace = () => {
   // Filter data from API
   const [categories, setCategories] = useState([]);
   const [deliveryMethods, setDeliveryMethods] = useState([]);
-  const [publishers, setPublishers] = useState([]);
   const [loadingFilters, setLoadingFilters] = useState(false);
 
   useEffect(() => {
@@ -127,7 +124,7 @@ const Marketplace = () => {
     fetchCategories();
   }, []);
 
-  // Fetch all agents for filter counts (delivery methods and publishers)
+  // Fetch all agents for filter counts (delivery methods)
   useEffect(() => {
     const fetchAllAgentsForFilters = async () => {
       try {
@@ -178,30 +175,6 @@ const Marketplace = () => {
           .sort((a, b) => b.count - a.count);
         
         setDeliveryMethods(deliveryMethodsList);
-        
-        // Calculate publishers counts
-        const publisherCounts = {};
-        agentsList.forEach(agent => {
-          let publisher = 'Unknown';
-          if (agent.provider) {
-            publisher = agent.provider;
-          } else if (agent.seller) {
-            publisher = agent.seller;
-          } else if (agent.publisher) {
-            if (typeof agent.publisher === 'object' && agent.publisher.name) {
-              publisher = agent.publisher.name;
-            } else if (typeof agent.publisher === 'string') {
-              publisher = agent.publisher;
-            }
-          }
-          publisherCounts[publisher] = (publisherCounts[publisher] || 0) + 1;
-        });
-        
-        const publishersList = Object.entries(publisherCounts)
-          .map(([name, count]) => ({ name, count }))
-          .sort((a, b) => b.count - a.count);
-        
-        setPublishers(publishersList);
         
       } catch (_err) {
       } finally {
@@ -356,14 +329,6 @@ const Marketplace = () => {
     }
   };
 
-  const handlePublisherToggle = (publisher) => {
-    if (selectedPublishers.includes(publisher)) {
-      setSelectedPublishers(selectedPublishers.filter(p => p !== publisher));
-    } else {
-      setSelectedPublishers([...selectedPublishers, publisher]);
-    }
-  };
-
   return (
     <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
       <div className="container-fluid" style={{ padding: isMobile ? '15px' : '20px 40px' }}>
@@ -390,6 +355,16 @@ const Marketplace = () => {
                 {loadingFilters ? (
                   <div style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading categories...</div>
                 ) : (
+                  <div
+                    style={{
+                      maxHeight: '280px',
+                      overflowY: 'auto',
+                      overflowX: 'hidden',
+                      paddingRight: '4px',
+                      marginRight: '-4px',
+                    }}
+                    className="sidebar-categories-scroll"
+                  >
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     <li style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <button
@@ -467,6 +442,7 @@ const Marketplace = () => {
                       ))
                     )}
                   </ul>
+                  </div>
                 )}
               </div>
 
@@ -490,6 +466,16 @@ const Marketplace = () => {
                   Delivery methods
                 </h6>
                 {showDeliveryMethods && (
+                  <div
+                    style={{
+                      maxHeight: '280px',
+                      overflowY: 'auto',
+                      overflowX: 'hidden',
+                      paddingRight: '4px',
+                      marginRight: '-4px',
+                    }}
+                    className="sidebar-brands-scroll"
+                  >
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {loadingFilters ? (
                       <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading delivery methods...</li>
@@ -504,69 +490,33 @@ const Marketplace = () => {
                             checked={selectedDeliveryMethods.includes(method.name)}
                             onChange={() => handleDeliveryMethodToggle(method.name)}
                           />
-                          <span className="text-small" style={{ color: '#000', fontSize: '14px', textDecoration: 'underline' }}>
+                          <span
+                            className="text-small delivery-method-name"
+                            style={{ color: '#000', fontSize: '14px', textDecoration: 'underline' }}
+                            onMouseEnter={(e) => {
+                              const countSpan = e.target.closest('li')?.querySelector('.delivery-method-count');
+                              if (countSpan) countSpan.style.textDecoration = 'underline';
+                            }}
+                            onMouseLeave={(e) => {
+                              const countSpan = e.target.closest('li')?.querySelector('.delivery-method-count');
+                              if (countSpan) countSpan.style.textDecoration = 'none';
+                            }}
+                          >
                             {method.name}
                           </span>
                           <span className="checkmark"></span>
                         </label>
-                        <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
+                        <span className="number-item delivery-method-count" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px', textDecoration: 'none' }}>
                           {method.count}
                         </span>
                         </li>
                       ))
                     )}
                   </ul>
+                  </div>
                 )}
               </div>
 
-              {/* Publishers */}
-              <div style={{ marginBottom: '25px' }}>
-                <h6 
-                  style={{
-                    margin: 0,
-                    color: '#000',
-                    fontWeight: 'bold',
-                    fontSize: '16px',
-                    borderBottom: '3px solid #df2020',
-                    paddingBottom: '8px',
-                    marginBottom: '15px',
-                    display: 'inline-block',
-                    cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif'
-                  }}
-                  onClick={() => setShowPublishers(!showPublishers)}
-                >
-                  Publisher
-                </h6>
-                {showPublishers && (
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {loadingFilters ? (
-                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading publishers...</li>
-                    ) : publishers.length === 0 ? (
-                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>No publishers available</li>
-                    ) : (
-                      publishers.map((publisher) => (
-                        <li key={publisher.name} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <label className="cb-container" style={{ flex: 1 }}>
-                          <input
-                            type="checkbox"
-                            checked={selectedPublishers.includes(publisher.name)}
-                            onChange={() => handlePublisherToggle(publisher.name)}
-                          />
-                          <span className="text-small" style={{ color: '#000', fontSize: '14px', textDecoration: 'underline' }}>
-                            {publisher.name}
-                          </span>
-                          <span className="checkmark"></span>
-                        </label>
-                        <span className="number-item" style={{ color: '#000', fontSize: '14px', fontWeight: '600', marginLeft: '10px' }}>
-                          {publisher.count}
-                        </span>
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                )}
-              </div>
             </div>
           </div>
 
