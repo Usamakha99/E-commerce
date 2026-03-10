@@ -338,16 +338,25 @@ Your project uses these main API endpoints:
 
 ### **Shop category/brand filter (GET /api/products)**
 
-For the Shop page category and brand filters to show products:
+For the Shop page category and brand filters to work for **every** category (not just some):
 
-1. **Include category on each product**  
+1. **Filter by category id in both fields**  
+   The frontend sends the same category id in multiple query params: `categoryId`, `category_id`, `subCategoryId`, `subcategoryId`, `subcategory_id`.  
+   **Backend should filter products where**  
+   `(subCategoryId = :id OR categoryId = :id)`  
+   so that:
+   - Clicks on a **subcategory** (e.g. “Mice”) return products whose `subCategoryId` (or `categoryId`) equals that id.
+   - Clicks on a **parent category** (e.g. “Electronics”) return products whose `categoryId` equals that id, or whose `subCategoryId` is a child of it (if you store parent id on products, match `categoryId`; if you only have subcategory ids, you may need to resolve parent → children and filter by those subcategory ids).
+   If the backend only filters by `subCategoryId`, then categories that use `categoryId` on products will show no results (“some work, some don’t”).
+
+2. **Include category on each product**  
    Each product in the list response should have one of:
    - `subCategoryId` (number or string), or  
    - `subCategory` with `id` (e.g. `subCategory: { id: 123, title: "Networking Cables" }`), or  
    - `categoryId` if that is your subcategory/leaf category id.
 
-2. **Optional: support query params**  
-   The frontend sends `subcategory_id`, `subCategoryId`, `category_id`, `categoryId`, and `brands` (comma‑separated names). If your backend supports these, return only matching products; otherwise the frontend will request a batch and filter client-side (only works if each product includes the fields above).
+3. **Optional: support other query params**  
+   The frontend also sends `brandId`, `subCategoryName`/`category` (for title). Return filtered `total` and pagination so “page 2” stays in the same category.
 
 | `/api/carts` | GET/POST | Cart operations |
 | `/api/orders` | GET/POST | Order operations |

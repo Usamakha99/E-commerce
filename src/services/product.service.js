@@ -261,8 +261,7 @@ export const productService = {
       return [];
     };
 
-    // Build URL with explicit params. Backend accepts: subCategoryId, subcategoryId, sub_category_id; also subCategoryName/category for title fallback.
-    // Same request that sends brandId for brand filter also sends subCategoryId when a subcategory (e.g. Laptops) is selected.
+    // Build URL with explicit params. Backend should filter by (subCategoryId = id OR categoryId = id) so that both subcategory and parent-category clicks work.
     const buildProductsUrl = (path, opts = {}) => {
       const p = new URLSearchParams();
       p.set('page', opts.page ?? page);
@@ -271,14 +270,14 @@ export const productService = {
       if (opts.sort == null && sort != null && sort !== '') p.set('sort', sort);
       const catId = opts.categoryId ?? categoryId;
       const subId = opts.subCategoryId ?? subCategoryId;
-      if (catId != null && catId !== '') {
-        p.set('categoryId', String(catId));
-        p.set('category_id', String(catId));
-      }
-      if (subId != null && subId !== '') {
-        p.set('subCategoryId', String(subId));
-        p.set('subcategoryId', String(subId));
-        p.set('subcategory_id', String(subId));
+      const categoryFilterId = catId != null && catId !== '' ? catId : subId;
+      if (categoryFilterId != null && categoryFilterId !== '') {
+        const idStr = String(categoryFilterId);
+        p.set('categoryId', idStr);
+        p.set('category_id', idStr);
+        p.set('subCategoryId', idStr);
+        p.set('subcategoryId', idStr);
+        p.set('subcategory_id', idStr);
       }
       const subName = opts.subCategoryName ?? subCategoryName;
       if (subName != null && String(subName).trim() !== '') {
@@ -303,7 +302,9 @@ export const productService = {
       const resp = await apiService.get(url);
       let list = extractList(resp);
       let pag = resp?.pagination;
-      if (hasFilterParams && (!list || list.length === 0)) {
+      // When category filter is on, do NOT replace with unfiltered list – show only category products (or empty).
+      const skipUnfilteredFallback = (subCategoryId != null && subCategoryId !== '') || (categoryId != null && categoryId !== '');
+      if (hasFilterParams && !skipUnfilteredFallback && (!list || list.length === 0)) {
         const fallbackQs = new URLSearchParams({ page, limit });
         if (sort != null && sort !== '') fallbackQs.set('sort', sort);
         const urlNoFilter = `${API_ENDPOINTS.products.getAll}?${fallbackQs.toString()}`;
