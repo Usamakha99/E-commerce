@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { aiAgentService } from '../services/aiAgent.service';
 
 const Marketplace = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('AI Agents & Tools');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('Relevance');
@@ -35,6 +36,21 @@ const Marketplace = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Sync selected category from URL on load (e.g. /marketplace?category=Tools)
+  useEffect(() => {
+    const categorySlug = searchParams.get('category');
+    if (!categorySlug || !categorySlug.trim()) return;
+    const slug = categorySlug.trim().toLowerCase();
+    if (slug === 'ai-agents-tools' || slug === 'ai-agents' || slug === 'all') {
+      setSelectedCategory('AI Agents & Tools');
+      return;
+    }
+    const match = (categories || []).find(
+      (c) => (c?.name || '').toLowerCase().replace(/\s+/g, '-').replace(/&/g, '') === slug || (c?.name || '').toLowerCase() === slug.replace(/-/g, ' ')
+    );
+    if (match?.name) setSelectedCategory(match.name);
+  }, [searchParams.get('category'), categories?.length]); // Re-run when categories load so URL can match
 
   // Update document title based on selected category
   useEffect(() => {
@@ -205,16 +221,22 @@ const Marketplace = () => {
         // Only apply categoryId filter if we can confidently map it from the loaded categories list.
         // Default "AI Agents & Tools" should show ALL agents (no category filter).
         let categoryId = null;
+        let categoryName = null;
         const normalizedSelected = (selectedCategory || '').toLowerCase().trim();
         if (normalizedSelected && normalizedSelected !== 'ai agents & tools') {
           const match = (categories || []).find((c) => (c?.name || '').toLowerCase().trim() === normalizedSelected);
-          if (match?.id) categoryId = match.id;
+          if (match) {
+            categoryId = match.id;
+            categoryName = match.name;
+          }
         }
         
         const response = await aiAgentService.getAllAgents({
           page: currentPage,
           limit: 10,
-          ...(categoryId ? { categoryId } : {}),
+          ...(categoryId ? { categoryId, categoryName } : {}),
+          ...(categoryName && !categoryId ? { categoryName } : {}),
+          ...(selectedDeliveryMethods.length > 0 ? { deliveryMethods: selectedDeliveryMethods } : {}),
         });
         
         // Handle API response structure according to documentation:
@@ -245,6 +267,21 @@ const Marketplace = () => {
           }
         }
         
+        // If we have delivery method filter and API may not have filtered: filter client-side so UI always reflects selection
+        if (selectedDeliveryMethods.length > 0 && agentsList.length > 0) {
+          const methodSet = new Set(selectedDeliveryMethods.map((m) => (m || '').toLowerCase().trim()));
+          agentsList = agentsList.filter((agent) => {
+            let method = '';
+            if (agent.deliveryMethod) {
+              method = typeof agent.deliveryMethod === 'object' && agent.deliveryMethod?.name ? agent.deliveryMethod.name : String(agent.deliveryMethod);
+            } else if (agent.deliveryType) method = agent.deliveryType;
+            else if (agent.delivery) method = agent.delivery;
+            else method = 'Unknown';
+            return methodSet.has(method.toLowerCase().trim());
+          });
+          total = agentsList.length;
+        }
+        
         setAgents(agentsList);
         setTotalAgents(total);
       } catch (err) {
@@ -257,12 +294,17 @@ const Marketplace = () => {
     };
 
     fetchAgents();
-  }, [currentPage, selectedCategory, categories]); // Re-fetch when page or category changes
+  }, [currentPage, selectedCategory, selectedDeliveryMethods, categories]); // Re-fetch when page, category or delivery method changes
 
   // Reset to page 1 when category changes
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
+
+  // Reset to page 1 when delivery method changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedDeliveryMethods]);
 
   // Reset to page 1 when sort changes
   useEffect(() => {
@@ -349,33 +391,66 @@ const Marketplace = () => {
                   <div style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>Loading categories...</div>
                 ) : (
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {categories.length === 0 ? (
-                      <li style={{ color: '#565959', fontSize: '14px', padding: '10px 0' }}>No categories available</li>
-                    ) : (
+                    <li style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory('AI Agents & Tools');
+                          setSearchParams((p) => { const n = new URLSearchParams(p); n.set('category', 'ai-agents-tools'); return n; });
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          color: selectedCategory === 'AI Agents & Tools' ? '#df2020' : '#000',
+                          fontSize: '14px',
+                          textDecoration: 'underline',
+                          fontFamily: 'DM Sans, sans-serif',
+                          cursor: 'pointer',
+                          fontWeight: selectedCategory === 'AI Agents & Tools' ? '600' : '400',
+                          flex: 1,
+                          textAlign: 'left'
+                        }}
+                      >
+                        AI Agents & Tools
+                      </button>
+                    </li>
+                    {categories.length === 0 ? null : (
                       categories.map((cat) => (
                         <li key={cat.id || cat.name} style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <a href="#" style={{
-                        color: '#000',
-                        fontSize: '14px',
-                        textDecoration: 'underline',
-                        fontFamily: 'DM Sans, sans-serif',
-                        flex: 1
-                      }}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(cat.name);
+                          const slug = (cat.name || '').toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
+                          setSearchParams((p) => { const n = new URLSearchParams(p); n.set('category', slug || 'all'); return n; });
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          color: selectedCategory === cat.name ? '#df2020' : '#000',
+                          fontSize: '14px',
+                          textDecoration: 'underline',
+                          fontFamily: 'DM Sans, sans-serif',
+                          cursor: 'pointer',
+                          fontWeight: selectedCategory === cat.name ? '600' : '400',
+                          flex: 1,
+                          textAlign: 'left'
+                        }}
                       onMouseEnter={(e) => {
-                        e.target.style.color = '#000';
-                        // Underline the count when hovering on category name
+                        if (selectedCategory !== cat.name) e.target.style.color = '#df2020';
                         const countSpan = e.target.parentElement.querySelector('.category-count');
                         if (countSpan) countSpan.style.textDecoration = 'underline';
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.color = '#000';
-                        // Remove underline from count
+                        e.target.style.color = selectedCategory === cat.name ? '#df2020' : '#000';
                         const countSpan = e.target.parentElement.querySelector('.category-count');
                         if (countSpan) countSpan.style.textDecoration = 'none';
                       }}
                       >
                         {cat.name}
-                      </a>
+                      </button>
                       {cat.count > 0 && (
                         <span className="category-count" style={{
                           color: '#000',

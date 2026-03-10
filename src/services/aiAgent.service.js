@@ -5,25 +5,48 @@ export const aiAgentService = {
   // Get all AI agents with pagination and filtering
   getAllAgents: async (params = {}) => {
     try {
-      // Default pagination params
       const {
         page = 1,
         limit = 20,
         categoryId = null,
+        categoryName = null,
+        deliveryMethods: deliveryMethodsParam = null,
+        deliveryMethod = null,
         ...otherParams
       } = params;
 
-      // Build query string
       const queryParams = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
       });
 
-      if (categoryId) {
-        queryParams.append('categoryId', categoryId.toString());
+      // Send category in multiple param variants so backend can filter by id or name (AI Agents, Tools, etc.)
+      if (categoryId != null && categoryId !== '') {
+        const idStr = String(categoryId);
+        queryParams.append('categoryId', idStr);
+        queryParams.append('category_id', idStr);
+      }
+      if (categoryName != null && String(categoryName).trim() !== '') {
+        queryParams.append('category', String(categoryName).trim());
+        queryParams.append('categoryName', String(categoryName).trim());
       }
 
-      // Add any other query parameters
+      // Delivery method filter: support array (deliveryMethods) or single (deliveryMethod). Send multiple param variants.
+      const methods = Array.isArray(deliveryMethodsParam) && deliveryMethodsParam.length > 0
+        ? deliveryMethodsParam
+        : (deliveryMethod != null && deliveryMethod !== '') ? [deliveryMethod] : [];
+      if (methods.length > 0) {
+        methods.forEach((m) => {
+          const s = String(m).trim();
+          if (s) {
+            queryParams.append('deliveryMethod', s);
+            queryParams.append('delivery_method', s);
+            queryParams.append('deliveryType', s);
+          }
+        });
+        queryParams.set('deliveryMethods', methods.map((m) => String(m).trim()).filter(Boolean).join(','));
+      }
+
       Object.keys(otherParams).forEach((key) => {
         if (otherParams[key] !== null && otherParams[key] !== undefined) {
           queryParams.append(key, otherParams[key].toString());
