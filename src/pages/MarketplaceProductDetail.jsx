@@ -1270,7 +1270,7 @@ const MarketplaceProductDetail = () => {
                     <div style={{
                       padding: '18px 0',
                       marginBottom: '20px',
-                      borderBottom: '1px solid #E5E7EB'
+                      borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
                         fontSize: '14px',
@@ -1297,7 +1297,7 @@ const MarketplaceProductDetail = () => {
                     <div style={{
                       padding: '18px 0',
                       marginBottom: '20px',
-                      borderBottom: '1px solid #E5E7EB'
+                      borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
                         fontSize: '14px',
@@ -1361,7 +1361,7 @@ const MarketplaceProductDetail = () => {
                     <div style={{
                       padding: '18px 0',
                       marginBottom: '20px',
-                      borderBottom: '1px solid #E5E7EB'
+                      borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
                         fontSize: '14px',
@@ -1895,7 +1895,7 @@ const MarketplaceProductDetail = () => {
                     Links
                   </button>
                   <span style={{
-                    borderLeft: '1px solid #D5D9D9',
+                    borderLeft: '1px solid rgba(0, 113, 133, 0.15)',
                     height: '40px',
                     alignSelf: 'center'
                   }}></span>
@@ -2323,53 +2323,98 @@ const MarketplaceProductDetail = () => {
               </div>
             </div>
 
-          {/* Product Comparison Section */}
-          <div id="product-comparison" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
+          {/* Product Comparison Section – uniquely designed */}
+          <div 
+            id="product-comparison" 
+            style={{ 
+              scrollMarginTop: '120px', 
+              marginTop: '48px', 
+              marginBottom: '48px',
+              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)',
+              borderRadius: '16px',
+              padding: isMobile ? '20px' : '28px',
+              border: '1px solid rgba(0, 113, 133, 0.15)',
+              boxShadow: '0 4px 24px rgba(0, 113, 133, 0.08)'
+            }}
+          >
               {/* Header */}
               <div style={{
                 display: 'flex',
                 flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
                 alignItems: isMobile ? 'flex-start' : 'center',
-                marginBottom: '24px',
-                gap: isMobile ? '15px' : '0'
+                marginBottom: '28px',
+                gap: isMobile ? '15px' : '0',
+                paddingBottom: '20px',
+                borderBottom: '3px solid rgb(0, 113, 133)',
+                borderImage: 'linear-gradient(90deg, rgb(0, 113, 133) 0%, rgba(0, 113, 133, 0.4) 100%) 1'
               }}>
-                <div>
-                  <h2 style={{
-                    fontSize: isMobile ? '22px' : '28px',
-                    fontWeight: '700',
-                    color: '#16191f',
-                    margin: '0 0 4px 0',
-                    fontFamily: 'inherit',
-                    letterSpacing: '-0.01em'
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(145deg, rgb(0, 113, 133), #005f73)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(0, 113, 133, 0.35)'
                   }}>
-                    Product comparison
-                  </h2>
-                  <p style={{
+                    <span style={{ fontSize: '24px' }}>⚖️</span>
+                  </div>
+                  <div>
+                    <h2 style={{
+                      fontSize: isMobile ? '22px' : '28px',
+                      fontWeight: '800',
+                      color: '#0f172a',
+                      margin: '0 0 6px 0',
+                      fontFamily: 'inherit',
+                      letterSpacing: '-0.02em'
+                    }}>
+                      Product comparison
+                    </h2>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#64748b',
+                      margin: 0,
+                      fontFamily: 'inherit',
+                      fontWeight: '500'
+                    }}>
+                      {product.updatedWeekly ? 'Updated weekly' : product.comparisonTitle || 'Compare this product with similar alternatives'}
+                    </p>
+                  </div>
+                </div>
+                {product.comparisonProducts && product.comparisonProducts.length > 0 && (
+                  <div style={{
+                    padding: '8px 14px',
+                    borderRadius: '20px',
+                    backgroundColor: 'rgba(0, 113, 133, 0.1)',
+                    color: 'rgb(0, 113, 133)',
                     fontSize: '13px',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
+                    fontWeight: '600'
                   }}>
-                    {product.updatedWeekly ? 'Updated weekly' : product.comparisonTitle || 'Compare this product with similar alternatives'}
-                  </p>
-                </div>
-                </div>
+                    {product.comparisonProducts.length + 1} products
+                  </div>
+                )}
+              </div>
 
               {/* Show message if no comparison data available */}
               {(!product.comparisonProducts || product.comparisonProducts.length === 0) && (!product.comparisonDataRows || product.comparisonDataRows.length === 0) ? (
                 <div style={{
-                    border: '1px solid #D5D9D9',
-                    borderRadius: '8px',
-                  padding: '40px',
+                    border: '1px solid rgba(0, 113, 133, 0.2)',
+                    borderRadius: '12px',
+                    padding: '48px 32px',
                     backgroundColor: 'white',
-                  textAlign: 'center'
+                    textAlign: 'center',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.04)'
                 }}>
+                  <div style={{ fontSize: '40px', marginBottom: '12px' }}>📊</div>
                   <p style={{
-                    fontSize: '14px',
-                    color: '#6B7280',
+                    fontSize: '16px',
+                    color: '#64748b',
                     fontFamily: 'inherit',
-                    margin: 0
+                    margin: 0,
+                    fontWeight: '500'
                   }}>
                     Product comparison data is not available at this time.
                   </p>
@@ -2407,23 +2452,29 @@ const MarketplaceProductDetail = () => {
                   return <span style={{ fontSize: 14 }}>{text || '—'}</span>;
                 };
                 return (
-                  <div style={{ border: '1px solid #D5D9D9', borderRadius: 8, backgroundColor: 'white', overflow: isMobile ? 'auto' : 'hidden' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: gridCols, borderBottom: '2px solid rgb(0, 113, 133)', backgroundColor: '#F7F8F8', minWidth: minW }}>
-                      <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 18 }}>📊</span>
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#16191f' }}>Compare</span>
+                  <div style={{ 
+                    border: '1px solid rgba(0, 113, 133, 0.2)', 
+                    borderRadius: '12px', 
+                    backgroundColor: 'white', 
+                    overflow: isMobile ? 'auto' : 'hidden',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+                  }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: gridCols, borderBottom: '2px solid rgb(0, 113, 133)', backgroundColor: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)', minWidth: minW, background: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)' }}>
+                      <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 20, filter: 'grayscale(0)' }}>📊</span>
+                        <span style={{ fontSize: 15, fontWeight: 700, color: '#0c4a6e' }}>Compare</span>
                       </div>
-                      <div style={{ padding: 20, borderLeft: '1px solid #D5D9D9', backgroundColor: '#FFF' }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#16191f', marginBottom: 4 }}>This product</div>
-                        <div style={{ fontSize: 12, color: '#6B7280' }}>by {agent?.provider || product?.seller || '—'}</div>
+                      <div style={{ padding: 20, borderLeft: '1px solid rgba(0, 113, 133, 0.2)', backgroundColor: '#fff', borderRight: '2px solid rgb(0, 113, 133)', boxShadow: 'inset 0 0 0 1px rgba(0, 113, 133, 0.15)' }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#0c4a6e', marginBottom: 4 }}>This product</div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>by {agent?.provider || product?.seller || '—'}</div>
                       </div>
                       {compProducts.map((p, idx) => (
-                        <div key={p.id || idx} style={{ padding: 20, borderLeft: '1px solid #D5D9D9', backgroundColor: '#FAFAFA' }}>
+                        <div key={p.id || idx} style={{ padding: 20, borderLeft: '1px solid rgba(0, 113, 133, 0.15)', backgroundColor: idx % 2 === 0 ? '#fafafa' : '#f8fafc' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            {p.logoUrl ? <img src={p.logoUrl} alt="" style={{ width: 50, height: 50, objectFit: 'contain' }} /> : <div style={{ width: 50, height: 50, background: '#4A90E2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff', fontWeight: 'bold' }}>{p.icon || (p.provider || p.name || '?').substring(0, 2).toUpperCase()}</div>}
+                            {p.logoUrl ? <img src={p.logoUrl} alt="" style={{ width: 50, height: 50, objectFit: 'contain', borderRadius: 10 }} /> : <div style={{ width: 50, height: 50, background: 'linear-gradient(145deg, #0ea5e9, #0284c7)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff', fontWeight: 'bold', boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)' }}>{p.icon || (p.provider || p.name || '?').substring(0, 2).toUpperCase()}</div>}
                             <div>
-                              <div style={{ fontSize: 15, fontWeight: 700, color: '#16191f' }}>{p.name || p.product_name || p.title || `Product ${idx + 1}`}</div>
-                              <div style={{ fontSize: 12, color: '#6B7280' }}>by {p.provider || p.brand || '—'}</div>
+                              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{p.name || p.product_name || p.title || `Product ${idx + 1}`}</div>
+                              <div style={{ fontSize: 12, color: '#64748b' }}>by {p.provider || p.brand || '—'}</div>
                             </div>
                           </div>
                         </div>
@@ -2431,17 +2482,17 @@ const MarketplaceProductDetail = () => {
                     </div>
                     {Object.entries(grouped).map(([cat, catRows]) => (
                       <React.Fragment key={cat}>
-                        <div style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB', padding: '12px 20px' }}>
-                          <div style={{ fontWeight: 600, fontSize: 14, color: '#16191f' }}>{cat}</div>
-                          <div style={{ borderLeft: '1px solid #D5D9D9', fontSize: 13, color: '#6B7280', paddingLeft: 20 }}>{catDescs[cat] || ''}</div>
-                          {compProducts.map((_, i) => <div key={i} style={{ borderLeft: '1px solid #D5D9D9' }} />)}
+                        <div style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #e2e8f0', backgroundColor: '#f1f5f9', padding: '14px 20px' }}>
+                          <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>{cat}</div>
+                          <div style={{ borderLeft: '1px solid rgba(0, 113, 133, 0.15)', fontSize: 13, color: '#64748b', paddingLeft: 20 }}>{catDescs[cat] || ''}</div>
+                          {compProducts.map((_, i) => <div key={i} style={{ borderLeft: '1px solid rgba(0, 113, 133, 0.15)' }} />)}
                         </div>
                         {catRows.map((row) => (
-                          <div key={row.id || row.feature} style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #E5E7EB', backgroundColor: '#FAFAFA' }}>
-                            <div style={{ padding: '16px 20px', fontWeight: 600, fontSize: 14, color: '#16191f' }}>{row.feature || '—'}</div>
-                            <div style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>{renderCell(row.values?.thisProduct)}</div>
+                          <div key={row.id || row.feature} style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #e2e8f0', backgroundColor: '#fafafa' }}>
+                            <div style={{ padding: '16px 20px', fontWeight: 600, fontSize: 14, color: '#334155' }}>{row.feature || '—'}</div>
+                            <div style={{ padding: '16px 20px', borderLeft: '1px solid rgba(0, 113, 133, 0.15)', backgroundColor: '#fff' }}>{renderCell(row.values?.thisProduct)}</div>
                             {compProducts.map((p) => (
-                              <div key={p.id} style={{ padding: '16px 20px', borderLeft: '1px solid #D5D9D9' }}>{renderCell(row.values?.[`product_${p.id}`] ?? row.values?.[p.id])}</div>
+                              <div key={p.id} style={{ padding: '16px 20px', borderLeft: '1px solid rgba(0, 113, 133, 0.15)' }}>{renderCell(row.values?.[`product_${p.id}`] ?? row.values?.[p.id])}</div>
                             ))}
                           </div>
                         ))}
@@ -2451,12 +2502,13 @@ const MarketplaceProductDetail = () => {
                 );
               })()
               ) : (
-              /* Comparison Table - Display actual products from API (legacy) */
+              /* Comparison Table - Display actual products from API (legacy) – uniquely styled */
               <div style={{
-                border: '1px solid #D5D9D9',
-                borderRadius: '8px',
+                border: '1px solid rgba(0, 113, 133, 0.2)',
+                borderRadius: '12px',
                 backgroundColor: 'white',
-                overflow: isMobile ? 'auto' : 'hidden'
+                overflow: isMobile ? 'auto' : 'hidden',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
               }}>
                 {/* Product Headers */}
                 <div style={{
@@ -2465,43 +2517,44 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   borderBottom: '2px solid rgb(0, 113, 133)',
-                  backgroundColor: '#F7F8F8',
+                  background: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)',
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto'
                 }}>
                     <div style={{
                     padding: '20px',
                       display: 'flex',
                       alignItems: 'center',
-                    gap: '8px'
+                    gap: '10px'
                   }}>
-                    <span style={{ fontSize: '18px' }}>📊</span>
+                    <span style={{ fontSize: '20px' }}>📊</span>
                     <span style={{ 
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#16191f',
+                          fontSize: '15px',
+                          fontWeight: '700',
+                          color: '#0c4a6e',
                           fontFamily: 'inherit'
                     }}>Compare</span>
                         </div>
                   {/* Dynamic Product Headers from API */}
                   {product.comparisonProducts.map((compProduct, index) => {
                     const brandInitials = (compProduct.provider || compProduct.product_name || compProduct.name || 'N/A').substring(0, 2).toUpperCase();
-                    const brandColors = [
-                      { bg: '#000', text: '#fff' },
-                      { bg: '#4A90E2', text: '#fff' },
-                      { bg: '#E53935', text: '#fff' },
-                      { bg: '#10b981', text: '#fff' },
-                      { bg: '#F59E0B', text: '#fff' },
-                      { bg: '#8B5CF6', text: '#fff' },
-                      { bg: '#EC4899', text: '#fff' }
+                    const brandGradients = [
+                      'linear-gradient(145deg, #0f172a, #1e293b)',
+                      'linear-gradient(145deg, #0ea5e9, #0284c7)',
+                      'linear-gradient(145deg, #dc2626, #b91c1c)',
+                      'linear-gradient(145deg, #059669, #047857)',
+                      'linear-gradient(145deg, #d97706, #b45309)',
+                      'linear-gradient(145deg, #7c3aed, #6d28d9)',
+                      'linear-gradient(145deg, #db2777, #be185d)'
                     ];
-                    const brandColor = brandColors[index % brandColors.length];
+                    const gradient = brandGradients[index % brandGradients.length];
                     
                     return (
                       <div key={index} style={{ 
                         padding: '20px', 
-                        borderLeft: '1px solid #D5D9D9',
-                        backgroundColor: index === 0 ? '#FFFFFF' : '#FAFAFA',
-                        position: 'relative'
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.2)',
+                        backgroundColor: index === 0 ? '#fff' : (index % 2 === 0 ? '#fafafa' : '#f8fafc'),
+                        position: 'relative',
+                        ...(index === 0 && { borderRight: '2px solid rgb(0, 113, 133)', boxShadow: 'inset 0 0 0 1px rgba(0, 113, 133, 0.12)' })
                       }}>
                     <div style={{
                       display: 'flex',
@@ -2510,18 +2563,18 @@ const MarketplaceProductDetail = () => {
                       marginBottom: '8px'
                     }}>
                       <div style={{
-                            width: '50px',
-                            height: '50px',
-                            backgroundColor: brandColor.bg,
-                            borderRadius: '8px',
+                            width: '52px',
+                            height: '52px',
+                            background: gradient,
+                            borderRadius: '12px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                            fontSize: '14px',
-                            color: brandColor.text,
+                            fontSize: '15px',
+                            color: '#fff',
                             fontWeight: 'bold',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                            border: '2px solid #fff'
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                            border: '2px solid rgba(255,255,255,0.9)'
                           }}>
                             {brandInitials}
                       </div>
@@ -2529,7 +2582,7 @@ const MarketplaceProductDetail = () => {
                         <div style={{
                               fontSize: '15px',
                               fontWeight: '700',
-                          color: '#16191f',
+                          color: '#0f172a',
                               fontFamily: 'inherit',
                               marginBottom: '4px'
                         }}>
@@ -2537,7 +2590,7 @@ const MarketplaceProductDetail = () => {
                         </div>
                         <div style={{
                           fontSize: '12px',
-                              color: '#6B7280',
+                              color: '#64748b',
                           fontFamily: 'inherit'
                         }}>
                               by {compProduct.brand || compProduct.provider || compProduct.seller || 'Unknown'}
@@ -2562,27 +2615,27 @@ const MarketplaceProductDetail = () => {
                   }).filter(p => p != null);
                   const bestPrice = prices.length > 0 ? Math.min(...prices) : null;
                   
-                  return (
+                    return (
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: isMobile 
                         ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                         : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                       minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                      borderBottom: '1px solid #D5D9D9',
-                      backgroundColor: '#FAFAFA'
+                      borderBottom: '1px solid #e2e8f0',
+                      backgroundColor: '#fafafa'
                     }}>
                       <div style={{
                         padding: '16px 20px',
                         fontWeight: '600',
                         fontSize: '14px',
-                        color: '#16191f',
+                        color: '#0f172a',
                         fontFamily: 'inherit',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px'
                       }}>
-                        <span style={{ fontSize: '16px' }}>💰</span>
+                        <span style={{ fontSize: '18px' }}>💰</span>
                         <span>Price</span>
                       </div>
                       {product.comparisonProducts.map((compProduct, index) => {
@@ -2604,15 +2657,15 @@ const MarketplaceProductDetail = () => {
                         return (
                           <div key={index} style={{
                             padding: '16px 20px',
-                            borderLeft: '1px solid #D5D9D9',
+                            borderLeft: '1px solid rgba(0, 113, 133, 0.15)',
                           fontSize: '14px',
                             fontFamily: 'inherit',
-                            backgroundColor: isBestPrice ? '#F0FDF4' : 'white',
+                            backgroundColor: isBestPrice ? '#ecfdf5' : 'white',
                             position: 'relative'
                           }}>
                         <div style={{
                               fontWeight: isBestPrice ? '700' : '500',
-                              color: isBestPrice ? '#10b981' : '#16191f',
+                              color: isBestPrice ? '#059669' : '#0f172a',
                               display: 'flex',
                               alignItems: 'center',
                               gap: '8px'
@@ -2623,16 +2676,16 @@ const MarketplaceProductDetail = () => {
                                   {isBestPrice && (
                                     <span style={{
                                       fontSize: '10px',
-                                      backgroundColor: '#10b981',
+                                      backgroundColor: '#059669',
                                       color: 'white',
-                                      padding: '2px 6px',
+                                      padding: '2px 8px',
                                       borderRadius: '10px',
                                       fontWeight: '600'
-                                    }}>Best</span>
+                                    }}>Best value</span>
                                   )}
                                 </>
                               ) : (
-                                <span style={{ color: '#9CA3AF' }}>N/A</span>
+                                <span style={{ color: '#94a3b8' }}>N/A</span>
                               )}
                         </div>
                       </div>
@@ -2649,32 +2702,32 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                    color: '#16191f',
+                    color: '#0f172a',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>🏷️</span>
+                    <span style={{ fontSize: '18px' }}>🏷️</span>
                     <span>Brand</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
-                      borderLeft: '1px solid #D5D9D9', 
+                      borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                       fontSize: '14px', 
                       fontFamily: 'inherit',
-                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                      backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc'
                     }}>
                       <span style={{
                         fontWeight: '600',
-                        color: '#374151'
+                        color: '#334155'
                       }}>
                         {compProduct.provider || compProduct.brand || 'N/A'}
                       </span>
@@ -2689,32 +2742,32 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)`
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                     <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
                     fontSize: '14px',
-                      color: '#16191f',
+                      color: '#0f172a',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                     }}>
-                    <span style={{ fontSize: '16px' }}>🎁</span>
+                    <span style={{ fontSize: '18px' }}>🎁</span>
                     <span>Free Trial</span>
                     </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
-                      borderLeft: '1px solid #D5D9D9', 
+                      borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                       fontSize: '14px', 
                       fontFamily: 'inherit',
-                      backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
+                      backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc'
                     }}>
                       <span style={{
                         fontWeight: '600',
-                        color: '#16191f'
+                        color: '#0f172a'
                       }}>
                         {compProduct.free_trial || 'N/A'}
                       </span>
@@ -2722,8 +2775,7 @@ const MarketplaceProductDetail = () => {
                   ))}
                 </div>
 
-                {/* Additional rows shown only when expanded */}
-                {isComparisonExpanded && (
+                {/* Additional comparison rows – always visible (show more/less removed) */}
                 <>
                 {/* Display Row */}
                 {product.comparisonProducts.some(p => p.display) && (
@@ -2733,7 +2785,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -2751,7 +2803,7 @@ const MarketplaceProductDetail = () => {
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
-                      borderLeft: '1px solid #D5D9D9', 
+                      borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                       fontSize: '14px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -2781,7 +2833,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -2799,7 +2851,7 @@ const MarketplaceProductDetail = () => {
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
-                      borderLeft: '1px solid #D5D9D9', 
+                      borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                       fontSize: '14px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -2829,7 +2881,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -2853,7 +2905,7 @@ const MarketplaceProductDetail = () => {
                     return (
                       <div key={index} style={{ 
                         padding: '16px 20px', 
-                        borderLeft: '1px solid #D5D9D9', 
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                         fontSize: '14px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -2892,7 +2944,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -2916,7 +2968,7 @@ const MarketplaceProductDetail = () => {
                     return (
                       <div key={index} style={{ 
                         padding: '16px 20px', 
-                        borderLeft: '1px solid #D5D9D9', 
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                         fontSize: '14px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -2955,7 +3007,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -2979,7 +3031,7 @@ const MarketplaceProductDetail = () => {
                     return (
                       <div key={index} style={{ 
                         padding: '16px 20px', 
-                        borderLeft: '1px solid #D5D9D9', 
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                         fontSize: '14px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -3018,7 +3070,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -3041,7 +3093,7 @@ const MarketplaceProductDetail = () => {
                     return (
                       <div key={index} style={{ 
                         padding: '16px 20px', 
-                        borderLeft: '1px solid #D5D9D9', 
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                         fontSize: '13px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA',
@@ -3074,7 +3126,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -3092,7 +3144,7 @@ const MarketplaceProductDetail = () => {
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
-                      borderLeft: '1px solid #D5D9D9', 
+                      borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                       fontSize: '14px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
@@ -3122,7 +3174,7 @@ const MarketplaceProductDetail = () => {
                     ? `150px repeat(${product.comparisonProducts.length}, 200px)` 
                     : `250px repeat(${product.comparisonProducts.length}, 1fr)`,
                   minWidth: isMobile ? `${150 + (product.comparisonProducts.length * 200)}px` : 'auto',
-                  borderBottom: '1px solid #E5E7EB'
+                  borderBottom: '1px solid #e2e8f0'
                 }}>
                   <div style={{
                     padding: '16px 20px',
@@ -3146,7 +3198,7 @@ const MarketplaceProductDetail = () => {
                     return (
                       <div key={index} style={{ 
                         padding: '16px 20px', 
-                        borderLeft: '1px solid #D5D9D9', 
+                        borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
                         fontSize: '14px', 
                         fontFamily: 'inherit',
                         backgroundColor: isBestRating ? '#FEF3C7' : (index % 2 === 0 ? 'white' : '#FAFAFA')
@@ -3210,90 +3262,16 @@ const MarketplaceProductDetail = () => {
               </div>
                 )}
                 </>
-                )}
               </div>
               )}
 
-              {/* Show Less/More Button */}
-              <div style={{ 
-                marginTop: '24px', 
-                textAlign: 'center',
-                padding: '20px 0'
-              }}>
-                <button
-                  onClick={() => setIsComparisonExpanded(!isComparisonExpanded)}
-                  style={{
-                    fontSize: '15px',
-                    fontWeight: '600',
-                  color: '#007185',
-                    backgroundColor: 'transparent',
-                    border: '2px solid #007185',
-                    borderRadius: '25px',
-                    padding: '12px 28px',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    boxShadow: 'none',
-                    minWidth: '150px',
-                    whiteSpace: 'nowrap',
-                    position: 'relative',
-                    overflow: 'hidden'
-                }}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#E6F4F7';
-                    e.currentTarget.style.color = '#007185';
-                    e.currentTarget.style.borderColor = '#007185';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 113, 133, 0.15)';
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = '#007185';
-                    e.currentTarget.style.borderColor = '#007185';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  <span style={{ position: 'relative', zIndex: 1 }}>
-                    {isComparisonExpanded ? 'Show less' : 'Show more'}
-                  </span>
-                  <svg 
-                    width="18" 
-                    height="18" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      transform: isComparisonExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      position: 'relative',
-                      zIndex: 1
-                    }}
-                  >
-                    {isComparisonExpanded ? (
-                      <path 
-                        d="M18 15L12 9L6 15" 
-                        stroke="currentColor" 
-                        strokeWidth="2.5" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      />
-                    ) : (
-                      <path 
-                        d="M6 9L12 15L18 9" 
-                        stroke="currentColor" 
-                        strokeWidth="2.5" 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round"
-                      />
-                    )}
-                  </svg>
+              {/* Show Less/More – removed for now; comparison rows always visible
+              <div style={{ marginTop: '24px', textAlign: 'center', padding: '20px 0' }}>
+                <button onClick={() => setIsComparisonExpanded(!isComparisonExpanded)} ...>
+                  {isComparisonExpanded ? 'Show less' : 'Show more'}
                 </button>
               </div>
+              */}
             </div>
 
           {/* Pricing Section */}
