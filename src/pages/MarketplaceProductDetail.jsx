@@ -3435,7 +3435,9 @@ const MarketplaceProductDetail = () => {
                     </p>
                   </div>
 
-                  <button style={{
+                  <button
+                    type="button"
+                    style={{
                     padding: '10px 24px',
                     backgroundColor: 'white',
                     border: '1px solid #007185',
@@ -3449,6 +3451,7 @@ const MarketplaceProductDetail = () => {
                     whiteSpace: 'nowrap',
                     marginLeft: '20px'
                   }}
+                  onClick={() => setShowInquiryModal(true)}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#F0F8FF'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
                   >
@@ -3543,6 +3546,7 @@ const MarketplaceProductDetail = () => {
                       <div style={{ fontWeight: '600', display: 'flex', alignItems: 'center' }}>
                         {row.cost === 'Request a Quote' ? (
                           <button
+                            type="button"
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
@@ -3556,6 +3560,7 @@ const MarketplaceProductDetail = () => {
                               transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
+                            onClick={() => setShowInquiryModal(true)}
                             onMouseEnter={(e) => {
                               e.target.style.backgroundColor = '#F0F8FF';
                             }}
@@ -3567,6 +3572,7 @@ const MarketplaceProductDetail = () => {
                           </button>
                         ) : row.cost === 'Request Private Offer' ? (
                           <button
+                            type="button"
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
@@ -3580,6 +3586,7 @@ const MarketplaceProductDetail = () => {
                               transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
+                            onClick={() => setShowInquiryModal(true)}
                             onMouseEnter={(e) => {
                               e.target.style.backgroundColor = '#F0F8FF';
                             }}
@@ -3591,6 +3598,7 @@ const MarketplaceProductDetail = () => {
                           </button>
                         ) : row.cost === 'Request Pricing' ? (
                           <button
+                            type="button"
                             style={{
                               padding: '8px 16px',
                               backgroundColor: 'white',
@@ -3604,6 +3612,7 @@ const MarketplaceProductDetail = () => {
                               transition: 'background-color 0.2s',
                               whiteSpace: 'nowrap'
                             }}
+                            onClick={() => setShowInquiryModal(true)}
                             onMouseEnter={(e) => {
                               e.target.style.backgroundColor = '#F0F8FF';
                             }}
@@ -3679,7 +3688,9 @@ const MarketplaceProductDetail = () => {
                     Request a private offer to receive a custom quote.
                   </p>
                 </div>
-                <button style={{
+                <button
+                  type="button"
+                  style={{
                   padding: '10px 24px',
                   backgroundColor: 'white',
                   border: '1px solid #007185',
@@ -3693,6 +3704,7 @@ const MarketplaceProductDetail = () => {
                   whiteSpace: 'nowrap',
                   marginLeft: '20px'
                 }}
+                onClick={() => setShowInquiryModal(true)}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = '#F0F8FF';
                 }}
