@@ -12,6 +12,9 @@ export const aiAgentService = {
         categoryName = null,
         deliveryMethods: deliveryMethodsParam = null,
         deliveryMethod = null,
+        search: searchParam = null,
+        q = null,
+        searchTerm = null,
         ...otherParams
       } = params;
 
@@ -19,6 +22,15 @@ export const aiAgentService = {
         page: page.toString(),
         limit: limit.toString(),
       });
+
+      // Search: send multiple param names for backend compatibility
+      const searchValue = searchParam ?? q ?? searchTerm;
+      if (searchValue != null && String(searchValue).trim() !== '') {
+        const s = String(searchValue).trim();
+        queryParams.set('search', s);
+        queryParams.set('q', s);
+        queryParams.set('searchTerm', s);
+      }
 
       // Send category in multiple param variants so backend can filter by id or name (AI Agents, Tools, etc.)
       if (categoryId != null && categoryId !== '') {

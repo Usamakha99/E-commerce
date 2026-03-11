@@ -5,6 +5,7 @@ import { aiAgentService } from '../services/aiAgent.service';
 const Marketplace = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('AI Agents & Tools');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('Relevance');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -48,6 +49,12 @@ const Marketplace = () => {
     );
     if (match?.name) setSelectedCategory(match.name);
   }, [searchParams.get('category'), categories?.length]); // Re-run when categories load so URL can match
+
+  // Sync search from URL (e.g. /marketplace?search=chatbot)
+  useEffect(() => {
+    const search = searchParams.get('search');
+    setSearchQuery(search != null ? search : '');
+  }, [searchParams.get('search')]);
 
   // Update document title based on selected category
   useEffect(() => {
@@ -210,6 +217,7 @@ const Marketplace = () => {
           ...(categoryId ? { categoryId, categoryName } : {}),
           ...(categoryName && !categoryId ? { categoryName } : {}),
           ...(selectedDeliveryMethods.length > 0 ? { deliveryMethods: selectedDeliveryMethods } : {}),
+          ...(searchQuery.trim() ? { search: searchQuery.trim(), q: searchQuery.trim() } : {}),
         });
         
         // Handle API response structure according to documentation:
@@ -254,6 +262,18 @@ const Marketplace = () => {
           });
           total = agentsList.length;
         }
+
+        // If we have search query and API may not have filtered: filter client-side by name, description, provider
+        if (searchQuery.trim() && agentsList.length > 0) {
+          const q = searchQuery.toLowerCase().trim();
+          agentsList = agentsList.filter((agent) => {
+            const name = (agent.name || '').toLowerCase();
+            const desc = (agent.description || agent.shortDescription || '').toLowerCase();
+            const provider = (agent.provider || agent.seller || '').toLowerCase();
+            return name.includes(q) || desc.includes(q) || provider.includes(q);
+          });
+          total = agentsList.length;
+        }
         
         setAgents(agentsList);
         setTotalAgents(total);
@@ -267,7 +287,7 @@ const Marketplace = () => {
     };
 
     fetchAgents();
-  }, [currentPage, selectedCategory, selectedDeliveryMethods, categories]); // Re-fetch when page, category or delivery method changes
+  }, [currentPage, selectedCategory, selectedDeliveryMethods, searchQuery, categories]); // Re-fetch when page, category, delivery method or search changes
 
   // Reset to page 1 when category changes
   useEffect(() => {
@@ -278,6 +298,11 @@ const Marketplace = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedDeliveryMethods]);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   // Reset to page 1 when sort changes
   useEffect(() => {
@@ -539,7 +564,56 @@ const Marketplace = () => {
                 borderBottom: '1px solid #e7e7e7',
                 gap: isMobile ? '15px' : '0'
               }}>
-                <div>
+                <div style={{ flex: 1, width: isMobile ? '100%' : undefined }}>
+                  <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'stretch' : 'center', gap: '12px', marginBottom: '10px' }}>
+                    <input
+                      type="search"
+                      placeholder="Search AI agents..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          setSearchParams((p) => {
+                            const n = new URLSearchParams(p);
+                            if (searchQuery.trim()) n.set('search', searchQuery.trim());
+                            else n.delete('search');
+                            return n;
+                          });
+                        }
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        border: '1px solid #D5D9D9',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontFamily: 'DM Sans, sans-serif',
+                        maxWidth: isMobile ? '100%' : '280px',
+                        flex: isMobile ? undefined : '0 0 auto'
+                      }}
+                    />
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchQuery('');
+                          setSearchParams((p) => { const n = new URLSearchParams(p); n.delete('search'); return n; });
+                        }}
+                        style={{
+                          padding: '8px 12px',
+                          border: '1px solid #D5D9D9',
+                          borderRadius: '8px',
+                          background: '#F0F2F2',
+                          fontSize: '14px',
+                          fontFamily: 'DM Sans, sans-serif',
+                          cursor: 'pointer',
+                          color: '#232F3E'
+                        }}
+                      >
+                        Clear search
+                      </button>
+                    )}
+                  </div>
                   <h4 style={{
                     fontSize: isMobile ? '18px' : '22px',
                     fontWeight: '600',
@@ -555,10 +629,9 @@ const Marketplace = () => {
                     margin: 0,
                     fontFamily: 'DM Sans, sans-serif'
                   }}>
-                    {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}) showing {products.length > 0 ? `${(currentPage - 1) * 10 + 1}-${Math.min(currentPage * 10, totalAgents)}` : '0'}
+                    {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}){searchQuery ? ` for "${searchQuery}"` : ''} showing {products.length > 0 ? `${(currentPage - 1) * 10 + 1}-${Math.min(currentPage * 10, totalAgents)}` : '0'}
                   </p>
                 </div>
-
                 {/* Pagination and Sort */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '10px' : '20px', flexWrap: 'wrap' }}>
                   {/* Pagination */}
