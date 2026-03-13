@@ -361,18 +361,62 @@ const Marketplace = () => {
           {/* Left Sidebar - Filters */}
           <div className="col-lg-3 order-first order-lg-first" style={{ paddingRight: isMobile ? '0' : '30px', marginBottom: isMobile ? '30px' : '0' }}>
             <div>
-              {/* Selected Category */}
+              {/* Selected Category + Clear button on same line when a specific category is selected */}
               <div style={{
-                fontSize: '16px',
-                fontWeight: 'bold',
-                color: '#000',
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                gap: '10px',
                 marginBottom: '15px',
-                fontFamily: 'DM Sans, sans-serif',
                 borderBottom: '3px solid #df2020',
-                paddingBottom: '8px',
-                display: 'inline-block'
+                paddingBottom: '8px'
               }}>
-                {selectedCategory}
+                <span style={{
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  color: '#000',
+                  fontFamily: 'DM Sans, sans-serif',
+                  flex: '1 1 auto',
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {selectedCategory}
+                </span>
+                {selectedCategory && selectedCategory !== 'AI Agents & Tools' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory('AI Agents & Tools');
+                      setSearchParams((p) => { const n = new URLSearchParams(p); n.set('category', 'ai-agents-tools'); return n; });
+                      setCurrentPage(1);
+                    }}
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: '#df2020',
+                      background: 'none',
+                      border: '1px solid #df2020',
+                      borderRadius: '6px',
+                      padding: '4px 10px',
+                      cursor: 'pointer',
+                      fontFamily: 'DM Sans, sans-serif',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#df2020';
+                      e.target.style.color = '#fff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#df2020';
+                    }}
+                  >
+                    Clear category
+                  </button>
+                )}
               </div>
 
               {/* Categories List */}
