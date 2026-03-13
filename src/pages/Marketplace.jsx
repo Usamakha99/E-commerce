@@ -367,17 +367,18 @@ const Marketplace = () => {
                 alignItems: 'center',
                 flexWrap: 'nowrap',
                 gap: '10px',
-                marginBottom: '15px',
-                borderBottom: '3px solid #df2020',
-                paddingBottom: '8px'
+                marginBottom: '15px'
               }}>
                 <span style={{
                   fontSize: '16px',
                   fontWeight: 'bold',
                   color: '#000',
                   fontFamily: 'DM Sans, sans-serif',
-                  flex: '1 1 auto',
-                  minWidth: 0,
+                  display: 'inline-block',
+                  borderBottom: '3px solid #df2020',
+                  paddingBottom: '8px',
+                  width: 'fit-content',
+                  maxWidth: '100%',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap'
@@ -393,13 +394,13 @@ const Marketplace = () => {
                       setCurrentPage(1);
                     }}
                     style={{
-                      fontSize: '13px',
+                      fontSize: '12px',
                       fontWeight: '600',
                       color: '#df2020',
                       background: 'none',
                       border: '1px solid #df2020',
-                      borderRadius: '6px',
-                      padding: '4px 10px',
+                      borderRadius: '4px',
+                      padding: '3px 6px',
                       cursor: 'pointer',
                       fontFamily: 'DM Sans, sans-serif',
                       whiteSpace: 'nowrap',
@@ -414,7 +415,7 @@ const Marketplace = () => {
                       e.target.style.color = '#df2020';
                     }}
                   >
-                    Clear category
+                    Clear
                   </button>
                 )}
               </div>
