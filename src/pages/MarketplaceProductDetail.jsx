@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { aiAgentService } from '../services/aiAgent.service';
 import { productInquiryService } from '../services/productInquiry.service';
@@ -24,6 +24,10 @@ const MarketplaceProductDetail = () => {
 
   /** AWS-style: compact fixed product bar (logo + title + CTA + tabs) after scrolling */
   const [productBarPinned, setProductBarPinned] = useState(false);
+
+  /** Hero short description: show Show more only when text exceeds ~2 lines (not on 1–2 lines) */
+  const heroShortDescriptionRef = useRef(null);
+  const [heroShortDescriptionNeedsToggle, setHeroShortDescriptionNeedsToggle] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -491,6 +495,54 @@ const MarketplaceProductDetail = () => {
     ]
   };
 
+  const measureHeroShortDescriptionClamp = useCallback(() => {
+    const el = heroShortDescriptionRef.current;
+    const text = product?.shortDescription?.trim();
+    if (!el || !text) {
+      setHeroShortDescriptionNeedsToggle(false);
+      return;
+    }
+    if (isShortDescriptionExpanded) {
+      return;
+    }
+    const tol = 2;
+    setHeroShortDescriptionNeedsToggle(el.scrollHeight > el.clientHeight + tol);
+  }, [product?.shortDescription, isShortDescriptionExpanded]);
+
+  useEffect(() => {
+    setIsShortDescriptionExpanded(false);
+    setHeroShortDescriptionNeedsToggle(false);
+  }, [id]);
+
+  useLayoutEffect(() => {
+    if (loading || isShortDescriptionExpanded) return;
+    let cancelled = false;
+    const run = () => {
+      if (!cancelled) measureHeroShortDescriptionClamp();
+    };
+    requestAnimationFrame(() => requestAnimationFrame(run));
+    return () => {
+      cancelled = true;
+    };
+  }, [loading, product?.shortDescription, isShortDescriptionExpanded, isMobile, isTablet, measureHeroShortDescriptionClamp]);
+
+  useEffect(() => {
+    if (loading) return undefined;
+    const el = heroShortDescriptionRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => {
+      measureHeroShortDescriptionClamp();
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [loading, measureHeroShortDescriptionClamp]);
+
+  useEffect(() => {
+    const onResize = () => measureHeroShortDescriptionClamp();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [measureHeroShortDescriptionClamp]);
+
   // Update document title when product loads
   useEffect(() => {
     if (product && product.name) {
@@ -939,7 +991,9 @@ const MarketplaceProductDetail = () => {
                       )}
                     </div>
                   )}
-                  <div style={{
+                  <div
+                    ref={heroShortDescriptionRef}
+                    style={{
                     fontSize: '13px',
                     fontWeight: '500',
                     color: '#000000',
@@ -951,12 +1005,12 @@ const MarketplaceProductDetail = () => {
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    maxHeight: isShortDescriptionExpanded ? 'none' : '51px',
-                    transition: 'max-height 0.3s ease'
-                  }}>
+                    transition: 'opacity 0.2s ease'
+                  }}
+                  >
                     <p style={{ margin: 0 }}>{renderTextWithLinks(product.shortDescription)}</p>
                   </div>
-                  {product.shortDescription && product.shortDescription.length > 100 && (
+                  {product.shortDescription?.trim() && heroShortDescriptionNeedsToggle && (
                     <button
                       type="button"
                       onClick={() => setIsShortDescriptionExpanded(!isShortDescriptionExpanded)}
@@ -1338,15 +1392,17 @@ const MarketplaceProductDetail = () => {
             </div>
 
             {/* Full Width Description Section */}
-            <div className="row mt-3">
-              <div className="col-12">
+            <div className="row" style={{ marginTop: '10px', marginBottom: 0 }}>
+              <div className="col-12" style={{ paddingBottom: 0 }}>
                 <div style={{
                   border: '1px solid #D5D9D9',
                   borderRadius: '8px',
                   padding: '18px',
+                  paddingBottom: '14px',
                   backgroundColor: 'white',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  marginBottom: 0,
                 }}>
                   <div style={{
                     fontSize: '13px',
@@ -1363,7 +1419,8 @@ const MarketplaceProductDetail = () => {
                   {/* See More/Less Button - Modern & Spicy */}
                   {product.overview && product.overview.length > 200 && (
                     <div style={{
-                      marginTop: '20px',
+                      marginTop: '12px',
+                      marginBottom: 0,
                       display: 'flex',
                       justifyContent: 'center'
                     }}>
