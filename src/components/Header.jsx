@@ -25,8 +25,7 @@ const Header = () => {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 992);
   const [showCartSidebar, setShowCartSidebar] = useState(false);
-  
-  // Calculate cart item count
+
   const cartItemCount = cart?.items?.length || 0;
 
   // Handle window resize
@@ -510,7 +509,7 @@ const Header = () => {
               alignItems: 'center', 
               gap: isMobile ? '10px' : '20px'
             }}>
-              {/* Mobile Cart Icon */}
+              {/* Mobile Cart Icon — commented out
               {isMobile && (
                 <Link 
                   to="/cart" 
@@ -560,6 +559,7 @@ const Header = () => {
                   )}
                 </Link>
               )}
+              */}
 
               {/* Search - Right side */}
               <form 
@@ -775,7 +775,7 @@ const Header = () => {
                     Sign Up
                   </Link> */}
 
-                  {/* Cart Icon - When Not Logged In */}
+                  {/* Cart Icon - When Not Logged In — commented out
                   <button 
                     onClick={() => setShowCartSidebar(true)}
                     style={{ 
@@ -832,10 +832,11 @@ const Header = () => {
                       </span>
                     )}
                   </button>
+                  */}
                 </>
               ) : (
                 <>
-                  {/* Cart Icon - When Logged In */}
+                  {/* Cart Icon - When Logged In — commented out
                   <button 
                     onClick={() => setShowCartSidebar(true)}
                     style={{ 
@@ -892,6 +893,7 @@ const Header = () => {
                       </span>
                     )}
                   </button>
+                  */}
 
                   {/* Logout Icon - When Logged In */}
                   <button 
@@ -1212,8 +1214,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Cart Sidebar Component */}
-      <CartSidebar 
+      <CartSidebar
         isOpen={showCartSidebar}
         onClose={() => setShowCartSidebar(false)}
       />

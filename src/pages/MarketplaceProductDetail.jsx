@@ -22,6 +22,9 @@ const MarketplaceProductDetail = () => {
   // Product Inquiry Modal state
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
+  /** AWS-style: compact fixed product bar (logo + title + CTA + tabs) after scrolling */
+  const [productBarPinned, setProductBarPinned] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -497,15 +500,19 @@ const MarketplaceProductDetail = () => {
     }
   }, [product]);
 
-  // Scroll Spy: Update active tab based on scroll position
+  // Scroll: pin compact product header (AWS Marketplace-style) + scroll-spy tabs
   useEffect(() => {
+    const PIN_SCROLL_Y = 88;
+
     const handleScroll = () => {
+      setProductBarPinned(window.scrollY >= PIN_SCROLL_Y);
+
       const sections = tabs.map(tab => ({
         id: tab.toLowerCase().replace(/\s+/g, '-'),
         element: document.getElementById(tab.toLowerCase().replace(/\s+/g, '-'))
       }));
 
-      const scrollPosition = window.scrollY + 200; // Offset for better detection
+      const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
@@ -516,23 +523,25 @@ const MarketplaceProductDetail = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle tab click - scroll to section
+  // Handle tab click - scroll to section (extra offset when AWS-style pinned bar is visible)
   const handleTabClick = (tab) => {
     const sectionId = tab.toLowerCase().replace(/\s+/g, '-');
     const element = document.getElementById(sectionId);
-    
+
     if (element) {
-      const offsetTop = element.offsetTop - 100; // Offset for header
+      const anchorGap = productBarPinned ? 168 : 100;
+      const offsetTop = element.offsetTop - anchorGap;
       window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
+        top: Math.max(0, offsetTop),
+        behavior: 'smooth',
       });
     }
-    
+
     setActiveTab(sectionId);
   };
 
@@ -544,6 +553,63 @@ const MarketplaceProductDetail = () => {
     'Product comparison',
     'How to buy'
   ];
+
+  const renderMarketplaceTabs = (compact, centerTabs = false) => (
+    <div
+      style={{
+        display: 'flex',
+        gap: compact ? '6px' : '8px',
+        flexWrap: isMobile && compact ? 'nowrap' : 'wrap',
+        justifyContent: centerTabs ? 'center' : 'flex-start',
+        width: '100%',
+        overflowX: centerTabs && compact && isMobile ? 'auto' : undefined,
+        scrollbarWidth: 'thin',
+        WebkitOverflowScrolling: centerTabs && compact && isMobile ? 'touch' : undefined,
+      }}
+    >
+      {tabs.map((tab, index) => {
+        const isActive = activeTab === tab.toLowerCase().replace(/\s+/g, '-');
+        return (
+          <button
+            key={index}
+            type="button"
+            onClick={() => handleTabClick(tab)}
+            style={{
+              padding: compact ? '8px 14px' : '10px 20px',
+              border: 'none',
+              backgroundColor: isActive ? '#df2020' : 'transparent',
+              color: isActive ? 'white' : '#6B7280',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: compact ? '13px' : '14px',
+              fontWeight: isActive ? '600' : '500',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+              position: 'relative',
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) {
+                e.target.style.backgroundColor = '#F3F4F6';
+                e.target.style.color = '#16191f';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#6B7280';
+              }
+            }}
+          >
+            {tab}
+            {tab === 'Product comparison' && (
+              <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: '#df2020', color: 'white', fontSize: '9px', padding: '3px 6px', borderRadius: '10px', fontWeight: '700', boxShadow: '0 2px 6px rgba(223, 32, 32, 0.4)' }}>NEW</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   // Function to convert text URLs to clickable links with styled color
   const renderTextWithLinks = (text) => {
@@ -582,6 +648,9 @@ const MarketplaceProductDetail = () => {
     });
   };
 
+  /** Flush under fixed header: logo 30/50px + header padding 5+5 (Header.jsx) */
+  const headerClearance = isMobile ? '40px' : '60px';
+
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -599,8 +668,48 @@ const MarketplaceProductDetail = () => {
     return stars;
   };
 
+  const sectionShell = {
+    position: 'relative',
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    padding: isMobile ? '22px 18px 26px' : '32px 36px 36px',
+    marginBottom: isMobile ? '18px' : '22px',
+    boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06), 0 14px 36px -12px rgba(15, 23, 42, 0.09)',
+    border: '1px solid #e8ecf1',
+    borderLeft: '4px solid #df2020',
+    scrollMarginTop: '120px',
+  };
+
+  const heroShell = {
+    position: 'relative',
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
+    padding: isMobile ? '20px 20px 0' : '32px 40px 0',
+    marginBottom: isMobile ? '10px' : '12px',
+    boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06), 0 14px 36px -12px rgba(15, 23, 42, 0.09)',
+    border: '1px solid #e8ecf1',
+    borderLeft: '4px solid #111A45',
+  };
+
+  /** Tabs row inside hero card (no separate card — avoids gap between hero and tabs) */
+  const tabsStripInHero = {
+    marginTop: isMobile ? '14px' : '18px',
+    paddingTop: isMobile ? '12px' : '14px',
+    paddingBottom: isMobile ? '12px' : '14px',
+    borderTop: '1px solid #eef2f7',
+    overflowX: 'auto',
+    scrollbarWidth: 'thin',
+  };
+
   return (
-    <main className="main" style={{ paddingTop: '70px', backgroundColor: 'white' }}>
+    <main
+      className="main"
+      style={{
+        paddingTop: headerClearance,
+        minHeight: '100vh',
+        background: 'linear-gradient(180deg, #eef2f7 0%, #f4f6fa 45%, #eef2f7 100%)',
+      }}
+    >
       <div className="container-fluid" style={{ padding: isMobile ? '0 15px' : '0 40px' }}>
         {/* Loading State */}
         {loading && (
@@ -687,15 +796,96 @@ const MarketplaceProductDetail = () => {
         {/* Product Content - Only show if not loading and no error */}
         {!loading && !error && agent && (
           <>
-        {/* Product Header - Design 1: Clean & Professional */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          padding: isMobile ? '24px' : '40px',
-          marginBottom: '32px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-          border: '1px solid #E5E7EB'
-        }}>
+        {/* AWS-style: scrolled = compact fixed bar (logo + title + primary CTA + tabs) */}
+        {productBarPinned && (
+          <div
+            role="region"
+            aria-label="Product"
+            style={{
+              position: 'fixed',
+              top: headerClearance,
+              left: 0,
+              right: 0,
+              zIndex: 98,
+              background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 55%, #ffffff 100%)',
+              borderBottom: '1px solid #e2e8f0',
+              boxShadow: '0 4px 20px rgba(15, 26, 69, 0.12)',
+              borderLeft: '4px solid #111A45',
+            }}
+          >
+            <div className="container-fluid" style={{ padding: isMobile ? '12px 15px 10px' : '14px 40px 12px', maxWidth: '100%' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 14,
+                marginBottom: 10,
+              }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, flex: 1, minWidth: 0 }}>
+                  <div style={{
+                    width: isMobile ? '40px' : '46px',
+                    height: isMobile ? '40px' : '46px',
+                    flexShrink: 0,
+                    backgroundColor: '#fff',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '7px',
+                    border: '1px solid rgba(17, 26, 69, 0.12)',
+                    boxShadow: '0 2px 10px rgba(17, 26, 69, 0.12)',
+                  }}
+                  >
+                    <img src={product.logo} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  </div>
+                  <h2
+                    title={product.name}
+                    style={{
+                      margin: 0,
+                      fontSize: isMobile ? '16px' : '18px',
+                      fontWeight: '700',
+                      color: '#111A45',
+                      fontFamily: 'inherit',
+                      lineHeight: 1.3,
+                      letterSpacing: '-0.03em',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {product.name}
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowInquiryModal(true)}
+                  style={{
+                    flexShrink: 0,
+                    padding: isMobile ? '9px 16px' : '10px 22px',
+                    background: 'linear-gradient(180deg, #ffb84d 0%, #FF9900 100%)',
+                    border: 'none',
+                    borderRadius: '22px',
+                    fontSize: isMobile ? '13px' : '14px',
+                    fontWeight: '600',
+                    color: '#111',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    boxShadow: '0 2px 8px rgba(255, 153, 0, 0.45)',
+                  }}
+                >
+                  Request private offer
+                </button>
+              </div>
+              <div style={{ paddingTop: 2, paddingBottom: 2 }}>
+                {renderMarketplaceTabs(true, true)}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Product Header — full layout at page top (AWS prodview unscrolled) */}
+        <div style={heroShell}>
           <div className="row">
             <div className="col-lg-8">
               <div style={{ display: 'flex', gap: isMobile ? '15px' : '25px', alignItems: 'flex-start' }}>
@@ -714,15 +904,47 @@ const MarketplaceProductDetail = () => {
                   <img src={product.logo} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h1 style={{ fontSize: isMobile ? '24px' : '32px', fontWeight: '700', color: '#16191f', margin: '0 0 20px 0', fontFamily: 'inherit', lineHeight: '1.3', letterSpacing: '-0.02em' }}>
+                  <h1 style={{ fontSize: isMobile ? '24px' : '32px', fontWeight: '700', color: '#16191f', margin: '0 0 10px 0', fontFamily: 'inherit', lineHeight: '1.3', letterSpacing: '-0.02em' }}>
                     {product.name}
                   </h1>
+                  <div style={{ fontSize: '14px', color: '#545b64', marginBottom: '10px', fontFamily: 'inherit' }}>
+                    Sold by:{' '}
+                    <span style={{ color: '#0073bb' }}>{product.seller}</span>
+                  </div>
+                  {product.deployedOnAWS && (
+                    <div style={{ marginBottom: '10px' }}>
+                      <span style={{
+                        display: 'inline-block',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        color: '#232f3e',
+                        border: '1px solid #d5dbdb',
+                        borderRadius: '4px',
+                        padding: '3px 10px',
+                        backgroundColor: '#fafafa',
+                        fontFamily: 'inherit',
+                      }}
+                      >
+                        Deployed on AWS
+                      </span>
+                    </div>
+                  )}
+                  {(product.rating > 0 || product.externalReviews > 0) && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '12px', flexWrap: 'wrap' }}>
+                      {product.rating > 0 && <span style={{ display: 'flex', alignItems: 'center' }}>{renderStars(product.rating)}</span>}
+                      {product.externalReviews > 0 && (
+                        <span style={{ fontSize: '14px', color: '#545b64', fontFamily: 'inherit' }}>
+                          ({product.externalReviews})
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div style={{
                     fontSize: '15px',
                     fontWeight: '500',
                     color: '#000000',
                     lineHeight: '1.7',
-                    margin: '0 0 16px 0',
+                    margin: '0 0 8px 0',
                     fontFamily: 'inherit',
                     display: '-webkit-box',
                     WebkitLineClamp: isShortDescriptionExpanded ? 'none' : 2,
@@ -738,7 +960,7 @@ const MarketplaceProductDetail = () => {
                     <button
                       type="button"
                       onClick={() => setIsShortDescriptionExpanded(!isShortDescriptionExpanded)}
-                      style={{ fontSize: '14px', fontWeight: '400', color: 'rgb(0, 113, 133)', backgroundColor: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', marginTop: '8px', marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                      style={{ fontSize: '14px', fontWeight: '400', color: 'rgb(0, 113, 133)', backgroundColor: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', marginTop: '4px', marginBottom: '0', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                       onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline'; e.currentTarget.style.color = 'rgb(0, 95, 115)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none'; e.currentTarget.style.color = 'rgb(0, 113, 133)'; }}
                     >
@@ -760,41 +982,17 @@ const MarketplaceProductDetail = () => {
               </div>
             </div>
           </div>
+
+          {!productBarPinned && (
+            <div style={tabsStripInHero}>
+              {renderMarketplaceTabs(false)}
+            </div>
+          )}
         </div>
 
-        {/* Tabs Navigation - Button/Pills Style - STICKY */}
-        <div style={{ position: 'sticky', top: '70px', zIndex: 100, backgroundColor: 'white', borderRadius: '12px', padding: '8px', marginBottom: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', border: '1px solid #E5E7EB', overflowX: 'auto', scrollbarWidth: 'thin' }}>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: isMobile ? 'nowrap' : 'wrap' }}>
-            {tabs.map((tab, index) => {
-              const isActive = activeTab === tab.toLowerCase().replace(/\s+/g, '-');
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleTabClick(tab)}
-                  style={{ padding: '10px 20px', border: 'none', backgroundColor: isActive ? '#df2020' : 'transparent', color: isActive ? 'white' : '#6B7280', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: isActive ? '600' : '500', fontFamily: 'inherit', whiteSpace: 'nowrap', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', position: 'relative' }}
-                  onMouseEnter={(e) => { if (!isActive) { e.target.style.backgroundColor = '#F3F4F6'; e.target.style.color = '#16191f'; } }}
-                  onMouseLeave={(e) => { if (!isActive) { e.target.style.backgroundColor = 'transparent'; e.target.style.color = '#6B7280'; } }}
-                >
-                  {tab}
-                  {tab === 'Product comparison' && (
-                    <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: '#df2020', color: 'white', fontSize: '9px', padding: '3px 6px', borderRadius: '10px', fontWeight: '700', boxShadow: '0 2px 6px rgba(223, 32, 32, 0.4)' }}>NEW</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Tab Content Container - All Sections Visible for Scroll */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
-          padding: isMobile ? '28px' : '40px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-          border: '1px solid #E5E7EB'
-        }}>
-          {/* Overview Section */}
-          <div id="overview" style={{ scrollMarginTop: '120px', marginBottom: '48px' }}>
+        {/* Sections — each block is its own surface (scroll-spy targets unchanged) */}
+          {/* Overview */}
+          <section id="overview" style={sectionShell}>
               <h2 style={{
                 fontSize: isMobile ? '22px' : '28px',
                 fontWeight: '700',
@@ -899,12 +1097,13 @@ const MarketplaceProductDetail = () => {
               {/* Highlights Column */}
               <div className="col-lg-6" style={{ marginBottom: isMobile ? '24px' : '0' }}>
                 <div style={{
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '12px',
-                  padding: '28px',
-                  backgroundColor: '#F9FAFB',
+                  borderRadius: '14px',
+                  padding: '26px',
+                  background: 'linear-gradient(165deg, #f8fafc 0%, #f1f5f9 100%)',
                   height: '100%',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  border: '1px solid rgba(226, 232, 240, 0.85)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)'
                 }}>
                   <h3 style={{
                     fontSize: '18px',
@@ -972,13 +1171,13 @@ const MarketplaceProductDetail = () => {
               {/* Details Column */}
               <div className="col-lg-6">
                 <div style={{
-                  border: '1px solid #D5D9D9',
-                  borderRadius: '12px',
-                  padding: '40px',
-                  backgroundColor: 'white',
+                  border: '1px solid #e8edf2',
+                  borderRadius: '14px',
+                  padding: isMobile ? '24px' : '32px',
+                  backgroundColor: '#fcfdfe',
                   height: '100%',
                   overflow: 'hidden',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                  boxShadow: '0 1px 0 rgba(255,255,255,0.8) inset'
                 }}>
                   <h3 style={{
                     fontSize: '20px',
@@ -1247,10 +1446,10 @@ const MarketplaceProductDetail = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Features Section */}
-          <div id="features" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
+          {/* Features */}
+          <section id="features" style={sectionShell}>
               <h2 style={{
                 fontSize: isMobile ? '22px' : '28px',
                 fontWeight: '700',
@@ -1560,10 +1759,10 @@ const MarketplaceProductDetail = () => {
                   </div>
                 )}
               </div>
-            </div>
+          </section>
 
-          {/* Resources Section */}
-          <div id="resources" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
+          {/* Resources */}
+          <section id="resources" style={sectionShell}>
               <h2 style={{
                 fontSize: isMobile ? '22px' : '28px',
                 fontWeight: '700',
@@ -1806,10 +2005,10 @@ const MarketplaceProductDetail = () => {
                 </div>
                 )}
               </div>
-            </div>
+          </section>
 
-          {/* Support Section */}
-          <div id="support" style={{ scrollMarginTop: '120px', marginTop: '48px', marginBottom: '48px' }}>
+          {/* Support */}
+          <section id="support" style={sectionShell}>
               <h2 style={{
                 fontSize: isMobile ? '22px' : '28px',
                 fontWeight: '700',
@@ -2047,22 +2246,10 @@ const MarketplaceProductDetail = () => {
                 </div>
                 )}
               </div>
-            </div>
+          </section>
 
-          {/* Product Comparison Section – uniquely designed */}
-          <div 
-            id="product-comparison" 
-            style={{ 
-              scrollMarginTop: '120px', 
-              marginTop: '48px', 
-              marginBottom: '48px',
-              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)',
-              borderRadius: '16px',
-              padding: isMobile ? '20px' : '28px',
-              border: '1px solid rgba(0, 113, 133, 0.15)',
-              boxShadow: '0 4px 24px rgba(0, 113, 133, 0.08)'
-            }}
-          >
+          {/* Product comparison — inner blocks keep comparison styling */}
+          <section id="product-comparison" style={sectionShell}>
               {/* Header */}
               <div style={{
                 display: 'flex',
@@ -2998,10 +3185,10 @@ const MarketplaceProductDetail = () => {
                 </button>
               </div>
               */}
-            </div>
+          </section>
 
-          {/* Pricing Section */}
-          <div id="how-to-buy" style={{ scrollMarginTop: '120px', marginTop: '40px' }}>
+          {/* Pricing / How to buy */}
+          <section id="how-to-buy" style={sectionShell}>
               <h2 style={{
                 fontSize: isMobile ? '20px' : '24px',
                 fontWeight: '600',
@@ -3419,10 +3606,8 @@ const MarketplaceProductDetail = () => {
                   Request private offer
                 </button>
               </div>
-            </div>
+          </section>
 
-          {/* Add more tab content as needed */}
-        </div>
           </>
         )}
       </div>
