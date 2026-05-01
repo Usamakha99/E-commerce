@@ -759,7 +759,7 @@ export default function MarketplaceProductComparisonSection({
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
                     const camera = compProduct.camera;
-                    const cameraText = typeof camera === 'object' 
+                    const cameraText = typeof camera === 'object' && camera !== null
                       ? `Rear: ${camera.rear || 'N/A'}, Front: ${camera.front || 'N/A'}`
                       : (camera || '—');
                     return (

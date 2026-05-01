@@ -100,7 +100,7 @@ export default function MarketplaceFeaturesSection({
                               fontFamily: 'inherit',
                               lineHeight: '1.6'
                             }}>
-                              {typeof feature === 'string' ? feature : feature.name || feature.title || feature.description || feature.text || JSON.stringify(feature)}
+                              {typeof feature === 'string' ? feature : (feature && (feature.name || feature.title || feature.description || feature.text)) || JSON.stringify(feature ?? '')}
                             </span>
                           </li>
                         ))}
@@ -152,7 +152,7 @@ export default function MarketplaceFeaturesSection({
                               fontFamily: 'inherit',
                               lineHeight: '1.6'
                             }}>
-                              {typeof program === 'string' ? program : program.name || program.title || program.description || program.text || JSON.stringify(program)}
+                              {typeof program === 'string' ? program : (program && (program.name || program.title || program.description || program.text)) || JSON.stringify(program ?? '')}
                             </span>
                           </li>
                         ))}

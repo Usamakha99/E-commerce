@@ -267,8 +267,9 @@ export default function MarketplaceOverviewSection({
                           const agentCategories = agent?.categories || [];
                           const displayCategories = agentCategories.length > 0 ? agentCategories : categories;
 
-                          return displayCategories.length > 0 ? (
-                            displayCategories.map((cat, index) => {
+                          const safeCats = (displayCategories || []).filter(Boolean);
+                          return safeCats.length > 0 ? (
+                            safeCats.map((cat, index) => {
                               const categoryId = cat.id || cat.categoryId;
                               const categoryName = cat.name || cat.title || cat.slug || `Category ${categoryId}`;
                               const categorySlug = cat.slug || cat.name?.toLowerCase().replace(/\s+/g, '-') || categoryId;
@@ -326,7 +327,9 @@ export default function MarketplaceOverviewSection({
                         fontFamily: 'inherit',
                         fontWeight: '600'
                       }}>
-                        {typeof product.deliveryMethod === 'object' ? product.deliveryMethod.name : (product.deliveryMethod || 'Not specified')}
+                        {typeof product.deliveryMethod === 'object' && product.deliveryMethod !== null
+                          ? (product.deliveryMethod.name || product.deliveryMethod.label || 'Not specified')
+                          : (product.deliveryMethod ?? 'Not specified')}
                       </span>
                     </div>
 
