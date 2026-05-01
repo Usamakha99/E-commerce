@@ -581,7 +581,7 @@ const MarketplaceProductDetail = () => {
               color: isActive ? 'white' : '#6B7280',
               borderRadius: '8px',
               cursor: 'pointer',
-              fontSize: compact ? '13px' : '14px',
+              fontSize: compact ? '12px' : '13px',
               fontWeight: isActive ? '600' : '500',
               fontFamily: 'inherit',
               whiteSpace: 'nowrap',
@@ -658,11 +658,11 @@ const MarketplaceProductDetail = () => {
     
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
-        stars.push(<span key={i} style={{ color: '#FFB800', fontSize: '18px' }}>★</span>);
+        stars.push(<span key={i} style={{ color: '#FFB800', fontSize: '14px' }}>★</span>);
       } else if (i === fullStars && hasHalfStar) {
-        stars.push(<span key={i} style={{ color: '#FFB800', fontSize: '18px' }}>⯨</span>);
+        stars.push(<span key={i} style={{ color: '#FFB800', fontSize: '14px' }}>⯨</span>);
       } else {
-        stars.push(<span key={i} style={{ color: '#ddd', fontSize: '18px' }}>★</span>);
+        stars.push(<span key={i} style={{ color: '#ddd', fontSize: '14px' }}>★</span>);
       }
     }
     return stars;
@@ -671,31 +671,31 @@ const MarketplaceProductDetail = () => {
   const sectionShell = {
     position: 'relative',
     backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    padding: isMobile ? '22px 18px 26px' : '32px 36px 36px',
-    marginBottom: isMobile ? '18px' : '22px',
-    boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06), 0 14px 36px -12px rgba(15, 23, 42, 0.09)',
-    border: '1px solid #e8ecf1',
-    borderLeft: '4px solid #df2020',
-    scrollMarginTop: '120px',
+    borderRadius: '8px',
+    padding: isMobile ? '16px 14px 18px' : '18px 20px 20px',
+    marginBottom: isMobile ? '12px' : '14px',
+    boxShadow: '0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04)',
+    border: '1px solid #e2e8f0',
+    borderLeft: '3px solid #df2020',
+    scrollMarginTop: '100px',
   };
 
   const heroShell = {
     position: 'relative',
     backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    padding: isMobile ? '20px 20px 0' : '32px 40px 0',
-    marginBottom: isMobile ? '10px' : '12px',
-    boxShadow: '0 1px 3px rgba(15, 23, 42, 0.06), 0 14px 36px -12px rgba(15, 23, 42, 0.09)',
-    border: '1px solid #e8ecf1',
-    borderLeft: '4px solid #111A45',
+    borderRadius: '8px',
+    padding: isMobile ? '16px 16px 0' : '22px 24px 0',
+    marginBottom: isMobile ? '8px' : '10px',
+    boxShadow: '0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.04)',
+    border: '1px solid #e2e8f0',
+    borderLeft: '3px solid #111A45',
   };
 
   /** Tabs row inside hero card (no separate card — avoids gap between hero and tabs) */
   const tabsStripInHero = {
-    marginTop: isMobile ? '14px' : '18px',
-    paddingTop: isMobile ? '12px' : '14px',
-    paddingBottom: isMobile ? '12px' : '14px',
+    marginTop: isMobile ? '10px' : '14px',
+    paddingTop: isMobile ? '10px' : '12px',
+    paddingBottom: isMobile ? '10px' : '12px',
     borderTop: '1px solid #eef2f7',
     overflowX: 'auto',
     scrollbarWidth: 'thin',
@@ -703,7 +703,7 @@ const MarketplaceProductDetail = () => {
 
   return (
     <main
-      className="main"
+      className="main marketplace-font-scope"
       style={{
         paddingTop: headerClearance,
         minHeight: '100vh',
@@ -730,10 +730,10 @@ const MarketplaceProductDetail = () => {
               margin: '0 auto 20px'
             }}></div>
             <p style={{ 
-              fontSize: '16px', 
+              fontSize: '13px', 
               color: '#565959',
               margin: 0,
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: 'inherit'
             }}>
               Loading agent details...
             </p>
@@ -757,19 +757,19 @@ const MarketplaceProductDetail = () => {
             textAlign: 'center'
           }}>
             <p style={{ 
-              fontSize: '18px', 
+              fontSize: '13px', 
               color: '#dc2626',
               fontWeight: '600',
               margin: '0 0 10px 0',
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: 'inherit'
             }}>
               Error loading agent details
             </p>
             <p style={{ 
-              fontSize: '14px', 
+              fontSize: '13px', 
               color: '#991b1b',
               margin: 0,
-              fontFamily: 'DM Sans, sans-serif'
+              fontFamily: 'inherit'
             }}>
               {error}
             </p>
@@ -783,9 +783,9 @@ const MarketplaceProductDetail = () => {
                 color: 'white',
                 textDecoration: 'none',
                 borderRadius: '6px',
-                fontSize: '14px',
+                fontSize: '13px',
                 fontWeight: '600',
-                fontFamily: 'DM Sans, sans-serif'
+                fontFamily: 'inherit'
               }}
             >
               Back to Marketplace
@@ -828,7 +828,7 @@ const MarketplaceProductDetail = () => {
                     height: isMobile ? '40px' : '46px',
                     flexShrink: 0,
                     backgroundColor: '#fff',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -843,7 +843,7 @@ const MarketplaceProductDetail = () => {
                     title={product.name}
                     style={{
                       margin: 0,
-                      fontSize: isMobile ? '16px' : '18px',
+                      fontSize: isMobile ? '14px' : '16px',
                       fontWeight: '700',
                       color: '#111A45',
                       fontFamily: 'inherit',
@@ -866,7 +866,7 @@ const MarketplaceProductDetail = () => {
                     background: 'linear-gradient(180deg, #ffb84d 0%, #FF9900 100%)',
                     border: 'none',
                     borderRadius: '22px',
-                    fontSize: isMobile ? '13px' : '14px',
+                    fontSize: isMobile ? '12px' : '13px',
                     fontWeight: '600',
                     color: '#111',
                     cursor: 'pointer',
@@ -894,7 +894,7 @@ const MarketplaceProductDetail = () => {
                   height: isMobile ? '72px' : '96px',
                   flexShrink: 0,
                   backgroundColor: '#F9FAFB',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -904,10 +904,10 @@ const MarketplaceProductDetail = () => {
                   <img src={product.logo} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <h1 style={{ fontSize: isMobile ? '24px' : '32px', fontWeight: '700', color: '#16191f', margin: '0 0 10px 0', fontFamily: 'inherit', lineHeight: '1.3', letterSpacing: '-0.02em' }}>
+                  <h1 style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: '700', color: '#16191f', margin: '0 0 10px 0', fontFamily: 'inherit', lineHeight: '1.3', letterSpacing: '-0.02em' }}>
                     {product.name}
                   </h1>
-                  <div style={{ fontSize: '14px', color: '#545b64', marginBottom: '10px', fontFamily: 'inherit' }}>
+                  <div style={{ fontSize: '13px', color: '#545b64', marginBottom: '10px', fontFamily: 'inherit' }}>
                     Sold by:{' '}
                     <span style={{ color: '#0073bb' }}>{product.seller}</span>
                   </div>
@@ -933,14 +933,14 @@ const MarketplaceProductDetail = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '12px', flexWrap: 'wrap' }}>
                       {product.rating > 0 && <span style={{ display: 'flex', alignItems: 'center' }}>{renderStars(product.rating)}</span>}
                       {product.externalReviews > 0 && (
-                        <span style={{ fontSize: '14px', color: '#545b64', fontFamily: 'inherit' }}>
+                        <span style={{ fontSize: '13px', color: '#545b64', fontFamily: 'inherit' }}>
                           ({product.externalReviews})
                         </span>
                       )}
                     </div>
                   )}
                   <div style={{
-                    fontSize: '15px',
+                    fontSize: '13px',
                     fontWeight: '500',
                     color: '#000000',
                     lineHeight: '1.7',
@@ -960,7 +960,7 @@ const MarketplaceProductDetail = () => {
                     <button
                       type="button"
                       onClick={() => setIsShortDescriptionExpanded(!isShortDescriptionExpanded)}
-                      style={{ fontSize: '14px', fontWeight: '400', color: 'rgb(0, 113, 133)', backgroundColor: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', marginTop: '4px', marginBottom: '0', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                      style={{ fontSize: '13px', fontWeight: '400', color: 'rgb(0, 113, 133)', backgroundColor: 'transparent', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none', marginTop: '4px', marginBottom: '0', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                       onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline'; e.currentTarget.style.color = 'rgb(0, 95, 115)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none'; e.currentTarget.style.color = 'rgb(0, 113, 133)'; }}
                     >
@@ -976,8 +976,8 @@ const MarketplaceProductDetail = () => {
             </div>
             <div className="col-lg-4" style={{ marginTop: isTablet ? '25px' : 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <button type="button" style={{ padding: '14px 28px', backgroundColor: '#111A45', border: 'none', borderRadius: '25px', fontSize: '15px', fontWeight: '600', color: 'white', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.3s ease', boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#0D1433'; e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#111A45'; e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)'; }} onClick={() => setShowInquiryModal(true)}>View Purchase Options</button>
-                <button type="button" style={{ padding: '14px 28px', backgroundColor: 'white', border: '2px solid #6B7280', borderRadius: '25px', fontSize: '15px', fontWeight: '600', color: '#16191f', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.3s ease' }} onMouseEnter={(e) => { e.target.style.borderColor = '#111A45'; e.target.style.color = '#16191f'; e.target.style.transform = 'translateY(-2px)'; }} onMouseLeave={(e) => { e.target.style.borderColor = '#6B7280'; e.target.style.color = '#16191f'; e.target.style.transform = 'translateY(0)'; }} onClick={() => setShowInquiryModal(true)}>Request Demo</button>
+                <button type="button" style={{ padding: '14px 28px', backgroundColor: '#111A45', border: 'none', borderRadius: '25px', fontSize: '14px', fontWeight: '600', color: 'white', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.3s ease', boxShadow: '0 2px 8px rgba(17, 26, 69, 0.2)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = '#0D1433'; e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 4px 12px rgba(17, 26, 69, 0.3)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = '#111A45'; e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 2px 8px rgba(17, 26, 69, 0.2)'; }} onClick={() => setShowInquiryModal(true)}>View Purchase Options</button>
+                <button type="button" style={{ padding: '14px 28px', backgroundColor: 'white', border: '2px solid #6B7280', borderRadius: '25px', fontSize: '14px', fontWeight: '600', color: '#16191f', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.3s ease' }} onMouseEnter={(e) => { e.target.style.borderColor = '#111A45'; e.target.style.color = '#16191f'; e.target.style.transform = 'translateY(-2px)'; }} onMouseLeave={(e) => { e.target.style.borderColor = '#6B7280'; e.target.style.color = '#16191f'; e.target.style.transform = 'translateY(0)'; }} onClick={() => setShowInquiryModal(true)}>Request Demo</button>
               </div>
             </div>
           </div>
@@ -993,10 +993,10 @@ const MarketplaceProductDetail = () => {
           {/* Overview */}
           <section id="overview" style={sectionShell}>
               <h2 style={{
-                fontSize: isMobile ? '22px' : '28px',
+                fontSize: isMobile ? '18px' : '22px',
                 fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontFamily: 'inherit',
                 letterSpacing: '-0.01em'
               }}>
@@ -1011,7 +1011,7 @@ const MarketplaceProductDetail = () => {
                   width: isMobile ? '100%' : '85%',
                   paddingBottom: isMobile ? '56%' : '48%',
                   backgroundColor: '#f0f0f0',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   overflow: 'hidden',
                   marginBottom: '12px',
                   cursor: 'pointer',
@@ -1052,7 +1052,7 @@ const MarketplaceProductDetail = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '36px',
+                    fontSize: '30px',
                     color: '#007185',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                     transition: 'all 0.3s ease'
@@ -1073,7 +1073,7 @@ const MarketplaceProductDetail = () => {
                     top: isMobile ? '16px' : '24px',
                     left: isMobile ? '16px' : '24px',
                     color: 'white',
-                    fontSize: isMobile ? '18px' : '28px',
+                    fontSize: isMobile ? '15px' : '22px',
                     fontWeight: '700',
                     textShadow: '0 3px 6px rgba(0,0,0,0.6)',
                       fontFamily: 'inherit'
@@ -1082,7 +1082,7 @@ const MarketplaceProductDetail = () => {
                   </div>
                 </div>
                 <p style={{
-                  fontSize: '14px',
+                  fontSize: '13px',
                     color: '#16191f',
                   marginBottom: '0',
                     fontFamily: 'inherit',
@@ -1094,10 +1094,10 @@ const MarketplaceProductDetail = () => {
                 </div> */}
 
               {/* Highlights Column */}
-              <div className="col-lg-6" style={{ marginBottom: isMobile ? '24px' : '0' }}>
+              <div className="col-lg-6" style={{ marginBottom: isMobile ? '16px' : '0' }}>
                 <div style={{
-                  borderRadius: '14px',
-                  padding: '26px',
+                  borderRadius: '8px',
+                  padding: '18px',
                   background: 'linear-gradient(165deg, #f8fafc 0%, #f1f5f9 100%)',
                   height: '100%',
                   overflow: 'hidden',
@@ -1105,10 +1105,10 @@ const MarketplaceProductDetail = () => {
                   boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9)'
                 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '20px',
+                    marginBottom: '12px',
                     fontFamily: 'inherit'
                   }}>
                     Key Highlights
@@ -1137,11 +1137,11 @@ const MarketplaceProductDetail = () => {
                       return highlightsList.length > 0 ? (
                         highlightsList.map((highlight, index) => (
                       <li key={index} style={{
-                        fontSize: '15px',
+                        fontSize: '13px',
                         color: '#16191f',
                         lineHeight: '1.7',
-                        marginBottom: '15px',
-                        paddingLeft: '25px',
+                        marginBottom: '10px',
+                        paddingLeft: '22px',
                         position: 'relative',
                         fontFamily: 'inherit'
                       }}>
@@ -1158,7 +1158,7 @@ const MarketplaceProductDetail = () => {
                       </li>
                         ))
                       ) : (
-                        <li style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>
+                        <li style={{ fontSize: '13px', color: '#6B7280', fontFamily: 'inherit' }}>
                           No highlights available.
                         </li>
                       );
@@ -1171,18 +1171,18 @@ const MarketplaceProductDetail = () => {
               <div className="col-lg-6">
                 <div style={{
                   border: '1px solid #e8edf2',
-                  borderRadius: '14px',
-                  padding: isMobile ? '24px' : '32px',
+                  borderRadius: '8px',
+                  padding: isMobile ? '18px' : '20px',
                   backgroundColor: '#fcfdfe',
                   height: '100%',
                   overflow: 'hidden',
                   boxShadow: '0 1px 0 rgba(255,255,255,0.8) inset'
                 }}>
                   <h3 style={{
-                    fontSize: '20px',
+                    fontSize: '18px',
                     fontWeight: '600',
                     color: '#16191f',
-                    marginBottom: '28px',
+                    marginBottom: '16px',
                     fontFamily: 'inherit',
                     letterSpacing: '-0.01em'
                   }}>
@@ -1197,7 +1197,7 @@ const MarketplaceProductDetail = () => {
                       borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#6B7280',
                         fontFamily: 'inherit',
                         fontWeight: '500',
@@ -1208,7 +1208,7 @@ const MarketplaceProductDetail = () => {
                         Sold by:
                       </span>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#16191f',
                         fontFamily: 'inherit',
                         fontWeight: '600'
@@ -1224,7 +1224,7 @@ const MarketplaceProductDetail = () => {
                       borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#6B7280',
                         fontFamily: 'inherit',
                         fontWeight: '500',
@@ -1235,7 +1235,7 @@ const MarketplaceProductDetail = () => {
                         Categories:
                       </span>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#16191f',
                         fontFamily: 'inherit',
                         fontWeight: '400'
@@ -1256,7 +1256,7 @@ const MarketplaceProductDetail = () => {
                                   key={categoryId || index}
                                   href={`/marketplace?category=${categorySlug}`}
                                   style={{
-                                    fontSize: '14px',
+                                    fontSize: '13px',
                                     color: 'rgb(0, 113, 133)',
                                     textDecoration: 'none',
                                     fontFamily: 'inherit',
@@ -1275,7 +1275,7 @@ const MarketplaceProductDetail = () => {
                               );
                             })
                           ) : (
-                            <span style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit' }}>Loading categories...</span>
+                            <span style={{ fontSize: '13px', color: '#6B7280', fontFamily: 'inherit' }}>Loading categories...</span>
                           );
                         })()}
                       </span>
@@ -1288,7 +1288,7 @@ const MarketplaceProductDetail = () => {
                       borderBottom: '1px solid #e2e8f0'
                     }}>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#6B7280',
                         fontFamily: 'inherit',
                         fontWeight: '500',
@@ -1299,7 +1299,7 @@ const MarketplaceProductDetail = () => {
                         Delivery method:
                       </span>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#16191f',
                         fontFamily: 'inherit',
                         fontWeight: '600'
@@ -1313,7 +1313,7 @@ const MarketplaceProductDetail = () => {
                       padding: '18px 0'
                     }}>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#6B7280',
                         fontFamily: 'inherit',
                         fontWeight: '500',
@@ -1324,7 +1324,7 @@ const MarketplaceProductDetail = () => {
                         Deployed on AWS:
                       </span>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#16191f',
                         fontFamily: 'inherit',
                         fontWeight: '600'
@@ -1338,18 +1338,18 @@ const MarketplaceProductDetail = () => {
             </div>
 
             {/* Full Width Description Section */}
-            <div className="row mt-4">
+            <div className="row mt-3">
               <div className="col-12">
                 <div style={{
                   border: '1px solid #D5D9D9',
                   borderRadius: '8px',
-                  padding: '24px',
+                  padding: '18px',
                   backgroundColor: 'white',
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
                   <div style={{
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#000000',
                     lineHeight: '1.8',
                     fontFamily: 'inherit',
@@ -1357,7 +1357,7 @@ const MarketplaceProductDetail = () => {
                     overflow: 'hidden',
                     transition: 'max-height 0.3s ease'
                   }}>
-                    <p style={{ margin: 0, fontSize: '14px', color: '#000000' }}>{renderTextWithLinks(product.overview)}</p>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#000000' }}>{renderTextWithLinks(product.overview)}</p>
                   </div>
 
                   {/* See More/Less Button - Modern & Spicy */}
@@ -1370,7 +1370,7 @@ const MarketplaceProductDetail = () => {
                       <button
                         onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                         style={{
-                          fontSize: '15px',
+                          fontSize: '13px',
                           fontWeight: '600',
                           color: '#007185',
                           backgroundColor: 'transparent',
@@ -1450,10 +1450,10 @@ const MarketplaceProductDetail = () => {
           {/* Features */}
           <section id="features" style={sectionShell}>
               <h2 style={{
-                fontSize: isMobile ? '22px' : '28px',
+                fontSize: isMobile ? '18px' : '22px',
                 fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontFamily: 'inherit',
                 letterSpacing: '-0.01em'
               }}>
@@ -1466,16 +1466,16 @@ const MarketplaceProductDetail = () => {
                 {product.featuresDescription && 
                  product.featuresDescription !== product.overview && 
                  product.featuresDescription !== agent?.overview && (
-                  <div className="col-12 mb-4">
+                  <div className="col-12 mb-3">
                     <div style={{
                       border: '1px solid #D5D9D9',
                       borderRadius: '8px',
-                      padding: '24px',
+                      padding: '18px',
                       backgroundColor: 'white'
                     }}>
                       {product.featuresTitle && (
                         <h3 style={{
-                          fontSize: '18px',
+                          fontSize: '13px',
                           fontWeight: '600',
                           color: '#16191f',
                           marginBottom: '12px',
@@ -1485,7 +1485,7 @@ const MarketplaceProductDetail = () => {
                         </h3>
                       )}
                       <p style={{
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#16191f',
                         lineHeight: '1.6',
                         fontFamily: 'inherit',
@@ -1499,15 +1499,15 @@ const MarketplaceProductDetail = () => {
                 
                 {/* Features List - Show if features array exists */}
                 {product.features && Array.isArray(product.features) && product.features.length > 0 && (
-                  <div className="col-12 mb-4">
+                  <div className="col-12 mb-3">
                     <div style={{
                       border: '1px solid #D5D9D9',
                       borderRadius: '8px',
-                      padding: '24px',
+                      padding: '18px',
                       backgroundColor: 'white'
                     }}>
                       <h3 style={{
-                        fontSize: '18px',
+                        fontSize: '13px',
                         fontWeight: '600',
                         color: '#16191f',
                         marginBottom: '16px',
@@ -1530,12 +1530,12 @@ const MarketplaceProductDetail = () => {
                           }}>
                             <span style={{
                               color: '#10b981',
-                              fontSize: '16px',
+                              fontSize: '13px',
                               fontWeight: 'bold',
                               marginTop: '2px'
                             }}>✓</span>
                             <span style={{
-                              fontSize: '14px',
+                              fontSize: '13px',
                               color: '#16191f',
                               fontFamily: 'inherit',
                               lineHeight: '1.6'
@@ -1551,15 +1551,15 @@ const MarketplaceProductDetail = () => {
                 
                 {/* Programs List - Show if programs array exists */}
                 {product.programs && Array.isArray(product.programs) && product.programs.length > 0 && (
-                  <div className="col-12 mb-4">
+                  <div className="col-12 mb-3">
                     <div style={{
                       border: '1px solid #D5D9D9',
                       borderRadius: '8px',
-                      padding: '24px',
+                      padding: '18px',
                       backgroundColor: 'white'
                     }}>
                       <h3 style={{
-                        fontSize: '18px',
+                        fontSize: '13px',
                         fontWeight: '600',
                         color: '#16191f',
                         marginBottom: '16px',
@@ -1582,12 +1582,12 @@ const MarketplaceProductDetail = () => {
                           }}>
                             <span style={{
                               color: 'rgb(0, 113, 133)',
-                              fontSize: '16px',
+                              fontSize: '13px',
                               fontWeight: 'bold',
                               marginTop: '2px'
                             }}>📋</span>
                             <span style={{
-                              fontSize: '14px',
+                              fontSize: '13px',
                               color: '#16191f',
                               fontFamily: 'inherit',
                               lineHeight: '1.6'
@@ -1603,11 +1603,11 @@ const MarketplaceProductDetail = () => {
                 
                 {/* Trust Center Card - Only show if URL exists */}
                 {product.trustCenterUrl && (
-                <div className="col-lg-6 mb-4">
+                <div className="col-lg-6 mb-3">
                   <div style={{
                     border: '1px solid #D5D9D9',
                     borderRadius: '8px',
-                    padding: '24px',
+                    padding: '18px',
                     height: '100%',
                     backgroundColor: 'white',
                     display: 'flex',
@@ -1615,7 +1615,7 @@ const MarketplaceProductDetail = () => {
                   }}
                   >
                     <h3 style={{
-                      fontSize: '18px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: '#16191f',
                       marginBottom: '16px',
@@ -1625,7 +1625,7 @@ const MarketplaceProductDetail = () => {
                     </h3>
 
                     <p style={{
-                      fontSize: '14px',
+                      fontSize: '13px',
                       color: '#16191f',
                       lineHeight: '1.6',
                       marginBottom: '16px',
@@ -1644,7 +1644,7 @@ const MarketplaceProductDetail = () => {
                       backgroundColor: '#111A45',
                       border: 'none',
                       borderRadius: '25px',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: 'white',
                       cursor: 'pointer',
@@ -1675,11 +1675,11 @@ const MarketplaceProductDetail = () => {
 
                 {/* Buyer Guide Card - Show if buyerGuide object exists */}
                 {product.buyerGuide && (
-                <div className="col-lg-6 mb-4">
+                <div className="col-lg-6 mb-3">
                   <div style={{
                     border: '1px solid #E5E7EB',
-                    borderRadius: '12px',
-                    padding: '28px',
+                    borderRadius: '8px',
+                    padding: '18px',
                     height: '100%',
                     backgroundColor: 'white',
                     display: 'flex',
@@ -1687,7 +1687,7 @@ const MarketplaceProductDetail = () => {
                   }}
                   >
                     <h3 style={{
-                      fontSize: '18px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: '#16191f',
                       marginBottom: '16px',
@@ -1698,7 +1698,7 @@ const MarketplaceProductDetail = () => {
 
                     {/* Description */}
                     <p style={{
-                      fontSize: '15px',
+                      fontSize: '13px',
                       color: '#374151',
                       lineHeight: '1.7',
                       marginBottom: '20px',
@@ -1717,7 +1717,7 @@ const MarketplaceProductDetail = () => {
                       backgroundColor: 'white',
                       border: '2px solid #111A45',
                       borderRadius: '25px',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: '#16191f',
                       cursor: 'pointer',
@@ -1752,7 +1752,7 @@ const MarketplaceProductDetail = () => {
                  (!product.programs || !Array.isArray(product.programs) || product.programs.length === 0) &&
                  (!product.featuresData || Object.keys(product.featuresData).length === 0) && (
                   <div className="col-12">
-                    <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', textAlign: 'center', padding: '40px' }}>
+                    <p style={{ fontSize: '13px', color: '#6B7280', fontFamily: 'inherit', textAlign: 'center', padding: '40px' }}>
                       No features and programs available at this time.
                     </p>
                   </div>
@@ -1763,10 +1763,10 @@ const MarketplaceProductDetail = () => {
           {/* Resources */}
           <section id="resources" style={sectionShell}>
               <h2 style={{
-                fontSize: isMobile ? '22px' : '28px',
+                fontSize: isMobile ? '18px' : '22px',
                 fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontFamily: 'inherit',
                 letterSpacing: '-0.01em'
               }}>
@@ -1776,243 +1776,148 @@ const MarketplaceProductDetail = () => {
               {/* Vendor Resources Card */}
               <div style={{
                 border: '1px solid #E5E7EB',
-                borderRadius: '12px',
+                borderRadius: '8px',
                 backgroundColor: 'white',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
               }}>
-                {/* Card Title */}
-                <div style={{
-                  padding: '20px 24px',
-                  borderBottom: '1px solid #D5D9D9'
-                }}>
-                  <h3 style={{
-                    fontSize: '18px',
-                    fontWeight: '600',
-                    color: '#16191f',
-                    margin: 0,
-                    fontFamily: 'inherit'
-                  }}>
-                    Vendor resources
-                  </h3>
-                </div>
-
-                {/* Tabs */}
-                <div style={{
-                  display: 'flex',
-                  borderBottom: '1px solid #D5D9D9',
-                  padding: '0 24px'
-                }}>
-                  <button
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '14px 18px',
+                    background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                    borderBottom: '1px solid #e8ecf1',
+                  }}
+                >
+                  <div
                     style={{
-                      padding: '12px 0',
-                      marginRight: '24px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                          borderBottom: '3px solid rgb(0, 113, 133)',
-                      cursor: 'pointer',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(145deg, rgba(0, 113, 133, 0.12), rgba(0, 113, 133, 0.06))',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                    aria-hidden
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.5 10.5L21 3m0 0h-6m6 0v6M8 21H4.8c-.84 0-1.26 0-1.59-.16a1.5 1.5 0 00-.66-.66C2.32 19.85 2 19.43 2 18.6V8.4c0-.84 0-1.26.16-1.59a1.5 1.5 0 01.66-.66C3.54 6 3.96 6 4.8 6h4.5M15 21v-4.8c0-.84 0-1.26-.16-1.59a1.5 1.5 0 00-.66-.66C13.46 14.32 13.04 14 12.2 14H8.4c-.84 0-1.26 0-1.59.16a1.5 1.5 0 00-.66.66C6 15.14 6 15.56 6 16.4V21" stroke="rgb(0, 113, 133)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <h3 style={{
                       fontSize: '14px',
                       fontWeight: '600',
-                      color: '#007185',
-                      fontFamily: 'inherit'
-                    }}
-                  >
-                    Links
-                  </button>
-                  <span style={{
-                    borderLeft: '1px solid rgba(0, 113, 133, 0.15)',
-                    height: '40px',
-                    alignSelf: 'center'
-                  }}></span>
-                  <button
-                    style={{
-                      padding: '12px 0',
-                      marginLeft: '24px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      borderBottom: '3px solid transparent',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '400',
-                      color: '#16191f',
+                      color: '#111827',
+                      margin: 0,
                       fontFamily: 'inherit',
-                      transition: 'color 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.target.style.color = 'rgb(0, 113, 133)'}
-                    onMouseLeave={(e) => e.target.style.color = '#16191f'}
-                  >
-                    Videos
-                  </button>
+                      letterSpacing: '-0.01em',
+                    }}>
+                      Vendor resources
+                    </h3>
+                    <p style={{
+                      margin: '2px 0 0 0',
+                      fontSize: '12px',
+                      color: '#64748b',
+                      fontFamily: 'inherit',
+                    }}>
+                      Documentation and external links open in a new tab
+                    </p>
+                  </div>
                 </div>
 
-                {/* Links Content */}
-                <div style={{ padding: '24px' }}>
+                {/* Links list */}
+                <div style={{ padding: 0 }}>
                   {(() => {
-                    // Use properly extracted resourceLinks from resourcesContent
                     let resourceLinksList = product.resourceLinks || [];
-                    
-                    // If resourceLinks is empty, try resources array
+
                     if (!resourceLinksList || resourceLinksList.length === 0) {
                       resourceLinksList = product.resources || [];
                     }
-                    
-                    // Also check documentation URL from agent
+
                     if (product.documentationUrl && !resourceLinksList.find(r => (r.url || r.link || r.href) === product.documentationUrl)) {
-                      resourceLinksList.push({ 
-                        title: 'Documentation', 
+                      resourceLinksList.push({
+                        title: 'Documentation',
                         url: product.documentationUrl,
                         name: 'Documentation',
                         link: product.documentationUrl
                       });
                     }
-                    
-                    // Also check website URL
+
                     if (product.website && !resourceLinksList.find(r => (r.url || r.link || r.href) === product.website)) {
-                      resourceLinksList.push({ 
-                        title: 'Website', 
+                      resourceLinksList.push({
+                        title: 'Website',
                         url: product.website,
                         name: 'Website',
                         link: product.website
                       });
                     }
-                    
+
                     if (resourceLinksList.length > 0) {
                       return resourceLinksList.map((resource, index) => {
-                        // Handle both object and string formats
                         const resourceUrl = resource.url || resource.link || resource.href || (typeof resource === 'string' ? resource : '#');
                         const resourceTitle = resource.title || resource.name || resource.label || (typeof resource === 'string' ? resource : `Resource ${index + 1}`);
-                        
-                        return (
-                          <div key={index} style={{ marginBottom: index < resourceLinksList.length - 1 ? '16px' : '0' }}>
-                            <a
-                              href={resourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                      style={{
-                        fontSize: '14px',
-                                color: 'rgb(0, 113, 133)',
-                        textDecoration: 'none',
-                        fontFamily: 'inherit',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
-                      onMouseEnter={(e) => {
-                                e.target.style.color = 'rgb(0, 95, 115)';
-                        e.target.style.textDecoration = 'underline';
-                      }}
-                      onMouseLeave={(e) => {
-                                e.target.style.color = 'rgb(0, 113, 133)';
-                        e.target.style.textDecoration = 'none';
-                      }}
-                    >
-                              {resourceTitle}
-                      <span style={{ fontSize: '12px' }}>🔗</span>
-                    </a>
-                          </div>
-                        );
-                      });
-                    } else {
-                      return (
-                        <p style={{ fontSize: '14px', color: '#6B7280', fontFamily: 'inherit', margin: 0 }}>
-                          No resources available at this time.
-                        </p>
-                      );
-                    }
-                  })()}
-                  </div>
+                        const isLast = index === resourceLinksList.length - 1;
 
-                {/* Videos Content - Show if videos exist */}
-                {product.resourceVideos && Array.isArray(product.resourceVideos) && product.resourceVideos.length > 0 && (
-                  <div style={{ padding: '24px', borderTop: '1px solid #D5D9D9' }}>
-                    {product.resourceVideos.map((video, index) => {
-                      const videoUrl = video.url || video.link || video.href || (typeof video === 'string' ? video : '#');
-                      const videoTitle = video.title || video.name || video.label || (typeof video === 'string' ? video : `Video ${index + 1}`);
-                      const videoThumbnail = video.thumbnail || video.image || video.thumb || null;
-                      
-                      return (
-                        <div key={index} style={{ marginBottom: index < product.resourceVideos.length - 1 ? '20px' : '0' }}>
+                        return (
                           <a
-                            href={videoUrl}
+                            key={index}
+                            href={resourceUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                      style={{
+                            style={{
                               display: 'flex',
-                        alignItems: 'center',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
                               gap: '12px',
+                              padding: '12px 18px',
                               textDecoration: 'none',
+                              fontFamily: 'inherit',
+                              fontSize: '13px',
+                              fontWeight: '500',
                               color: 'rgb(0, 113, 133)',
-                              fontFamily: 'inherit'
-                      }}
-                      onMouseEnter={(e) => {
-                              e.currentTarget.style.opacity = '0.8';
-                      }}
-                      onMouseLeave={(e) => {
-                              e.currentTarget.style.opacity = '1';
+                              borderBottom: isLast ? 'none' : '1px solid #f1f5f9',
+                              transition: 'background-color 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = '#f8fafc';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
                             }}
                           >
-                            {videoThumbnail ? (
-                              <img 
-                                src={videoThumbnail} 
-                                alt={videoTitle}
-                                style={{
-                                  width: '120px',
-                                  height: '68px',
-                                  objectFit: 'cover',
-                                  borderRadius: '4px',
-                                  backgroundColor: '#f0f0f0'
-                                }}
-                              />
-                            ) : (
-                              <div style={{
-                                width: '120px',
-                                height: '68px',
-                                backgroundColor: '#f0f0f0',
-                                borderRadius: '4px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontSize: '24px',
-                                color: '#007185'
-                              }}>
-                                ▶
-                              </div>
-                            )}
-                            <div style={{ flex: 1 }}>
-                              <div style={{
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                color: '#16191f',
-                                marginBottom: '4px',
-                                fontFamily: 'inherit'
-                              }}>
-                                {videoTitle}
-                              </div>
-                              {video.description && (
-                                <div style={{
-                                  fontSize: '12px',
-                                  color: '#6B7280',
-                                  fontFamily: 'inherit'
-                                }}>
-                                  {video.description}
-                                </div>
-                              )}
-                            </div>
-                    </a>
-                  </div>
-                      );
-                    })}
+                            <span style={{ color: 'rgb(0, 113, 133)', fontWeight: '500' }}>{resourceTitle}</span>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', color: 'rgb(0, 113, 133)', flexShrink: 0 }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+                                <path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </a>
+                        );
+                      });
+                    }
+
+                    return (
+                      <p style={{ fontSize: '13px', color: '#6B7280', fontFamily: 'inherit', margin: 0, padding: '18px' }}>
+                        No resources available at this time.
+                      </p>
+                    );
+                  })()}
                 </div>
-                )}
               </div>
           </section>
 
           {/* Support */}
           <section id="support" style={sectionShell}>
               <h2 style={{
-                fontSize: isMobile ? '22px' : '28px',
+                fontSize: isMobile ? '18px' : '22px',
                 fontWeight: '700',
                 color: '#16191f',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontFamily: 'inherit',
                 letterSpacing: '-0.01em'
               }}>
@@ -2021,18 +1926,18 @@ const MarketplaceProductDetail = () => {
 
               <div className="row">
                 {/* Vendor Support Card */}
-                <div className="col-lg-6 mb-4">
+                <div className="col-lg-6 mb-3">
                   <div style={{
                     border: '1px solid #E5E7EB',
-                    borderRadius: '12px',
-                    padding: '28px',
+                    borderRadius: '8px',
+                    padding: '18px',
                     backgroundColor: 'white',
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column'
                   }}>
                     <h3 style={{
-                      fontSize: '18px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: '#16191f',
                       marginBottom: '16px',
@@ -2042,7 +1947,7 @@ const MarketplaceProductDetail = () => {
                     </h3>
 
                     <p style={{
-                      fontSize: '15px',
+                      fontSize: '13px',
                       color: '#374151',
                       lineHeight: '1.7',
                       marginBottom: '20px',
@@ -2052,7 +1957,7 @@ const MarketplaceProductDetail = () => {
                     </p>
 
                     <div style={{
-                      fontSize: '14px',
+                      fontSize: '13px',
                       color: '#16191f',
                       lineHeight: '1.6',
                       fontFamily: 'inherit'
@@ -2151,18 +2056,18 @@ const MarketplaceProductDetail = () => {
 
                 {/* AWS Infrastructure Support Card - Show if awsSupport data exists in API */}
                 {((product.supportData?.awsSupport) || product.awsSupportTitle || product.awsSupportDescription || product.awsSupportUrl || product.deployedOnAWS) && (
-                <div className="col-lg-6 mb-4">
+                <div className="col-lg-6 mb-3">
                   <div style={{
                     border: '1px solid #E5E7EB',
-                    borderRadius: '12px',
-                    padding: '28px',
+                    borderRadius: '8px',
+                    padding: '18px',
                     backgroundColor: 'white',
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column'
                   }}>
                     <h3 style={{
-                      fontSize: '18px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: '#16191f',
                       marginBottom: '16px',
@@ -2172,7 +2077,7 @@ const MarketplaceProductDetail = () => {
                     </h3>
 
                     <p style={{
-                      fontSize: '15px',
+                      fontSize: '13px',
                       color: '#374151',
                       lineHeight: '1.7',
                       marginBottom: '20px',
@@ -2192,7 +2097,7 @@ const MarketplaceProductDetail = () => {
                       backgroundColor: 'white',
                           border: '1px solid rgb(0, 113, 133)',
                       borderRadius: '25px',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
                       color: 'rgb(0, 113, 133)',
                       cursor: 'pointer',
@@ -2221,7 +2126,7 @@ const MarketplaceProductDetail = () => {
                           backgroundColor: 'white',
                           border: '1px solid rgb(0, 113, 133)',
                           borderRadius: '25px',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: '600',
                           color: 'rgb(0, 113, 133)',
                           cursor: 'pointer',
@@ -2255,17 +2160,17 @@ const MarketplaceProductDetail = () => {
                 flexDirection: isMobile ? 'column' : 'row',
                 justifyContent: 'space-between',
                 alignItems: isMobile ? 'flex-start' : 'center',
-                marginBottom: '28px',
-                gap: isMobile ? '15px' : '0',
-                paddingBottom: '20px',
-                borderBottom: '3px solid rgb(0, 113, 133)',
+                marginBottom: '16px',
+                gap: isMobile ? '12px' : '0',
+                paddingBottom: '12px',
+                borderBottom: '2px solid rgb(0, 113, 133)',
                 borderImage: 'linear-gradient(90deg, rgb(0, 113, 133) 0%, rgba(0, 113, 133, 0.4) 100%) 1'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
                   <div style={{
                     width: '48px',
                     height: '48px',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     background: 'linear-gradient(145deg, rgb(0, 113, 133), #005f73)',
                     display: 'flex',
                     alignItems: 'center',
@@ -2276,7 +2181,7 @@ const MarketplaceProductDetail = () => {
                   </div>
                   <div>
                     <h2 style={{
-                      fontSize: isMobile ? '22px' : '28px',
+                      fontSize: isMobile ? '18px' : '22px',
                       fontWeight: '800',
                       color: '#0f172a',
                       margin: '0 0 6px 0',
@@ -2286,7 +2191,7 @@ const MarketplaceProductDetail = () => {
                       Product comparison
                     </h2>
                     <p style={{
-                      fontSize: '14px',
+                      fontSize: '13px',
                       color: '#64748b',
                       margin: 0,
                       fontFamily: 'inherit',
@@ -2314,7 +2219,7 @@ const MarketplaceProductDetail = () => {
               {(!product.comparisonProducts || product.comparisonProducts.length === 0) && (!product.comparisonDataRows || product.comparisonDataRows.length === 0) ? (
                 <div style={{
                     border: '1px solid rgba(0, 113, 133, 0.2)',
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                     padding: '48px 32px',
                     backgroundColor: 'white',
                     textAlign: 'center',
@@ -2322,7 +2227,7 @@ const MarketplaceProductDetail = () => {
                 }}>
                   <div style={{ fontSize: '40px', marginBottom: '12px' }}>📊</div>
                   <p style={{
-                    fontSize: '16px',
+                    fontSize: '13px',
                     color: '#64748b',
                     fontFamily: 'inherit',
                     margin: 0,
@@ -2354,7 +2259,7 @@ const MarketplaceProductDetail = () => {
                     const color = s === 'positive' ? '#10b981' : s === 'mixed' ? '#6B7280' : '#EF4444';
                     return (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        <span style={{ fontSize: 14, fontWeight: 500 }}>{s === 'positive' ? '↑' : '↓'} {text}</span>
+                        <span style={{ fontSize: 13, fontWeight: 500 }}>{s === 'positive' ? '↑' : '↓'} {text}</span>
                         <div style={{ height: 6, background: '#E5E7EB', borderRadius: 3, overflow: 'hidden' }}>
                           <div style={{ width: `${w}%`, height: '100%', background: color, borderRadius: 3 }} />
                         </div>
@@ -2366,7 +2271,7 @@ const MarketplaceProductDetail = () => {
                 return (
                   <div style={{ 
                     border: '1px solid rgba(0, 113, 133, 0.2)', 
-                    borderRadius: '12px', 
+                    borderRadius: '8px', 
                     backgroundColor: 'white', 
                     overflow: isMobile ? 'auto' : 'hidden',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
@@ -2374,18 +2279,18 @@ const MarketplaceProductDetail = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: gridCols, borderBottom: '2px solid rgb(0, 113, 133)', backgroundColor: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)', minWidth: minW, background: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)' }}>
                       <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
                         <span style={{ fontSize: 20, filter: 'grayscale(0)' }}>📊</span>
-                        <span style={{ fontSize: 15, fontWeight: 700, color: '#0c4a6e' }}>Compare</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: '#0c4a6e' }}>Compare</span>
                       </div>
                       <div style={{ padding: 20, borderLeft: '1px solid rgba(0, 113, 133, 0.2)', backgroundColor: '#fff', borderRight: '2px solid rgb(0, 113, 133)', boxShadow: 'inset 0 0 0 1px rgba(0, 113, 133, 0.15)' }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: '#0c4a6e', marginBottom: 4 }}>This product</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#0c4a6e', marginBottom: 4 }}>This product</div>
                         <div style={{ fontSize: 12, color: '#64748b' }}>by {agent?.provider || product?.seller || '—'}</div>
                       </div>
                       {compProducts.map((p, idx) => (
                         <div key={p.id || idx} style={{ padding: 20, borderLeft: '1px solid rgba(0, 113, 133, 0.15)', backgroundColor: idx % 2 === 0 ? '#fafafa' : '#f8fafc' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            {p.logoUrl ? <img src={p.logoUrl} alt="" style={{ width: 50, height: 50, objectFit: 'contain', borderRadius: 10 }} /> : <div style={{ width: 50, height: 50, background: 'linear-gradient(145deg, #0ea5e9, #0284c7)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, color: '#fff', fontWeight: 'bold', boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)' }}>{p.icon || (p.provider || p.name || '?').substring(0, 2).toUpperCase()}</div>}
+                            {p.logoUrl ? <img src={p.logoUrl} alt="" style={{ width: 50, height: 50, objectFit: 'contain', borderRadius: 10 }} /> : <div style={{ width: 50, height: 50, background: 'linear-gradient(145deg, #0ea5e9, #0284c7)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: '#fff', fontWeight: 'bold', boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)' }}>{p.icon || (p.provider || p.name || '?').substring(0, 2).toUpperCase()}</div>}
                             <div>
-                              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{p.name || p.product_name || p.title || `Product ${idx + 1}`}</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{p.name || p.product_name || p.title || `Product ${idx + 1}`}</div>
                               <div style={{ fontSize: 12, color: '#64748b' }}>by {p.provider || p.brand || '—'}</div>
                             </div>
                           </div>
@@ -2395,13 +2300,13 @@ const MarketplaceProductDetail = () => {
                     {Object.entries(grouped).map(([cat, catRows]) => (
                       <React.Fragment key={cat}>
                         <div style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #e2e8f0', backgroundColor: '#f1f5f9', padding: '14px 20px' }}>
-                          <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>{cat}</div>
+                          <div style={{ fontWeight: 700, fontSize: 13, color: '#0f172a' }}>{cat}</div>
                           <div style={{ borderLeft: '1px solid rgba(0, 113, 133, 0.15)', fontSize: 13, color: '#64748b', paddingLeft: 20 }}>{catDescs[cat] || ''}</div>
                           {compProducts.map((_, i) => <div key={i} style={{ borderLeft: '1px solid rgba(0, 113, 133, 0.15)' }} />)}
                         </div>
                         {catRows.map((row) => (
                           <div key={row.id || row.feature} style={{ display: 'grid', gridTemplateColumns: gridCols, minWidth: minW, borderBottom: '1px solid #e2e8f0', backgroundColor: '#fafafa' }}>
-                            <div style={{ padding: '16px 20px', fontWeight: 600, fontSize: 14, color: '#334155' }}>{row.feature || '—'}</div>
+                            <div style={{ padding: '16px 20px', fontWeight: 600, fontSize: 13, color: '#334155' }}>{row.feature || '—'}</div>
                             <div style={{ padding: '16px 20px', borderLeft: '1px solid rgba(0, 113, 133, 0.15)', backgroundColor: '#fff' }}>{renderCell(row.values?.thisProduct)}</div>
                             {compProducts.map((p) => (
                               <div key={p.id} style={{ padding: '16px 20px', borderLeft: '1px solid rgba(0, 113, 133, 0.15)' }}>{renderCell(row.values?.[`product_${p.id}`] ?? row.values?.[p.id])}</div>
@@ -2417,7 +2322,7 @@ const MarketplaceProductDetail = () => {
               /* Comparison Table - Display actual products from API (legacy) – uniquely styled */
               <div style={{
                 border: '1px solid rgba(0, 113, 133, 0.2)',
-                borderRadius: '12px',
+                borderRadius: '8px',
                 backgroundColor: 'white',
                 overflow: isMobile ? 'auto' : 'hidden',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
@@ -2440,7 +2345,7 @@ const MarketplaceProductDetail = () => {
                   }}>
                     <span style={{ fontSize: '20px' }}>📊</span>
                     <span style={{ 
-                          fontSize: '15px',
+                          fontSize: '13px',
                           fontWeight: '700',
                           color: '#0c4a6e',
                           fontFamily: 'inherit'
@@ -2478,11 +2383,11 @@ const MarketplaceProductDetail = () => {
                             width: '52px',
                             height: '52px',
                             background: gradient,
-                            borderRadius: '12px',
+                            borderRadius: '8px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                            fontSize: '15px',
+                            fontSize: '13px',
                             color: '#fff',
                             fontWeight: 'bold',
                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
@@ -2492,7 +2397,7 @@ const MarketplaceProductDetail = () => {
                       </div>
                           <div style={{ flex: 1 }}>
                         <div style={{
-                              fontSize: '15px',
+                              fontSize: '13px',
                               fontWeight: '700',
                           color: '#0f172a',
                               fontFamily: 'inherit',
@@ -2540,14 +2445,14 @@ const MarketplaceProductDetail = () => {
                       <div style={{
                         padding: '16px 20px',
                         fontWeight: '600',
-                        fontSize: '14px',
+                        fontSize: '13px',
                         color: '#0f172a',
                         fontFamily: 'inherit',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px'
                       }}>
-                        <span style={{ fontSize: '18px' }}>💰</span>
+                        <span style={{ fontSize: '13px' }}>💰</span>
                         <span>Price</span>
                       </div>
                       {product.comparisonProducts.map((compProduct, index) => {
@@ -2570,7 +2475,7 @@ const MarketplaceProductDetail = () => {
                           <div key={index} style={{
                             padding: '16px 20px',
                             borderLeft: '1px solid rgba(0, 113, 133, 0.15)',
-                          fontSize: '14px',
+                          fontSize: '13px',
                             fontFamily: 'inherit',
                             backgroundColor: isBestPrice ? '#ecfdf5' : 'white',
                             position: 'relative'
@@ -2619,21 +2524,21 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#0f172a',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '18px' }}>🏷️</span>
+                    <span style={{ fontSize: '13px' }}>🏷️</span>
                     <span>Brand</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
                       borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                      fontSize: '14px', 
+                      fontSize: '13px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc'
                     }}>
@@ -2659,21 +2564,21 @@ const MarketplaceProductDetail = () => {
                     <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                       color: '#0f172a',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                     }}>
-                    <span style={{ fontSize: '18px' }}>🎁</span>
+                    <span style={{ fontSize: '13px' }}>🎁</span>
                     <span>Free Trial</span>
                     </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
                       borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                      fontSize: '14px', 
+                      fontSize: '13px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc'
                     }}>
@@ -2702,21 +2607,21 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>📺</span>
+                    <span style={{ fontSize: '13px' }}>📺</span>
                     <span>Display</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
                       borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                      fontSize: '14px', 
+                      fontSize: '13px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                     }}>
@@ -2750,21 +2655,21 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>⚡</span>
+                    <span style={{ fontSize: '13px' }}>⚡</span>
                     <span>Processor</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
                       borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                      fontSize: '14px', 
+                      fontSize: '13px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                 }}>
@@ -2798,14 +2703,14 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>💾</span>
+                    <span style={{ fontSize: '13px' }}>💾</span>
                     <span>RAM</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
@@ -2818,7 +2723,7 @@ const MarketplaceProductDetail = () => {
                       <div key={index} style={{ 
                         padding: '16px 20px', 
                         borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                        fontSize: '14px', 
+                        fontSize: '13px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                       }}>
@@ -2861,14 +2766,14 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>💿</span>
+                    <span style={{ fontSize: '13px' }}>💿</span>
                     <span>Storage</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
@@ -2881,7 +2786,7 @@ const MarketplaceProductDetail = () => {
                       <div key={index} style={{ 
                         padding: '16px 20px', 
                         borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                        fontSize: '14px', 
+                        fontSize: '13px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                       }}>
@@ -2924,14 +2829,14 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>🔋</span>
+                    <span style={{ fontSize: '13px' }}>🔋</span>
                     <span>Battery</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
@@ -2944,7 +2849,7 @@ const MarketplaceProductDetail = () => {
                       <div key={index} style={{ 
                         padding: '16px 20px', 
                         borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                        fontSize: '14px', 
+                        fontSize: '13px', 
                         fontFamily: 'inherit',
                         backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                       }}>
@@ -2987,14 +2892,14 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>📷</span>
+                    <span style={{ fontSize: '13px' }}>📷</span>
                     <span>Camera</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
@@ -3021,7 +2926,7 @@ const MarketplaceProductDetail = () => {
                           color: camera ? '#9F1239' : '#9CA3AF',
                           fontWeight: camera ? '500' : '400'
                         }}>
-                          <span style={{ fontSize: '14px' }}>📸</span>
+                          <span style={{ fontSize: '13px' }}>📸</span>
                           <span>{cameraText}</span>
                     </div>
                   </div>
@@ -3043,21 +2948,21 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>🖥️</span>
+                    <span style={{ fontSize: '13px' }}>🖥️</span>
                     <span>OS</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => (
                     <div key={index} style={{ 
                       padding: '16px 20px', 
                       borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                      fontSize: '14px', 
+                      fontSize: '13px', 
                       fontFamily: 'inherit',
                       backgroundColor: index % 2 === 0 ? 'white' : '#FAFAFA'
                     }}>
@@ -3091,14 +2996,14 @@ const MarketplaceProductDetail = () => {
                   <div style={{
                     padding: '16px 20px',
                     fontWeight: '600',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                    <span style={{ fontSize: '16px' }}>⭐</span>
+                    <span style={{ fontSize: '13px' }}>⭐</span>
                     <span>Rating</span>
                   </div>
                   {product.comparisonProducts.map((compProduct, index) => {
@@ -3111,7 +3016,7 @@ const MarketplaceProductDetail = () => {
                       <div key={index} style={{ 
                         padding: '16px 20px', 
                         borderLeft: '1px solid rgba(0, 113, 133, 0.15)', 
-                        fontSize: '14px', 
+                        fontSize: '13px', 
                         fontFamily: 'inherit',
                         backgroundColor: isBestRating ? '#FEF3C7' : (index % 2 === 0 ? 'white' : '#FAFAFA')
                       }}>
@@ -3122,7 +3027,7 @@ const MarketplaceProductDetail = () => {
                           marginBottom: '8px'
                 }}>
                   <div style={{
-                            fontSize: '18px',
+                            fontSize: '13px',
                             color: rating >= 4.5 ? '#F59E0B' : rating >= 4 ? '#FBBF24' : rating >= 3 ? '#FCD34D' : '#9CA3AF',
                             display: 'flex',
                             gap: '2px'
@@ -3136,7 +3041,7 @@ const MarketplaceProductDetail = () => {
                           <span style={{
                             fontWeight: '700',
                             color: rating >= 4.5 ? '#F59E0B' : '#16191f',
-                            fontSize: '16px'
+                            fontSize: '13px'
                           }}>
                             {rating > 0 ? rating.toFixed(1) : '—'}
                           </span>
@@ -3189,10 +3094,10 @@ const MarketplaceProductDetail = () => {
           {/* Pricing / How to buy */}
           <section id="how-to-buy" style={sectionShell}>
               <h2 style={{
-                fontSize: isMobile ? '20px' : '24px',
+                fontSize: isMobile ? '18px' : '22px',
                 fontWeight: '600',
                 color: '#16191f',
-                marginBottom: '30px',
+                marginBottom: '18px',
                 fontFamily: 'inherit'
               }}>
                 Pricing
@@ -3214,7 +3119,7 @@ const MarketplaceProductDetail = () => {
               }}>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#16191f',
                     marginBottom: '8px',
@@ -3223,7 +3128,7 @@ const MarketplaceProductDetail = () => {
                     Free trial
                   </h3>
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     margin: 0,
                     fontFamily: 'inherit'
@@ -3236,7 +3141,7 @@ const MarketplaceProductDetail = () => {
                   backgroundColor: 'white',
                   border: '1px solid #007185',
                   borderRadius: '25px',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   fontWeight: '600',
                   color: '#007185',
                   cursor: 'pointer',
@@ -3256,7 +3161,7 @@ const MarketplaceProductDetail = () => {
               <div style={{
                 border: '1px solid #D5D9D9',
                 borderRadius: '8px',
-                padding: '24px',
+                padding: '18px',
                 marginBottom: '20px',
                 backgroundColor: 'white'
               }}>
@@ -3270,7 +3175,7 @@ const MarketplaceProductDetail = () => {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                       <h3 style={{
-                        fontSize: '20px',
+                        fontSize: '18px',
                         fontWeight: '600',
                         color: '#16191f',
                         margin: 0,
@@ -3289,7 +3194,7 @@ const MarketplaceProductDetail = () => {
                     </div>
 
                     <p style={{
-                      fontSize: '14px',
+                      fontSize: '13px',
                       color: '#16191f',
                       lineHeight: '1.6',
                       marginBottom: '12px',
@@ -3299,7 +3204,7 @@ const MarketplaceProductDetail = () => {
                     </p>
 
                     <p style={{
-                      fontSize: '14px',
+                      fontSize: '13px',
                       color: '#16191f',
                       lineHeight: '1.6',
                       margin: 0,
@@ -3332,7 +3237,7 @@ const MarketplaceProductDetail = () => {
                     backgroundColor: 'white',
                     border: '1px solid #007185',
                     borderRadius: '25px',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#007185',
                     cursor: 'pointer',
@@ -3357,7 +3262,7 @@ const MarketplaceProductDetail = () => {
                   marginBottom: '16px'
                 }}>
                   <h4 style={{
-                    fontSize: '16px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#16191f',
                     margin: 0,
@@ -3530,7 +3435,7 @@ const MarketplaceProductDetail = () => {
                 backgroundColor: 'white'
               }}>
                 <h3 style={{
-                  fontSize: '18px',
+                  fontSize: '13px',
                   fontWeight: '600',
                   color: '#16191f',
                   marginBottom: '12px',
@@ -3539,7 +3444,7 @@ const MarketplaceProductDetail = () => {
                   Vendor Refund Policy
                 </h3>
                 <p style={{
-                  fontSize: '14px',
+                  fontSize: '13px',
                   color: '#16191f',
                   lineHeight: '1.6',
                   margin: 0,
@@ -3561,7 +3466,7 @@ const MarketplaceProductDetail = () => {
               }}>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
-                    fontSize: '18px',
+                    fontSize: '13px',
                     fontWeight: '600',
                     color: '#16191f',
                     marginBottom: '8px',
@@ -3570,7 +3475,7 @@ const MarketplaceProductDetail = () => {
                     Custom Pricing Options
                   </h3>
                   <p style={{
-                    fontSize: '14px',
+                    fontSize: '13px',
                     color: '#16191f',
                     margin: 0,
                     fontFamily: 'inherit'
@@ -3585,7 +3490,7 @@ const MarketplaceProductDetail = () => {
                   backgroundColor: 'white',
                   border: '1px solid #007185',
                   borderRadius: '25px',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   fontWeight: '600',
                   color: '#007185',
                   cursor: 'pointer',

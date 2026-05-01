@@ -1,0 +1,13 @@
+/* Marketplace only: Inter body, Poppins headings. Scope via .marketplace-font-scope on page root. */
+.marketplace-font-scope {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+.marketplace-font-scope h1,
+.marketplace-font-scope h2,
+.marketplace-font-scope h3,
+.marketplace-font-scope h4,
+.marketplace-font-scope h5,
+.marketplace-font-scope h6 {
+  font-family: 'Poppins', system-ui, sans-serif !important;
+}

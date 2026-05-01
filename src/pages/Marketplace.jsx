@@ -355,7 +355,7 @@ const Marketplace = () => {
   };
 
   return (
-    <main className="main" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
+    <main className="main marketplace-font-scope" style={{ paddingTop: '60px', backgroundColor: 'white' }}>
       <div className="container-fluid" style={{ padding: isMobile ? '15px' : '20px 40px' }}>
         <div className="row">
           {/* Left Sidebar - Filters */}
@@ -373,7 +373,7 @@ const Marketplace = () => {
                   fontSize: '16px',
                   fontWeight: 'bold',
                   color: '#000',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                   display: 'inline-block',
                   borderBottom: '3px solid #df2020',
                   paddingBottom: '8px',
@@ -402,7 +402,7 @@ const Marketplace = () => {
                       borderRadius: '4px',
                       padding: '3px 6px',
                       cursor: 'pointer',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'inherit',
                       whiteSpace: 'nowrap',
                       flexShrink: 0
                     }}
@@ -450,7 +450,7 @@ const Marketplace = () => {
                           color: selectedCategory === 'AI Agents & Tools' ? '#df2020' : '#000',
                           fontSize: '14px',
                           textDecoration: 'underline',
-                          fontFamily: 'DM Sans, sans-serif',
+                          fontFamily: 'inherit',
                           cursor: 'pointer',
                           fontWeight: selectedCategory === 'AI Agents & Tools' ? '600' : '400',
                           flex: 1,
@@ -477,7 +477,7 @@ const Marketplace = () => {
                           color: selectedCategory === cat.name ? '#df2020' : '#000',
                           fontSize: '14px',
                           textDecoration: 'underline',
-                          fontFamily: 'DM Sans, sans-serif',
+                          fontFamily: 'inherit',
                           cursor: 'pointer',
                           fontWeight: selectedCategory === cat.name ? '600' : '400',
                           flex: 1,
@@ -529,7 +529,7 @@ const Marketplace = () => {
                     marginBottom: '15px',
                     display: 'inline-block',
                     cursor: 'pointer',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}
                   onClick={() => setShowDeliveryMethods(!showDeliveryMethods)}
                 >
@@ -632,7 +632,7 @@ const Marketplace = () => {
                         border: '1px solid #D5D9D9',
                         borderRadius: '8px',
                         fontSize: '14px',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'inherit',
                         maxWidth: isMobile ? '100%' : '280px',
                         flex: isMobile ? undefined : '0 0 auto'
                       }}
@@ -650,7 +650,7 @@ const Marketplace = () => {
                           borderRadius: '8px',
                           background: '#F0F2F2',
                           fontSize: '14px',
-                          fontFamily: 'DM Sans, sans-serif',
+                          fontFamily: 'inherit',
                           cursor: 'pointer',
                           color: '#232F3E'
                         }}
@@ -664,7 +664,7 @@ const Marketplace = () => {
                     fontWeight: '600',
                     color: '#232F3E',
                     marginBottom: '5px',
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     Search results
                   </h4>
@@ -672,7 +672,7 @@ const Marketplace = () => {
                     fontSize: isMobile ? '12px' : '14px',
                     color: '#565959',
                     margin: 0,
-                    fontFamily: 'DM Sans, sans-serif'
+                    fontFamily: 'inherit'
                   }}>
                     {selectedCategory} ({loading ? 'Loading...' : `${totalAgents || 0} results`}){searchQuery ? ` for "${searchQuery}"` : ''} showing {products.length > 0 ? `${(currentPage - 1) * 10 + 1}-${Math.min(currentPage * 10, totalAgents)}` : '0'}
                   </p>
@@ -746,7 +746,7 @@ const Marketplace = () => {
                               border: 'none',
                       borderRadius: '4px',
                       fontSize: '14px',
-                              fontFamily: 'DM Sans, sans-serif',
+                              fontFamily: 'inherit',
                               cursor: 'pointer',
                               color: currentPage === page ? '#232F3E' : '#565959',
                               fontWeight: currentPage === page ? '600' : '400'
@@ -794,7 +794,7 @@ const Marketplace = () => {
                         backgroundColor: 'white',
                         cursor: 'pointer',
                         fontSize: '14px',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'inherit',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px'
@@ -827,7 +827,7 @@ const Marketplace = () => {
                               padding: '10px 16px',
                               cursor: 'pointer',
                               fontSize: '14px',
-                              fontFamily: 'DM Sans, sans-serif',
+                              fontFamily: 'inherit',
                               backgroundColor: sortBy === option ? '#F0F2F2' : 'white'
                             }}
                             onMouseEnter={(e) => {
@@ -950,7 +950,7 @@ const Marketplace = () => {
                           fontWeight: '600',
                           color: '#111A45',
                           textDecoration: 'none',
-                          fontFamily: 'DM Sans, sans-serif',
+                          fontFamily: 'inherit',
                           display: 'block',
                           marginBottom: '4px',
                           transition: 'color 0.3s ease'
@@ -973,7 +973,7 @@ const Marketplace = () => {
                         color: '#0F1111',
                         lineHeight: '1.6',
                         margin: 0,
-                        fontFamily: 'DM Sans, sans-serif'
+                        fontFamily: 'inherit'
                       }}>
                         {expandedDescriptions.has(product.id) ? (
                           <>
@@ -1133,7 +1133,7 @@ const Marketplace = () => {
                             border: 'none',
                   borderRadius: '4px',
                   fontSize: '14px',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'inherit',
                             cursor: 'pointer',
                             color: currentPage === page ? '#232F3E' : '#565959',
                             fontWeight: currentPage === page ? '600' : '400'
