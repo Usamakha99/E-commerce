@@ -648,7 +648,7 @@ const MarketplaceProductDetail = () => {
               borderRadius: '8px',
               cursor: 'pointer',
               fontSize: compact ? '12px' : '13px',
-              fontWeight: isActive ? '600' : '500',
+              fontWeight: '700',
               fontFamily: 'inherit',
               whiteSpace: 'nowrap',
               transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
